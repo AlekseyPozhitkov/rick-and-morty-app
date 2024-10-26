@@ -9,13 +9,7 @@ export default function MyCard({ photo, name, species }) {
         <Card sx={{
             width: "calc(100% / 4 - 10px * 3 / 4)",
         }}>
-            <CardActionArea
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "start",
-                }}
-            >
+            <CardActionArea>
                 <CardMedia
                     sx={{
                         padding: 0,
@@ -40,7 +34,7 @@ export default function MyCard({ photo, name, species }) {
                     <Typography sx={{ margin: 0 }} gutterBottom variant="h5" component="div">
                         {name}
                     </Typography>
-                    <Typography sx={{ margin: 0 }} variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', margin: 0 }}>
                         {species}
                     </Typography>
                 </CardContent>
