@@ -1,0 +1,23 @@
+.sorting {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+@media (min-width: 600px) {
+    .sorting {
+        padding: 0 5%;
+    }
+}
+
+@media (min-width: 960px) {
+    .sorting {
+        padding: 0 10%;
+    }
+}
+
+@media (min-width: 1280px) {
+    .sorting {
+        padding: 0 20%;
+    }
+}
