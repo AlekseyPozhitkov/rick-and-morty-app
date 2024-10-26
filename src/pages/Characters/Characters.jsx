@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCharacters } from '../../features/characters/charactersSlice';
 import MySelect from '../../components/Select/MySelect'
 import MyInput from '../../components/Input/MyInput'
 import styles from "./styles.module.css"
 import logo from "../../public/RICKANDMORTY.svg"
-import axios from 'axios'
 import MyCard from '../../components/Card/MyCard'
 
-const baseUrl = "https://rickandmortyapi.com/api/character"
 
 function Characters() {
-    const [cards, setCards] = useState([]);
+    const dispatch = useDispatch();
+    const characters = useSelector((state) => state.characters.items);
+    const status = useSelector((state) => state.characters.status);
 
     useEffect(() => {
-        axios.get(baseUrl)
-            .then(res => {
-                setCards(res.data.results);
-                // console.log(res);
-
-            })
-    }, [])
+        if (status === 'idle') {
+            dispatch(fetchCharacters());
+        }
+    }, [status, dispatch]);
 
     return (
         <>
@@ -30,20 +29,14 @@ function Characters() {
                 <MySelect />
             </div>
             <div className={styles.cards}>
-                {cards.map((card) =>
+                {status === 'loading' && <p>Loading...</p>}
+                {status === 'succeeded' && characters.map((card) =>
                     <MyCard
-                        name={card.name}
-                        species={card.species}
-                        gender={card.gender}
                         key={card.id}
-                        status={card.status}
-                        photo={card.image}
-                        url={card.url}
-                        origin={card.origin}
-                        location={card.location}
-                        episode={card.episode}
+                        characterId={card.id}
                     />
                 )}
+                {status === 'failed' && <p>Ошибка загрузки данных.</p>}
             </div>
         </>
     )

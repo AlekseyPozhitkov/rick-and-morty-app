@@ -1,41 +1,38 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchEpisodes } from '../../features/episodes/episodesSlice';
 import logo from "../../public/rick-and-morty-eyes.svg"
 import AloneInput from '../../components/AloneInput/AloneInput'
-import axios from 'axios'
 import styles from "./styles.module.css"
 import MyPaper from '../../components/Paper/MyPaper'
 
-const baseUrl = "https://rickandmortyapi.com/api/episode"
-
-
 function Episodes() {
-    const [episodes, setEpisodes] = useState([]);
+    const dispatch = useDispatch();
+    const episodes = useSelector((state) => state.episodes.items);
+    const status = useSelector((state) => state.episodes.status);
 
     useEffect(() => {
-        axios.get(baseUrl)
-            .then(res => {
-                setEpisodes(res.data.results);
-                console.log(res);
-            })
-    }, [])
-
+        if (status === 'idle') {
+            dispatch(fetchEpisodes());
+        }
+    }, [status, dispatch]);
 
     return (
         <div>
             <img src={logo} alt="rick-and-morty-" />
             <AloneInput />
             <div className={styles.locations}>
-                {episodes.map((episode) =>
-                    <MyPaper
-                        episode={episode.episode}
-                        key={episode.id}
-                        name={episode.name}
-                        type={episode.type}
-                        url={episode.url}
-                        characters={episode.characters}
-                        date={episode.air_date}
-                    />
-                )}
+                {status === 'loading' && <p>Loading...</p>}
+                {status === 'succeeded' &&
+                    episodes.map((episode) =>
+                        <MyPaper
+                            key={episode.id}
+                            itemId={episode.id}
+                            itemType="episode"
+                        />
+                    )
+                }
+                {status === 'failed' && <p>Ошибка загрузки данных.</p>}
             </div>
         </div>
     )

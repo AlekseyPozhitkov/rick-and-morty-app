@@ -2,8 +2,17 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
+import { useSelector } from 'react-redux';
 
-export default function MyCard({ name, type, episode, date }) {
+export default function MyPaper({ itemId, itemType }) {
+    const item = useSelector((state) =>
+        itemType === 'episode'
+            ? state.episodes.items.find(ep => ep.id === itemId)
+            : state.locations.items.find(loc => loc.id === itemId)
+    );
+
+    if (!item) return null;
+
     return (
         <Card sx={{
             width: "calc(100% / 4 - 20px * 3 / 4)",
@@ -21,16 +30,13 @@ export default function MyCard({ name, type, episode, date }) {
                     }}
                 >
                     <Typography sx={{ margin: 0 }} gutterBottom variant="h5" component="div">
-                        {name}
+                        {item.name}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary', margin: 0 }}>
-                        {type}
+                        {item.type || item.episode}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary', margin: 0 }}>
-                        {date}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary', margin: 0 }}>
-                        {episode}
+                        {item.dimension || item.air_date}
                     </Typography>
                 </CardContent>
             </CardActionArea>
