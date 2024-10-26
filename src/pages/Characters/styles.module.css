@@ -13,7 +13,7 @@
 
 .hero__img {
     margin: 20px;
-    width: 30%;
+    /* width: 10%; */
 }
 
 
@@ -46,7 +46,7 @@
     }
 
     .hero__img {
-        width: 50%;
+        width: 40%;
     }
 }
 
@@ -58,6 +58,6 @@
     }
 
     .hero__img {
-        width: 40%;
+        width: 30%;
     }
 }

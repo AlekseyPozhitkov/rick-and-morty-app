@@ -4,6 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import logo from "../../public/rick&morty.svg"
 import { styled } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const MyBytton = styled(Button)({
     fontFamily: "\"Karla\", serif",
@@ -33,9 +34,15 @@ export default function Navbar() {
             >
                 <Toolbar sx={{ padding: "0 !important" }}>
                     <img style={{ marginRight: "auto" }} src={logo} alt="RickAndMorty" />
-                    <MyBytton color="inherit">Characters</MyBytton>
-                    <MyBytton color="inherit">Locations</MyBytton>
-                    <MyBytton color="inherit">Episodes</MyBytton>
+                    <MyBytton LinkComponent={Link} to={"/"} color="inherit">
+                        Characters
+                    </MyBytton>
+                    <MyBytton LinkComponent={Link} to={"/locations"} color="inherit">
+                        Locations
+                    </MyBytton>
+                    <MyBytton LinkComponent={Link} to={"/episodes"} color="inherit">
+                        Episodes
+                    </MyBytton>
                 </Toolbar>
             </AppBar>
         </Box >

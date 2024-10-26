@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../../components/Navbar/Navbar'
 import MySelect from '../../components/Select/MySelect'
 import MyInput from '../../components/Input/MyInput'
 import styles from "./styles.module.css"
 import logo from "../../public/RICKANDMORTY.svg"
 import axios from 'axios'
 import MyCard from '../../components/Card/MyCard'
-import Footer from '../../components/Footer/Footer'
-import MyButton from '../../components/Button/MyButton'
 
 const baseUrl = "https://rickandmortyapi.com/api/character"
 
@@ -25,7 +22,6 @@ function Characters() {
 
     return (
         <>
-            <Navbar />
             <img className={styles.hero__img} src={logo} alt="RICKANDMORTY" />
             <div className={styles.sorting}>
                 <MyInput />
@@ -49,9 +45,6 @@ function Characters() {
                     />
                 )}
             </div>
-            <MyButton />
-            <Footer />
-
         </>
     )
 }
