@@ -17,7 +17,7 @@ export default function TripleSelect() {
             display: "flex",
             justifyContent: "center",
             gap: 20,
-            marginBottom: 20
+            marginBottom: 65
         }}
         >
             <Box

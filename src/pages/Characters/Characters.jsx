@@ -26,7 +26,7 @@ function Characters() {
     return (
         <>
             <Navbar />
-            <img src={logo} alt="RICKANDMORTY" />
+            <img className={styles.hero__img} src={logo} alt="RICKANDMORTY" />
             <div className={styles.sorting}>
                 <MyInput />
                 <MySelect />
