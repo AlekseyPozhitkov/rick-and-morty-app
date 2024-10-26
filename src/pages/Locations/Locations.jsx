@@ -14,7 +14,7 @@ function Locations() {
         axios.get(baseUrl)
             .then(res => {
                 setLocations(res.data.results);
-                console.log(res);
+                // console.log(res);
             })
     }, [])
 

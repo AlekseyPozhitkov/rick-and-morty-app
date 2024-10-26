@@ -3,7 +3,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 
-export default function MyCard({ name, type }) {
+export default function MyCard({ name, type, episode, date }) {
     return (
         <Card sx={{
             width: "calc(100% / 4 - 20px * 3 / 4)",
@@ -25,6 +25,12 @@ export default function MyCard({ name, type }) {
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary', margin: 0 }}>
                         {type}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', margin: 0 }}>
+                        {date}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', margin: 0 }}>
+                        {episode}
                     </Typography>
                 </CardContent>
             </CardActionArea>
