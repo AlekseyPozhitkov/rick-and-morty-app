@@ -16,10 +16,11 @@ const MyBytton = styled(Button)({
 
 export default function Navbar() {
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, }}>
             <AppBar
                 sx={{
-                    padding: {
+                    padding:
+                    {
                         sm: "0 5%",
                         md: "0 10%",
                         lg: "0 20%"
@@ -29,13 +30,13 @@ export default function Navbar() {
                 }}
                 position="static"
             >
-                <Toolbar                >
+                <Toolbar sx={{ padding: "0 !important" }}>
                     <img style={{ marginRight: "auto" }} src={logo} alt="RickAndMorty" />
                     <MyBytton color="inherit">Characters</MyBytton>
                     <MyBytton color="inherit">Locations</MyBytton>
                     <MyBytton color="inherit">Episodes</MyBytton>
                 </Toolbar>
             </AppBar>
-        </Box>
+        </Box >
     );
 }
