@@ -8,6 +8,7 @@
 
 .cards {
     flex-wrap: wrap;
+    margin-bottom: 0;
 }
 
 img {

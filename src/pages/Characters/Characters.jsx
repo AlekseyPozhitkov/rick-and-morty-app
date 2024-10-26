@@ -7,6 +7,7 @@ import logo from "../../public/RICKANDMORTY.svg"
 import axios from 'axios'
 import MyCard from '../../components/Card/MyCard'
 import Footer from '../../components/Footer/Footer'
+import MyButton from '../../components/Button/MyButton'
 
 const baseUrl = "https://rickandmortyapi.com/api/character"
 
@@ -48,6 +49,7 @@ function Characters() {
                     />
                 )}
             </div>
+            <MyButton />
             <Footer />
 
         </>
