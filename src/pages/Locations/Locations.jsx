@@ -20,7 +20,7 @@ function Locations() {
 
     return (
         <>
-            <img src={logo} alt="rick-and-morty-circle" />
+            <img className={styles.hero__img} src={logo} alt="rick-and-morty-circle" />
             <TripleSelect />
             <div className={styles.locations}>
                 {locations.map((location) =>

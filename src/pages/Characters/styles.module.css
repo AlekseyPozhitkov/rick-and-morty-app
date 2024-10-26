@@ -11,18 +11,30 @@
     margin-bottom: 0;
 }
 
-img {
+.hero__img {
     margin: 20px;
+    width: 30%;
 }
 
 
 /* media */
+
+@media (max-width: 600px) {
+    .hero__img {
+        width: 90%;
+    }
+}
+
 
 @media (min-width: 600px) {
 
     .sorting,
     .cards {
         padding: 0 10%;
+    }
+
+    .hero__img {
+        width: 50%;
     }
 }
 
@@ -32,6 +44,10 @@ img {
     .cards {
         padding: 0 20%;
     }
+
+    .hero__img {
+        width: 50%;
+    }
 }
 
 @media (min-width: 1535px) {
@@ -39,5 +55,9 @@ img {
     .sorting,
     .cards {
         padding: 0 25%;
+    }
+
+    .hero__img {
+        width: 40%;
     }
 }
