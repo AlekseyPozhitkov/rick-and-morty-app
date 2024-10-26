@@ -16,14 +16,15 @@ const MyBytton = styled(Button)({
 
 export default function Navbar() {
     return (
-        <Box sx={{ flexGrow: 1, }}>
+        <Box sx={{ flexGrow: 1 }}>
             <AppBar
                 sx={{
+                    height: 60,
                     padding:
                     {
                         sm: "0 5%",
                         md: "0 10%",
-                        lg: "0 20%"
+                        lg: "0 25%"
                     },
                     backgroundColor: "white",
                     color: "black"
