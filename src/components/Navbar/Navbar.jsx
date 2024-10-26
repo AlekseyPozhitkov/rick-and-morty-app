@@ -20,8 +20,7 @@ export default function Navbar() {
             <AppBar
                 sx={{
                     height: 60,
-                    padding:
-                    {
+                    padding: {
                         xl: "0 25%",
                         lg: "0 20%",
                         md: "0 10%"
