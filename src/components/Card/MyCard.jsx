@@ -7,7 +7,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 export default function MyCard({ photo, name, species }) {
     return (
         <Card sx={{
-            width: "calc(100% / 4 - 10px * 3 / 4)",
+            width: "calc(100% / 4 - 20px * 3 / 4)",
         }}>
             <CardActionArea>
                 <CardMedia
