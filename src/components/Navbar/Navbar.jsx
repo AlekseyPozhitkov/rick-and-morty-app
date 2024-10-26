@@ -23,7 +23,8 @@ export default function Navbar() {
                     padding: {
                         xl: "0 25%",
                         lg: "0 20%",
-                        md: "0 10%"
+                        md: "0 10%",
+                        sm: "0 10%"
                     },
                     backgroundColor: "white",
                     color: "black"
