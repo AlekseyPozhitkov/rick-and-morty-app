@@ -1,27 +1,42 @@
-.sorting {
+.sorting,
+.cards {
     display: flex;
     justify-content: space-between;
     gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cards {
+    flex-wrap: wrap;
 }
 
 img {
     margin: 20px;
 }
 
+
+/* media */
+
 @media (min-width: 600px) {
-    .sorting {
+
+    .sorting,
+    .cards {
         padding: 0 10%;
     }
 }
 
 @media (min-width: 1200px) {
-    .sorting {
+
+    .sorting,
+    .cards {
         padding: 0 20%;
     }
 }
 
 @media (min-width: 1535px) {
-    .sorting {
+
+    .sorting,
+    .cards {
         padding: 0 25%;
     }
 }
