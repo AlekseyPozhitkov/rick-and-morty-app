@@ -6,13 +6,12 @@ import styles from "./styles.module.css"
 import logo from "../../public/RICKANDMORTY.svg"
 import axios from 'axios'
 import MyCard from '../../components/Card/MyCard'
+import Footer from '../../components/Footer/Footer'
 
 const baseUrl = "https://rickandmortyapi.com/api/character"
 
 function Characters() {
     const [cards, setCards] = useState([]);
-
-
 
     useEffect(() => {
         axios.get(baseUrl)
@@ -22,7 +21,6 @@ function Characters() {
 
             })
     })
-
 
     return (
         <>
@@ -50,7 +48,7 @@ function Characters() {
                     />
                 )}
             </div>
-
+            <Footer />
 
         </>
     )
