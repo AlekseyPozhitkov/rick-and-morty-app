@@ -4,6 +4,10 @@
     gap: 10px;
 }
 
+img {
+    margin: 20px;
+}
+
 @media (min-width: 600px) {
     .sorting {
         padding: 0 5%;
