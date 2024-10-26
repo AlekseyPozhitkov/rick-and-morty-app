@@ -22,9 +22,9 @@ export default function Navbar() {
                     height: 60,
                     padding:
                     {
-                        sm: "0 5%",
-                        md: "0 10%",
-                        lg: "0 25%"
+                        xl: "0 25%",
+                        lg: "0 20%",
+                        md: "0 10%"
                     },
                     backgroundColor: "white",
                     color: "black"
