@@ -18,10 +18,10 @@ function Characters() {
         axios.get(baseUrl)
             .then(res => {
                 setCards(res.data.results);
-                console.log(res);
+                // console.log(res);
 
             })
-    })
+    }, [])
 
     return (
         <>
