@@ -63,6 +63,13 @@ const locationsSlice = createSlice({
                         state.filterOptions.dimension.push(location.dimension);
                     }
                 });
+                Object.keys(state.filterOptions).forEach((filterType) => {
+                    state.filterOptions[filterType] = state.filterOptions[filterType].sort((a, b) => {
+                        if (a === "unknown") return 1;
+                        if (b === "unknown") return -1;
+                        return a.localeCompare(b);
+                    });
+                });
             })
             .addCase(fetchLocations.rejected, (state) => {
                 state.status = 'failed';
