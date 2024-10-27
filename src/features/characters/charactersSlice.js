@@ -3,17 +3,20 @@ import axios from 'axios';
 
 const baseUrl = "https://rickandmortyapi.com/api/character";
 
-export const fetchCharacters = createAsyncThunk('characters/fetchCharacters', async () => {
-    const response = await axios.get(baseUrl);
-    return response.data.results;
-});
+export const fetchCharacters = createAsyncThunk(
+    'characters/fetchCharacters',
+    async (page) => {
+        const response = await axios.get(`https://rickandmortyapi.com/api/character?page=${page}`);
+        return response.data;
+    }
+);
 
 const charactersSlice = createSlice({
     name: 'characters',
     initialState: {
         items: [],
-        status: 'idle', // idle | loading | succeeded | failed
-        error: null,
+        status: 'idle',
+        nextPage: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -23,13 +26,13 @@ const charactersSlice = createSlice({
             })
             .addCase(fetchCharacters.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.items = action.payload;
+                state.items = [...state.items, ...action.payload.results]; // добавляем новые данные к существующим
+                state.nextPage = action.payload.info.next; // обновляем nextPage
             })
-            .addCase(fetchCharacters.rejected, (state, action) => {
+            .addCase(fetchCharacters.rejected, (state) => {
                 state.status = 'failed';
-                state.error = action.error.message;
             });
-    },
+    }
 });
 
 export default charactersSlice.reducer;

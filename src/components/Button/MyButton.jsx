@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import '@fontsource/roboto/500.css';
 
-export default function MyButton() {
+export default function MyButton({ onClick }) {
     return (
         <Stack>
             <Button sx={{
@@ -15,7 +15,10 @@ export default function MyButton() {
                 fontWeight: 500,
                 fontSize: 14,
 
-            }} variant="contained">
+            }}
+                variant="contained"
+                onClick={onClick} // Передаем onClick в кнопку
+            >
                 Load more
             </Button>
         </Stack>
