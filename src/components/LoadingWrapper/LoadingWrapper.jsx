@@ -13,7 +13,7 @@ const LoadingWrapper = ({ children }) => {
         // Устанавливаем задержку в 1 секунду для скрытия спиннера
         const timer = setTimeout(() => {
             setLoading(false);
-        }, 1000);
+        }, 500);
 
         return () => clearTimeout(timer); // Очищаем таймер при размонтировании
     }, [location]);
