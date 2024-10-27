@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCharacters } from '../../features/characters/charactersSlice';
+import { fetchCharacters, setFilter } from '../../features/characters/charactersSlice';
 import MySelect from '../../components/Select/MySelect'
 import MyInput from '../../components/Input/MyInput'
 import MyCard from '../../components/Card/MyCard'
@@ -14,26 +14,31 @@ function Characters() {
     const dispatch = useDispatch();
     const characters = useSelector((state) => state.characters.items);
     const status = useSelector((state) => state.characters.status);
-    const [currentPage, setCurrentPage] = useState(1);
+    const nextPage = useSelector((state) => state.characters.nextPage);
+    const filter = useSelector((state) => state.characters.filter);
 
+    // Инициализируем загрузку персонажей
     useEffect(() => {
-        // Инициализируем загрузку персонажей
         if (status === 'idle') {
-            dispatch(fetchCharacters(currentPage));
+            dispatch(fetchCharacters({ page: nextPage, filter }));
         }
-    }, [status, currentPage, dispatch]);
+    }, [status, nextPage, filter, dispatch]);
 
     const onLoadMore = () => {
-        const nextPage = currentPage + 1;
-        setCurrentPage(nextPage);
-        dispatch(fetchCharacters(nextPage));
+        dispatch(fetchCharacters({ page: nextPage, filter }));
+    };
+
+    const handleFilterChange = (e) => {
+        const newFilter = e.target.value;
+        dispatch(setFilter(newFilter));
+        dispatch(fetchCharacters({ page: 1, filter: newFilter }));
     };
 
     return (
         <>
             <img className={styles.hero__img} src={logo} alt="RICKANDMORTY" />
             <div className={styles.sorting}>
-                <MyInput />
+                <MyInput onChange={handleFilterChange} />
                 <MySelect />
                 <MySelect />
                 <MySelect />
@@ -45,7 +50,7 @@ function Characters() {
                 ))}
                 {status === 'failed' && <p>Ошибка загрузки данных.</p>}
             </div>
-            <MyButton onClick={onLoadMore} /> {/* Используем кнопку внутри Characters */}
+            <MyButton onClick={onLoadMore} />
         </>
     )
 }

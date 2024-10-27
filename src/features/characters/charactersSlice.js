@@ -3,10 +3,10 @@ import axios from 'axios';
 
 export const fetchCharacters = createAsyncThunk(
     'characters/fetchCharacters',
-    async (page) => {
+    async ({ page, filter }) => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const response = await axios.get(`https://rickandmortyapi.com/api/character?page=${page}`);
+        const response = await axios.get(`https://rickandmortyapi.com/api/character?page=${page}&name=${filter}`);
         return response.data;
     }
 );
@@ -16,9 +16,16 @@ const charactersSlice = createSlice({
     initialState: {
         items: [],
         status: 'idle',
-        nextPage: null,
+        nextPage: 1,
+        filter: '',
     },
-    reducers: {},
+    reducers: {
+        setFilter: (state, action) => {
+            state.filter = action.payload;
+            state.items = []; // очищаем items при изменении фильтра
+            state.nextPage = 1; // сбрасываем страницу
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchCharacters.pending, (state) => {
@@ -26,8 +33,8 @@ const charactersSlice = createSlice({
             })
             .addCase(fetchCharacters.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.items = [...state.items, ...action.payload.results]; // добавляем новые данные к существующим
-                state.nextPage = action.payload.info.next; // обновляем nextPage
+                state.items = [...state.items, ...action.payload.results];
+                state.nextPage = state.nextPage + 1;
             })
             .addCase(fetchCharacters.rejected, (state) => {
                 state.status = 'failed';
@@ -35,4 +42,5 @@ const charactersSlice = createSlice({
     }
 });
 
+export const { setFilter } = charactersSlice.actions;
 export default charactersSlice.reducer;

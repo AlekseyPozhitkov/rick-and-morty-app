@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
-export default function MyInput() {
+export default function MyInput({ onChange }) {
     return (
         <Box
             component="form"
@@ -16,8 +16,9 @@ export default function MyInput() {
                     width: "100%"
                 }}
                 id="outlined-basic"
-                label="Outlined"
+                label="Filter by name..."
                 variant="outlined"
+                onChange={onChange}
             />
         </Box>
     );
