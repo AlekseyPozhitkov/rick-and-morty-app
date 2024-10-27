@@ -1,0 +1,32 @@
+.spinnerOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Полупрозрачный черный фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    /* Поверх всех элементов */
+}
+
+.spinner {
+    width: 200px;
+    /* Увеличили размер в два раза */
+    height: 200px;
+    animation: spin 2s linear infinite;
+    /* Анимация вращения */
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

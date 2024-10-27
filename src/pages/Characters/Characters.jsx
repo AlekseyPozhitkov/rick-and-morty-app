@@ -4,9 +4,10 @@ import { fetchCharacters } from '../../features/characters/charactersSlice';
 import MySelect from '../../components/Select/MySelect'
 import MyInput from '../../components/Input/MyInput'
 import MyCard from '../../components/Card/MyCard'
+import MyButton from '../../components/Button/MyButton';
+import Spinner from '../../components/Spinner/Spinner';
 import styles from "./styles.module.css"
 import logo from "../../public/RICKANDMORTY.svg"
-import MyButton from '../../components/Button/MyButton';
 
 
 function Characters() {
@@ -38,7 +39,7 @@ function Characters() {
                 <MySelect />
             </div>
             <div className={styles.cards}>
-                {status === 'loading' && <p>Loading...</p>}
+                {status === 'loading' && <Spinner />}
                 {characters.map((card) => (
                     <MyCard key={card.id} characterId={card.id} />
                 ))}

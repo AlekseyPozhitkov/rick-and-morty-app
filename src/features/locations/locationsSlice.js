@@ -5,6 +5,8 @@ import axios from 'axios';
 export const fetchLocations = createAsyncThunk(
     'locations/fetchLocations',
     async (page) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const response = await axios.get(`https://rickandmortyapi.com/api/location?page=${page}`);
         return response.data;
     }

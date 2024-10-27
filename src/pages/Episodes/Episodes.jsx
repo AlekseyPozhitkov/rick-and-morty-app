@@ -6,6 +6,7 @@ import AloneInput from '../../components/AloneInput/AloneInput'
 import styles from "./styles.module.css"
 import MyPaper from '../../components/Paper/MyPaper'
 import MyButton from '../../components/Button/MyButton';
+import Spinner from '../../components/Spinner/Spinner';
 
 function Episodes() {
     const dispatch = useDispatch();
@@ -30,18 +31,17 @@ function Episodes() {
             <img src={logo} alt="rick-and-morty-" />
             <AloneInput />
             <div className={styles.locations}>
-                {status === 'loading' && <p>Loading...</p>}
-                {status === 'succeeded' &&
-                    episodes.map((episode) =>
-                        <MyPaper
-                            key={episode.id}
-                            itemId={episode.id}
-                            itemType="episode"
-                        />
-                    )
+                {episodes.map((episode) =>
+                    <MyPaper
+                        key={episode.id}
+                        itemId={episode.id}
+                        itemType="episode"
+                    />
+                )
                 }
                 {status === 'failed' && <p>Ошибка загрузки данных.</p>}
             </div>
+            {status === 'loading' && <Spinner />}
             <MyButton onClick={onLoadMore} /> {/* Кнопка "Load More" для подгрузки страниц */}
         </div>
     );

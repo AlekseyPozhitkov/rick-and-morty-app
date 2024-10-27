@@ -6,6 +6,7 @@ import TripleSelect from '../../components/TripleSelect/TripleSelect'
 import MyPaper from '../../components/Paper/MyPaper'
 import styles from "./styles.module.css"
 import MyButton from '../../components/Button/MyButton';
+import Spinner from '../../components/Spinner/Spinner';
 
 function Locations() {
     const dispatch = useDispatch();
@@ -20,33 +21,30 @@ function Locations() {
     }, [status, currentPage, dispatch]);
 
     const onLoadMore = () => {
-        const currentScrollY = window.scrollY;
-
         const nextPage = currentPage + 1;
         setCurrentPage(nextPage);
-        dispatch(fetchLocations(nextPage)).then(() => {
-            window.scrollTo(0, currentScrollY);
-        });
-    }
+        dispatch(fetchLocations(nextPage));
+    };
 
     return (
         <>
             <img className={styles.hero__img} src={logo} alt="rick-and-morty-circle" />
             <TripleSelect />
             <div className={styles.locations}>
-                {status === 'loading' && <p>Loading...</p>}
-                {status === 'succeeded' &&
-                    locations.map((location) => (
-                        <MyPaper
-                            key={location.id}
-                            itemId={location.id}
-                            itemType="location"
-                        />
-                    ))
-                }
+                {/* Всегда рендерим карточки, даже если статус 'loading' */}
+                {locations.map((location) => (
+                    <MyPaper
+                        key={location.id}
+                        itemId={location.id}
+                        itemType="location"
+                    />
+                ))}
+                {/* Показываем сообщение об ошибке только если статус 'failed' */}
                 {status === 'failed' && <p>Ошибка загрузки данных.</p>}
             </div>
-            <MyButton onClick={onLoadMore} /> {/* Кнопка загрузки следующей страницы */}
+            {/* Спиннер поверх карточек */}
+            {status === 'loading' && <Spinner />}
+            <MyButton onClick={onLoadMore} />
         </>
     )
 }

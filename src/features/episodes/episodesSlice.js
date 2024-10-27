@@ -6,6 +6,8 @@ const baseUrl = "https://rickandmortyapi.com/api/episode";
 export const fetchEpisodes = createAsyncThunk(
     'episodes/fetchEpisodes',
     async (page) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const response = await axios.get(`${baseUrl}?page=${page}`);
         return response.data;
     }

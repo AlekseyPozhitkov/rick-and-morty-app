@@ -5,17 +5,19 @@ import Episodes from './pages/Episodes/Episodes'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import MyButton from './components/Button/MyButton'
+import LoadingWrapper from './components/LoadingWrapper/LoadingWrapper'
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Characters />} /> {/* Убираем setLoadMoreHandler */}
-        <Route path="/locations" element={<Locations />} />
-        <Route path="/episodes" element={<Episodes />} />
-      </Routes>
+      <LoadingWrapper> {/* Оборачиваем Routes в наш компонент LoadingWrapper */}
+        <Routes>
+          <Route path="/" element={<Characters />} />
+          <Route path="/locations" element={<Locations />} />
+          <Route path="/episodes" element={<Episodes />} />
+        </Routes>
+      </LoadingWrapper>
       <Footer />
     </BrowserRouter>
   );

@@ -4,6 +4,8 @@ import axios from 'axios';
 export const fetchCharacters = createAsyncThunk(
     'characters/fetchCharacters',
     async (page) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const response = await axios.get(`https://rickandmortyapi.com/api/character?page=${page}`);
         return response.data;
     }
