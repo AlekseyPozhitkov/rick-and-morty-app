@@ -32,9 +32,9 @@ function Locations() {
             <TripleSelect />
             <div className={styles.locations}>
                 {/* Всегда рендерим карточки, даже если статус 'loading' */}
-                {locations.map((location) => (
+                {locations.map((location, index) => (
                     <MyPaper
-                        key={location.id}
+                        key={`${location.id}-${index}`}
                         itemId={location.id}
                         itemType="location"
                     />

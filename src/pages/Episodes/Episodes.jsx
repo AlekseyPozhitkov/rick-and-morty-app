@@ -31,9 +31,9 @@ function Episodes() {
             <img src={logo} alt="rick-and-morty-" />
             <AloneInput />
             <div className={styles.locations}>
-                {episodes.map((episode) =>
+                {episodes.map((episode, index) =>
                     <MyPaper
-                        key={episode.id}
+                        key={`${episode.id}-${index}`}
                         itemId={episode.id}
                         itemType="episode"
                     />

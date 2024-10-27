@@ -44,8 +44,8 @@ function Characters() {
             </div>
             <div className={styles.cards}>
                 {status === 'loading' && <Spinner />}
-                {characters.map((card) => (
-                    <MyCard key={card.id} characterId={card.id} />
+                {characters.map((card, index) => (
+                    <MyCard key={`${card.id}-${index}`} characterId={card.id} />
                 ))}
                 {status === 'failed' && <p>Ошибка загрузки данных.</p>}
             </div>
