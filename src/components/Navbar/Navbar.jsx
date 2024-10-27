@@ -28,7 +28,10 @@ export default function Navbar() {
                         sm: "0 10%"
                     },
                     backgroundColor: "white",
-                    color: "black"
+                    color: "black",
+                    position: "fixed",
+                    top: 0,
+                    zIndex: 1200
                 }}
                 position="static"
             >

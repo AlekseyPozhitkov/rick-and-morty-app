@@ -52,9 +52,10 @@ function Episodes() {
                         itemType="episode"
                     />
                 ))}
-                {status === 'failed' && <p>Ошибка загрузки данных.</p>}
+                {/* {status === 'failed' && <p>Ошибка загрузки данных.</p>} */}
             </div>
             {status === 'loading' && <Spinner />}
+            {status === 'failed' && <div className={styles.notFound}>Oops! Not found</div>}
             {hasMore && status !== 'loading' && <MyButton onClick={onLoadMore} />} {/* Кнопка отображается условно */}
         </div>
     );

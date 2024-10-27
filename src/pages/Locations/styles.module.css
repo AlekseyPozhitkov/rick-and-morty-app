@@ -18,6 +18,12 @@ img {
     margin-bottom: 20px;
 }
 
+.notFound {
+    font-family: 'Roboto';
+    text-align: center;
+    font-size: 3em;
+    color: rgb(0, 0, 0);
+}
 
 /* media */
 

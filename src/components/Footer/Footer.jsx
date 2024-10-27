@@ -26,7 +26,8 @@ export default function Footer() {
                     },
                     backgroundColor: "white",
                     color: "black",
-                    margin: "40px 0 0"
+                    position: "fixed",
+                    bottom: 0
                 }}
                 position="static"
             >

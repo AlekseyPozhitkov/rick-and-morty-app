@@ -51,7 +51,7 @@ function Characters() {
                     <MyCard key={`${card.id}-${index}`} characterId={card.id} />
                 ))}
             </div>
-            {status === 'loading' && <Spinner />}
+            {status === 'failed' && <div className={styles.notFound}>Oops! Not found</div>}
             {hasMore && status !== 'loading' && <MyButton onClick={onLoadMore} />}
         </>
     )

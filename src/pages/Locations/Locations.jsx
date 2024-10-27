@@ -66,6 +66,7 @@ function Locations() {
                 ))}
             </div>
             {status === 'loading' && <Spinner />}
+            {status === 'failed' && <div className={styles.notFound}>Oops! Not found</div>}
             {hasMore && status !== 'loading' && <MyButton onClick={onLoadMore}>Load More</MyButton>}
         </>
     )
