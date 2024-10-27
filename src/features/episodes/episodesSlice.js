@@ -5,10 +5,14 @@ const baseUrl = "https://rickandmortyapi.com/api/episode";
 
 export const fetchEpisodes = createAsyncThunk(
     'episodes/fetchEpisodes',
-    async (page) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+    async ({ page, filters }) => {
+        const { name } = filters;
 
-        const response = await axios.get(`${baseUrl}?page=${page}`);
+        // await new Promise((resolve) => setTimeout(resolve, 1000)); Задержка для имитации загрузки
+
+        const response = await axios.get(baseUrl, {
+            params: { page, name },
+        });
         return response.data;
     }
 );
@@ -18,9 +22,18 @@ const episodesSlice = createSlice({
     initialState: {
         items: [],
         status: 'idle',
-        nextPage: null,
+        nextPage: 1,
+        filters: {
+            name: '',
+        },
     },
-    reducers: {},
+    reducers: {
+        setFilter: (state, action) => {
+            state.filters = { ...state.filters, ...action.payload };
+            state.items = [];
+            state.nextPage = 1;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchEpisodes.pending, (state) => {
@@ -28,8 +41,8 @@ const episodesSlice = createSlice({
             })
             .addCase(fetchEpisodes.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.items = [...state.items, ...action.payload.results]; // добавляем новые данные
-                state.nextPage = action.payload.info.next; // сохраняем информацию о следующей странице
+                state.items = [...state.items, ...action.payload.results];
+                state.nextPage += 1;
             })
             .addCase(fetchEpisodes.rejected, (state) => {
                 state.status = 'failed';
@@ -37,4 +50,5 @@ const episodesSlice = createSlice({
     },
 });
 
+export const { setFilter } = episodesSlice.actions;
 export default episodesSlice.reducer;

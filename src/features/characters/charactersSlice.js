@@ -6,7 +6,7 @@ export const fetchCharacters = createAsyncThunk(
     async ({ page, filters }) => {
         const { name, status, species, gender } = filters;
 
-        await new Promise(resolve => setTimeout(resolve, 1000));  // Задержка 1 секунда
+        // await new Promise(resolve => setTimeout(resolve, 1000));  // Задержка для имитации загрузки
 
         const response = await axios.get('https://rickandmortyapi.com/api/character', {
             params: { page, name, status, species, gender },

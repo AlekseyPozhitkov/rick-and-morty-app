@@ -11,17 +11,28 @@ img {
     margin-bottom: 0;
 }
 
+.sorting {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+
 /* media */
 
 @media (min-width: 600px) {
 
+    .sorting,
     .locations {
         padding: 0 10%;
     }
+
 }
 
 @media (min-width: 1200px) {
 
+    .sorting,
     .locations {
         padding: 0 20%;
     }
@@ -29,6 +40,7 @@ img {
 
 @media (min-width: 1535px) {
 
+    .sorting,
     .locations {
         padding: 0 25%;
     }

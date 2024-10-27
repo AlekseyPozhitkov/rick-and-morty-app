@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function MySelect({ label, options, onChange }) {
+export default function MySelect({ label, options, onChange, customStyles }) {
     const [value, setValue] = React.useState('');
 
     const handleChange = (event) => {
@@ -15,7 +15,10 @@ export default function MySelect({ label, options, onChange }) {
     };
 
     return (
-        <Box sx={{ width: "calc(100% / 4 - 10px * 3 / 4)" }}>
+        <Box sx={{
+            width: "calc(100% / 4 - 10px * 3 / 4)",
+            ...customStyles?.box,
+        }}>
             <FormControl fullWidth>
                 <InputLabel>{label}</InputLabel>
                 <Select sx={{ textAlign: "left" }} value={value} label={label} onChange={handleChange}>
