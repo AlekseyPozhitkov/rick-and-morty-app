@@ -14,23 +14,27 @@ function Characters() {
     const dispatch = useDispatch();
     const characters = useSelector((state) => state.characters.items);
     const status = useSelector((state) => state.characters.status);
-    const nextPage = useSelector((state) => state.characters.nextPage);
+    const hasMore = useSelector((state) => state.characters.hasMore);
     const filters = useSelector((state) => state.characters.filters);
     const filterOptions = useSelector((state) => state.characters.filterOptions);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         if (status === 'idle') {
-            dispatch(fetchCharacters({ page: nextPage, filters }));
+            dispatch(fetchCharacters({ page: currentPage, filters }));
         }
-    }, [status, nextPage, filters, dispatch]);
+    }, [status, currentPage, filters, dispatch]);
 
     const onLoadMore = () => {
+        const nextPage = currentPage + 1;
+        setCurrentPage(nextPage);
         dispatch(fetchCharacters({ page: nextPage, filters }));
     };
 
     const handleFilterChange = (filterType, value) => {
         dispatch(setFilter({ [filterType]: value }));
         dispatch(fetchCharacters({ page: 1, filters: { ...filters, [filterType]: value } }));
+        setCurrentPage(1);
     };
 
     return (
@@ -43,13 +47,12 @@ function Characters() {
                 <MySelect label="Status" options={filterOptions.status} onChange={(value) => handleFilterChange('status', value)} />
             </div>
             <div className={styles.cards}>
-                {status === 'loading' && <Spinner />}
                 {characters.map((card, index) => (
                     <MyCard key={`${card.id}-${index}`} characterId={card.id} />
                 ))}
-                {status === 'failed' && <p>Ошибка загрузки данных.</p>}
             </div>
-            <MyButton onClick={onLoadMore} />
+            {status === 'loading' && <Spinner />}
+            {hasMore && status !== 'loading' && <MyButton onClick={onLoadMore} />}
         </>
     )
 }

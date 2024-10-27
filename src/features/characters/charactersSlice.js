@@ -5,23 +5,12 @@ export const fetchCharacters = createAsyncThunk(
     'characters/fetchCharacters',
     async ({ page, filters }) => {
         const { name, status, species, gender } = filters;
-
-        // await new Promise(resolve => setTimeout(resolve, 1000));  // Задержка для имитации загрузки
-
         const response = await axios.get('https://rickandmortyapi.com/api/character', {
             params: { page, name, status, species, gender },
         });
-
         return response.data;
     }
 );
-
-// Функция сортировки опций, перемещающая "unknown" в конец
-const sortOptions = (options) => {
-    return options
-        .filter(option => option !== 'unknown')
-        .concat(options.includes('unknown') ? ['unknown'] : []);
-};
 
 const charactersSlice = createSlice({
     name: 'characters',
@@ -29,6 +18,7 @@ const charactersSlice = createSlice({
         items: [],
         status: 'idle',
         nextPage: 1,
+        hasMore: true,
         filters: {
             name: '',
             status: '',
@@ -46,6 +36,7 @@ const charactersSlice = createSlice({
             state.filters = { ...state.filters, ...action.payload };
             state.items = [];
             state.nextPage = 1;
+            state.hasMore = true;
         }
     },
     extraReducers: (builder) => {
@@ -57,8 +48,9 @@ const charactersSlice = createSlice({
                 state.status = 'succeeded';
                 state.items = [...state.items, ...action.payload.results];
                 state.nextPage += 1;
+                state.hasMore = !!action.payload.info.next;
 
-                // Обновляем filterOptions с уникальными значениями и сортируем "unknown" в конец
+                // Обновляем filterOptions с уникальными значениями
                 action.payload.results.forEach((character) => {
                     if (!state.filterOptions.species.includes(character.species)) {
                         state.filterOptions.species.push(character.species);
@@ -70,14 +62,10 @@ const charactersSlice = createSlice({
                         state.filterOptions.status.push(character.status);
                     }
                 });
-
-                // Применение сортировки
-                state.filterOptions.species = sortOptions(state.filterOptions.species);
-                state.filterOptions.gender = sortOptions(state.filterOptions.gender);
-                state.filterOptions.status = sortOptions(state.filterOptions.status);
             })
             .addCase(fetchCharacters.rejected, (state) => {
                 state.status = 'failed';
+                state.hasMore = false;
             });
     }
 });

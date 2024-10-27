@@ -25,7 +25,8 @@ export default function Footer() {
                         md: "0 10%"
                     },
                     backgroundColor: "white",
-                    color: "black"
+                    color: "black",
+                    margin: "40px 0 0"
                 }}
                 position="static"
             >

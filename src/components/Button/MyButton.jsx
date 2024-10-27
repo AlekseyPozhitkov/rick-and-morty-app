@@ -8,7 +8,7 @@ export default function MyButton({ onClick }) {
             <Button sx={{
                 width: 155,
                 height: 35,
-                margin: "40px auto",
+                margin: "40px auto 0",
                 backgroundColor: "#F2F9FE",
                 color: "#2196F3",
                 font: "Roboto",

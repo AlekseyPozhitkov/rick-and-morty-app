@@ -13,6 +13,7 @@ function Episodes() {
     const dispatch = useDispatch();
     const episodes = useSelector((state) => state.episodes.items);
     const status = useSelector((state) => state.episodes.status);
+    const hasMore = useSelector((state) => state.episodes.hasMore); // Подключаем hasMore
     const nextPage = useSelector((state) => state.episodes.nextPage);
     const filters = useSelector((state) => state.episodes.filters);
 
@@ -54,7 +55,7 @@ function Episodes() {
                 {status === 'failed' && <p>Ошибка загрузки данных.</p>}
             </div>
             {status === 'loading' && <Spinner />}
-            <MyButton onClick={onLoadMore} />
+            {hasMore && status !== 'loading' && <MyButton onClick={onLoadMore} />} {/* Кнопка отображается условно */}
         </div>
     );
 }

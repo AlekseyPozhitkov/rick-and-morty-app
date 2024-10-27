@@ -14,9 +14,9 @@
 }
 
 .spinner {
-    width: 40%;
+    width: 30%;
     /* Увеличили размер в два раза */
-    height: 40%;
+    height: 30%;
     animation: spin 1s linear infinite;
     /* Анимация вращения */
 }

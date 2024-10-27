@@ -8,8 +8,6 @@ export const fetchEpisodes = createAsyncThunk(
     async ({ page, filters }) => {
         const { name } = filters;
 
-        // await new Promise((resolve) => setTimeout(resolve, 1000)); Задержка для имитации загрузки
-
         const response = await axios.get(baseUrl, {
             params: { page, name },
         });
@@ -23,6 +21,7 @@ const episodesSlice = createSlice({
         items: [],
         status: 'idle',
         nextPage: 1,
+        hasMore: true, // Добавляем hasMore для отслеживания наличия данных
         filters: {
             name: '',
         },
@@ -32,6 +31,7 @@ const episodesSlice = createSlice({
             state.filters = { ...state.filters, ...action.payload };
             state.items = [];
             state.nextPage = 1;
+            state.hasMore = true;
         }
     },
     extraReducers: (builder) => {
@@ -43,9 +43,11 @@ const episodesSlice = createSlice({
                 state.status = 'succeeded';
                 state.items = [...state.items, ...action.payload.results];
                 state.nextPage += 1;
+                state.hasMore = !!action.payload.info.next; // Обновляем hasMore в зависимости от наличия следующей страницы
             })
             .addCase(fetchEpisodes.rejected, (state) => {
                 state.status = 'failed';
+                state.hasMore = false;
             });
     },
 });
