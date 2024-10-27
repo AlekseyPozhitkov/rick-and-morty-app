@@ -3,17 +3,20 @@ import axios from 'axios';
 
 const baseUrl = "https://rickandmortyapi.com/api/episode";
 
-export const fetchEpisodes = createAsyncThunk('episodes/fetchEpisodes', async () => {
-    const response = await axios.get(baseUrl);
-    return response.data.results;
-});
+export const fetchEpisodes = createAsyncThunk(
+    'episodes/fetchEpisodes',
+    async (page) => {
+        const response = await axios.get(`${baseUrl}?page=${page}`);
+        return response.data;
+    }
+);
 
 const episodesSlice = createSlice({
     name: 'episodes',
     initialState: {
         items: [],
         status: 'idle',
-        error: null,
+        nextPage: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -23,11 +26,11 @@ const episodesSlice = createSlice({
             })
             .addCase(fetchEpisodes.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.items = action.payload;
+                state.items = [...state.items, ...action.payload.results]; // добавляем новые данные
+                state.nextPage = action.payload.info.next; // сохраняем информацию о следующей странице
             })
-            .addCase(fetchEpisodes.rejected, (state, action) => {
+            .addCase(fetchEpisodes.rejected, (state) => {
                 state.status = 'failed';
-                state.error = action.error.message;
             });
     },
 });
