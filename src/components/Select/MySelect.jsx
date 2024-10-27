@@ -5,29 +5,25 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function MySelect() {
-    const [age, setAge] = React.useState('');
+export default function MySelect({ label, options, onChange }) {
+    const [value, setValue] = React.useState('');
 
     const handleChange = (event) => {
-        setAge(event.target.value);
+        const selectedValue = event.target.value;
+        setValue(selectedValue);
+        onChange(selectedValue);
     };
 
     return (
-        <Box sx={{
-            width: "calc(100% / 4 - 10px * 3 / 4)",
-        }}>
+        <Box sx={{ width: "calc(100% / 4 - 10px * 3 / 4)" }}>
             <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={age}
-                    label="Age"
-                    onChange={handleChange}
-                >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                <InputLabel>{label}</InputLabel>
+                <Select sx={{ textAlign: "left" }} value={value} label={label} onChange={handleChange}>
+                    {options.map((option) => (
+                        <MenuItem sx={{ textAlign: "left" }} key={option} value={option}>
+                            {option}
+                        </MenuItem>
+                    ))}
                 </Select>
             </FormControl>
         </Box>

@@ -3,13 +3,25 @@ import axios from 'axios';
 
 export const fetchCharacters = createAsyncThunk(
     'characters/fetchCharacters',
-    async ({ page, filter }) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+    async ({ page, filters }) => {
+        const { name, status, species, gender } = filters;
 
-        const response = await axios.get(`https://rickandmortyapi.com/api/character?page=${page}&name=${filter}`);
+        await new Promise(resolve => setTimeout(resolve, 1000));  // Задержка 1 секунда
+
+        const response = await axios.get('https://rickandmortyapi.com/api/character', {
+            params: { page, name, status, species, gender },
+        });
+
         return response.data;
     }
 );
+
+// Функция сортировки опций, перемещающая "unknown" в конец
+const sortOptions = (options) => {
+    return options
+        .filter(option => option !== 'unknown')
+        .concat(options.includes('unknown') ? ['unknown'] : []);
+};
 
 const charactersSlice = createSlice({
     name: 'characters',
@@ -17,13 +29,23 @@ const charactersSlice = createSlice({
         items: [],
         status: 'idle',
         nextPage: 1,
-        filter: '',
+        filters: {
+            name: '',
+            status: '',
+            species: '',
+            gender: '',
+        },
+        filterOptions: {
+            species: [],
+            gender: [],
+            status: [],
+        },
     },
     reducers: {
         setFilter: (state, action) => {
-            state.filter = action.payload;
-            state.items = []; // очищаем items при изменении фильтра
-            state.nextPage = 1; // сбрасываем страницу
+            state.filters = { ...state.filters, ...action.payload };
+            state.items = [];
+            state.nextPage = 1;
         }
     },
     extraReducers: (builder) => {
@@ -34,7 +56,25 @@ const charactersSlice = createSlice({
             .addCase(fetchCharacters.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.items = [...state.items, ...action.payload.results];
-                state.nextPage = state.nextPage + 1;
+                state.nextPage += 1;
+
+                // Обновляем filterOptions с уникальными значениями и сортируем "unknown" в конец
+                action.payload.results.forEach((character) => {
+                    if (!state.filterOptions.species.includes(character.species)) {
+                        state.filterOptions.species.push(character.species);
+                    }
+                    if (!state.filterOptions.gender.includes(character.gender)) {
+                        state.filterOptions.gender.push(character.gender);
+                    }
+                    if (!state.filterOptions.status.includes(character.status)) {
+                        state.filterOptions.status.push(character.status);
+                    }
+                });
+
+                // Применение сортировки
+                state.filterOptions.species = sortOptions(state.filterOptions.species);
+                state.filterOptions.gender = sortOptions(state.filterOptions.gender);
+                state.filterOptions.status = sortOptions(state.filterOptions.status);
             })
             .addCase(fetchCharacters.rejected, (state) => {
                 state.status = 'failed';
