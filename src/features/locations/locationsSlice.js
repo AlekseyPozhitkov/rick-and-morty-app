@@ -2,19 +2,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const baseUrl = "https://rickandmortyapi.com/api/location";
-
-export const fetchLocations = createAsyncThunk('locations/fetchLocations', async () => {
-    const response = await axios.get(baseUrl);
-    return response.data.results;
-});
+export const fetchLocations = createAsyncThunk(
+    'locations/fetchLocations',
+    async (page) => {
+        const response = await axios.get(`https://rickandmortyapi.com/api/location?page=${page}`);
+        return response.data;
+    }
+);
 
 const locationsSlice = createSlice({
     name: 'locations',
     initialState: {
         items: [],
         status: 'idle',
-        error: null,
+        nextPage: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -24,11 +25,11 @@ const locationsSlice = createSlice({
             })
             .addCase(fetchLocations.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.items = action.payload;
+                state.items = [...state.items, ...action.payload.results]; // добавляем новые данные к существующим
+                state.nextPage = action.payload.info.next; // обновляем nextPage
             })
-            .addCase(fetchLocations.rejected, (state, action) => {
+            .addCase(fetchLocations.rejected, (state) => {
                 state.status = 'failed';
-                state.error = action.error.message;
             });
     },
 });
