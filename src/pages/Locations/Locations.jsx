@@ -61,11 +61,11 @@ function Locations() {
                 />
             </div>
             <div className={styles.locations}>
+                {status === 'loading' && <Spinner />}
                 {locations.map((location, index) => (
                     <MyPaper key={`${location.id}-${index}`} itemId={location.id} itemType="location" />
                 ))}
             </div>
-            {status === 'loading' && <Spinner />}
             {status === 'failed' && <div className={styles.notFound}>Oops! Not found</div>}
             {hasMore && status !== 'loading' && <MyButton onClick={onLoadMore}>Load More</MyButton>}
         </>

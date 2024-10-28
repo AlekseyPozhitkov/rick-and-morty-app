@@ -45,6 +45,7 @@ function Episodes() {
                 />
             </div>
             <div className={styles.episodes}>
+                {status === 'loading' && <Spinner />}
                 {episodes.map((episode, index) => (
                     <MyPaper
                         key={`${episode.id}-${index}`}
@@ -54,7 +55,6 @@ function Episodes() {
                 ))}
                 {/* {status === 'failed' && <p>Ошибка загрузки данных.</p>} */}
             </div>
-            {status === 'loading' && <Spinner />}
             {status === 'failed' && <div className={styles.notFound}>Oops! Not found</div>}
             {hasMore && status !== 'loading' && <MyButton onClick={onLoadMore} />} {/* Кнопка отображается условно */}
         </div>

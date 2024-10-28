@@ -47,6 +47,7 @@ function Characters() {
                 <MySelect label="Status" options={filterOptions.status} onChange={(value) => handleFilterChange('status', value)} />
             </div>
             <div className={styles.cards}>
+                {status === 'loading' && <Spinner />}
                 {characters.map((card, index) => (
                     <MyCard key={`${card.id}-${index}`} characterId={card.id} />
                 ))}
