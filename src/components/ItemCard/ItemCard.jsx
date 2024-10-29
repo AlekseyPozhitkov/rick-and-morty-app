@@ -6,19 +6,22 @@ import CardActionArea from "@mui/material/CardActionArea";
 import { useSelector } from "react-redux";
 import { getItemById } from "../../libs/redux/selectors/itemsSelectors";
 
-export default function ItemCard({ itemId, itemType, showImage, customStyles }) {
+export const ItemCard = ({ itemId, itemType, showImage, customStyles }) => {
   const item = useSelector((state) => getItemById(state, itemId, itemType));
 
   return (
-    <Card>
+    <Card
+      sx={{
+        width: "100%",
+        maxWidth: "240px",
+        boxShadow:
+          "0px 2px 4px rgba(0, 0, 0, 0.14), 0px 3px 4px rgba(0, 0, 0, 0.12), 0px 1px 5px rgba(0, 0, 0, 0.20)",
+      }}
+    >
       <CardActionArea>
         {showImage && (
           <CardMedia
-            sx={{
-              padding: 0,
-              margin: 0,
-              height: "230px",
-            }}
+            sx={{ maxHeight: "196px" }}
             component="img"
             image={item.image}
             alt={item.name}
@@ -26,12 +29,11 @@ export default function ItemCard({ itemId, itemType, showImage, customStyles }) 
         )}
         <CardContent
           sx={{
-            height: "90px",
-            padding: 0,
-            margin: 0,
+            height: "112px",
+            padding: "12px 16px",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-evenly",
+            justifyContent: "center",
             ...customStyles?.cardContent,
           }}
         >
@@ -42,10 +44,10 @@ export default function ItemCard({ itemId, itemType, showImage, customStyles }) 
             {item.species || item.type || item.episode}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary", margin: 0 }}>
-            {item.dimension || item.air_date}
+            {item.air_date}
           </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
   );
-}
+};

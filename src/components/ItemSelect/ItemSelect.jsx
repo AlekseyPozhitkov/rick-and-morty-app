@@ -1,13 +1,13 @@
-import * as React from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-export default function MySelect({ label, options, onChange, customStyles }) {
-  const [value, setValue] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+export const ItemSelect = ({ label, options, onChange, customStyles }) => {
+  const [value, setValue] = useState("");
+  const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {
     const selectedValue = event.target.value;
@@ -15,23 +15,8 @@ export default function MySelect({ label, options, onChange, customStyles }) {
     onChange(selectedValue);
   };
 
-  const handleScroll = () => {
-    setOpen(false); // Закрываем меню при прокрутке
-  };
-
-  React.useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   return (
-    <Box
-      sx={{
-        ...customStyles?.box,
-      }}
-    >
+    <Box sx={{ width: "100%", maxWidth: 240, ...customStyles?.box }}>
       <FormControl fullWidth>
         <InputLabel>{label}</InputLabel>
         <Select
@@ -61,4 +46,4 @@ export default function MySelect({ label, options, onChange, customStyles }) {
       </FormControl>
     </Box>
   );
-}
+};

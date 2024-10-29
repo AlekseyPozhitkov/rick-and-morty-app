@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCharacters, setFilter } from "../../libs/redux/slices/charactersSlice";
 import logo from "../../public/RICKANDMORTY.svg";
-import LoadMoreButton from "../../components/LoadMoreButton/LoadMoreButton";
-import ItemCard from "../../components/ItemCard/ItemCard";
-import MySelect from "../../components/Select/MySelect";
-import MyInput from "../../components/Input/MyInput";
-import Spinner from "../../components/Spinner/Spinner";
+import { LoadMoreButton } from "../../components/LoadMoreButton/LoadMoreButton";
+import { ItemCard } from "../../components/ItemCard/ItemCard";
+import { ItemSelect } from "../../components/ItemSelect/ItemSelect";
+import { ItemInput } from "../../components/ItemInput/ItemInput";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 function Characters() {
   const dispatch = useDispatch();
@@ -35,26 +35,26 @@ function Characters() {
 
   return (
     <>
-      <img src={logo} alt="RICKANDMORTY" />
-      <div className="sotringFields">
-        <MyInput onChange={(e) => handleFilterChange("name", e.target.value)} />
-        <MySelect
+      <img className="image" src={logo} alt="RICKANDMORTY" />
+      <div className="sorts">
+        <ItemInput onChange={(e) => handleFilterChange("name", e.target.value)} />
+        <ItemSelect
           label="Species"
           options={filterOptions.species}
           onChange={(value) => handleFilterChange("species", value)}
         />
-        <MySelect
+        <ItemSelect
           label="Gender"
           options={filterOptions.gender}
           onChange={(value) => handleFilterChange("gender", value)}
         />
-        <MySelect
+        <ItemSelect
           label="Status"
           options={filterOptions.status}
           onChange={(value) => handleFilterChange("status", value)}
         />
       </div>
-      <div>
+      <div className="items">
         {status === "loading" && <Spinner />}
         {characters.map((card) => (
           <ItemCard key={card.id} itemId={card.id} itemType="character" showImage customStyles />

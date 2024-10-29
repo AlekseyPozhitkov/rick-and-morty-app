@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEpisodes, setFilter } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
-import LoadMoreButton from "../../components/LoadMoreButton/LoadMoreButton";
-import ItemCard from "../../components/ItemCard/ItemCard";
-import Spinner from "../../components/Spinner/Spinner";
-import MyInput from "../../components/Input/MyInput";
+import { LoadMoreButton } from "../../components/LoadMoreButton/LoadMoreButton";
+import { ItemCard } from "../../components/ItemCard/ItemCard";
+import { ItemInput } from "../../components/ItemInput/ItemInput";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 function Episodes() {
   const dispatch = useDispatch();
@@ -32,26 +32,27 @@ function Episodes() {
 
   return (
     <>
-      <img src={logo} alt="rick-and-morty-eyes" />
-      <div>
-        <MyInput
+      <img className="image" src={logo} alt="rick-and-morty-eyes" />
+      <div className="sorts sortsEpisodes">
+        <ItemInput
           onChange={(e) => handleFilterChange(e.target.value)}
           placeholder="Filter by name or episode (ex. S01 or S01E02)"
-          customStyles={{
-            box: { width: "50%", margin: "0 auto 20px" },
-          }}
+          customStyles={{ box: { maxWidth: "500px" } }}
         />
       </div>
-      <div>
+      <div className="items">
         {status === "loading" && <Spinner />}
         {episodes.map((episode) => (
           <ItemCard
             key={episode.id}
             itemId={episode.id}
             itemType="episode"
-            howImage={false}
             customStyles={{
-              cardContent: { height: "130px", justifyContent: "center", backgroundColor: "#FAFAFA" },
+              cardContent: {
+                height: "130px",
+                justifyContent: "center",
+                backgroundColor: "#FAFAFA",
+              },
             }}
           />
         ))}

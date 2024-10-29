@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLocations, setLocationFilter } from "../../libs/redux/slices/locationsSlice";
 import logo from "../../public/rick-and-morty-circle.svg";
-import LoadMoreButton from "../../components/LoadMoreButton/LoadMoreButton";
-import ItemCard from "../../components/ItemCard/ItemCard";
-import MySelect from "../../components/Select/MySelect";
-import MyInput from "../../components/Input/MyInput";
-import Spinner from "../../components/Spinner/Spinner";
+import { LoadMoreButton } from "../../components/LoadMoreButton/LoadMoreButton";
+import { ItemCard } from "../../components/ItemCard/ItemCard";
+import { ItemSelect } from "../../components/ItemSelect/ItemSelect";
+import { ItemInput } from "../../components/ItemInput/ItemInput";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 function Locations() {
   const dispatch = useDispatch();
@@ -35,35 +35,35 @@ function Locations() {
 
   return (
     <>
-      <img src={logo} alt="rick-and-morty-circle" />
-      <div>
-        <MyInput
+      <img className="image" src={logo} alt="rick-and-morty-circle" />
+      <div className="sorts sortsLocations">
+        <ItemInput
           onChange={(e) => handleFilterChange("name", e.target.value)}
-          customStyles={{ box: { width: "30%" } }}
+          customStyles={{ box: { maxWidth: "325px" } }}
         />
-        <MySelect
+        <ItemSelect
           label="Type"
           options={filterOptions.type}
           onChange={(value) => handleFilterChange("type", value)}
-          customStyles={{ box: { width: "20%" } }}
         />
-        <MySelect
+        <ItemSelect
           label="Dimension"
           options={filterOptions.dimension}
           onChange={(value) => handleFilterChange("dimension", value)}
-          customStyles={{ box: { width: "20%" } }}
         />
       </div>
-      <div>
+      <div className="items">
         {status === "loading" && <Spinner />}
         {locations.map((location) => (
           <ItemCard
             key={location.id}
             itemId={location.id}
             itemType="location"
-            showImage={false}
             customStyles={{
-              cardContent: { height: "130px", justifyContent: "center", backgroundColor: "#FAFAFA" },
+              cardContent: {
+                height: "130px",
+                backgroundColor: "#FAFAFA",
+              },
             }}
           />
         ))}
