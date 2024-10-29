@@ -68,7 +68,7 @@ function Locations() {
           />
         ))}
       </div>
-      {status === "failed" && <div>Oops! Not found</div>}
+      {status === "failed" && <div className="notFound">Oops! Not found</div>}
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
