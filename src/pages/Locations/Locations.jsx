@@ -1,15 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchLocations,
-  setLocationFilter,
-} from "../../features/locations/locationsSlice";
+import { fetchLocations, setLocationFilter } from "../../libs/redux/slices/locationsSlice";
 import logo from "../../public/rick-and-morty-circle.svg";
-import MyPaper from "../../components/Paper/MyPaper";
+import LoadMoreButton from "../../components/LoadMoreButton/LoadMoreButton";
+import ItemCard from "../../components/ItemCard/ItemCard";
 import MySelect from "../../components/Select/MySelect";
 import MyInput from "../../components/Input/MyInput";
-import styles from "./styles.module.css";
-import MyButton from "../../components/Button/MyButton";
 import Spinner from "../../components/Spinner/Spinner";
 
 function Locations() {
@@ -34,19 +30,13 @@ function Locations() {
 
   const handleFilterChange = (filterType, value) => {
     dispatch(setLocationFilter({ [filterType]: value }));
-    dispatch(
-      fetchLocations({ page: 1, filters: { ...filters, [filterType]: value } })
-    );
+    dispatch(fetchLocations({ page: 1, filters: { ...filters, [filterType]: value } }));
   };
 
   return (
     <>
-      <img
-        className={styles.hero__img}
-        src={logo}
-        alt="rick-and-morty-circle"
-      />
-      <div className={styles.sorting}>
+      <img src={logo} alt="rick-and-morty-circle" />
+      <div>
         <MyInput
           onChange={(e) => handleFilterChange("name", e.target.value)}
           customStyles={{ box: { width: "30%" } }}
@@ -64,22 +54,22 @@ function Locations() {
           customStyles={{ box: { width: "20%" } }}
         />
       </div>
-      <div className={styles.locations}>
+      <div>
         {status === "loading" && <Spinner />}
-        {locations.map((location, index) => (
-          <MyPaper
-            key={`${location.id}-${index}`}
+        {locations.map((location) => (
+          <ItemCard
+            key={location.id}
             itemId={location.id}
             itemType="location"
+            showImage={false}
+            customStyles={{
+              cardContent: { height: "130px", justifyContent: "center", backgroundColor: "#FAFAFA" },
+            }}
           />
         ))}
       </div>
-      {status === "failed" && (
-        <div className={styles.notFound}>Oops! Not found</div>
-      )}
-      {hasMore && status !== "loading" && (
-        <MyButton onClick={onLoadMore}>Load More</MyButton>
-      )}
+      {status === "failed" && <div>Oops! Not found</div>}
+      {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
 }

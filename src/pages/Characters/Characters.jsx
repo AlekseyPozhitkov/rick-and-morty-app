@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCharacters, setFilter } from "../../features/characters/charactersSlice";
+import { fetchCharacters, setFilter } from "../../libs/redux/slices/charactersSlice";
+import logo from "../../public/RICKANDMORTY.svg";
+import LoadMoreButton from "../../components/LoadMoreButton/LoadMoreButton";
+import ItemCard from "../../components/ItemCard/ItemCard";
 import MySelect from "../../components/Select/MySelect";
 import MyInput from "../../components/Input/MyInput";
-import MyCard from "../../components/Card/MyCard";
-import MyButton from "../../components/Button/MyButton";
 import Spinner from "../../components/Spinner/Spinner";
-import styles from "./styles.module.css";
-import logo from "../../public/RICKANDMORTY.svg";
 
 function Characters() {
   const dispatch = useDispatch();
@@ -20,6 +19,7 @@ function Characters() {
 
   useEffect(() => {
     if (status === "idle") {
+      // Загружаем данные при первом рендере
       dispatch(fetchCharacters({ page: nextPage, filters }));
     }
   }, [status, nextPage, filters, dispatch]);
@@ -35,8 +35,8 @@ function Characters() {
 
   return (
     <>
-      <img className={styles.hero__img} src={logo} alt="RICKANDMORTY" />
-      <div className={styles.sorting}>
+      <img src={logo} alt="RICKANDMORTY" />
+      <div className="sotringFields">
         <MyInput onChange={(e) => handleFilterChange("name", e.target.value)} />
         <MySelect
           label="Species"
@@ -54,14 +54,14 @@ function Characters() {
           onChange={(value) => handleFilterChange("status", value)}
         />
       </div>
-      <div className={styles.cards}>
+      <div>
         {status === "loading" && <Spinner />}
-        {characters.map((card, index) => (
-          <MyCard key={`${card.id}-${index}`} characterId={card.id} />
+        {characters.map((card) => (
+          <ItemCard key={card.id} itemId={card.id} itemType="character" showImage customStyles />
         ))}
       </div>
-      {status === "failed" && <div className={styles.notFound}>Oops! Not found</div>}
-      {hasMore && status !== "loading" && <MyButton onClick={onLoadMore} />}
+      {status === "failed" && <div>Oops! Not found</div>}
+      {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
 }

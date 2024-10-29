@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEpisodes, setFilter } from "../../features/episodes/episodesSlice";
+import { fetchEpisodes, setFilter } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
-import styles from "./styles.module.css";
-import MyPaper from "../../components/Paper/MyPaper";
-import MyButton from "../../components/Button/MyButton";
+import LoadMoreButton from "../../components/LoadMoreButton/LoadMoreButton";
+import ItemCard from "../../components/ItemCard/ItemCard";
 import Spinner from "../../components/Spinner/Spinner";
 import MyInput from "../../components/Input/MyInput";
 
@@ -32,9 +31,9 @@ function Episodes() {
   };
 
   return (
-    <div>
+    <>
       <img src={logo} alt="rick-and-morty-eyes" />
-      <div className={styles.sorting}>
+      <div>
         <MyInput
           onChange={(e) => handleFilterChange(e.target.value)}
           placeholder="Filter by name or episode (ex. S01 or S01E02)"
@@ -43,16 +42,23 @@ function Episodes() {
           }}
         />
       </div>
-      <div className={styles.episodes}>
+      <div>
         {status === "loading" && <Spinner />}
-        {episodes.map((episode, index) => (
-          <MyPaper key={`${episode.id}-${index}`} itemId={episode.id} itemType="episode" />
+        {episodes.map((episode) => (
+          <ItemCard
+            key={episode.id}
+            itemId={episode.id}
+            itemType="episode"
+            howImage={false}
+            customStyles={{
+              cardContent: { height: "130px", justifyContent: "center", backgroundColor: "#FAFAFA" },
+            }}
+          />
         ))}
-        {/* {status === 'failed' && <p>Ошибка загрузки данных.</p>} */}
       </div>
-      {status === "failed" && <div className={styles.notFound}>Oops! Not found</div>}
-      {hasMore && status !== "loading" && <MyButton onClick={onLoadMore} />} {/* Кнопка отображается условно */}
-    </div>
+      {status === "failed" && <div>Oops! Not found</div>}
+      {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
+    </>
   );
 }
 
