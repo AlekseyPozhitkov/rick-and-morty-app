@@ -62,13 +62,6 @@ const charactersSlice = createSlice({
                         state.filterOptions.status.push(character.status);
                     }
                 });
-                Object.keys(state.filterOptions).forEach((filterType) => {
-                    state.filterOptions[filterType] = state.filterOptions[filterType].sort((a, b) => {
-                        if (a === "unknown") return 1;
-                        if (b === "unknown") return -1;
-                        return a.localeCompare(b);
-                    });
-                });
             })
             .addCase(fetchCharacters.rejected, (state) => {
                 state.status = 'failed';
