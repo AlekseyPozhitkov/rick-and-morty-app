@@ -17,9 +17,6 @@ function Locations() {
   const filters = useSelector((state) => state.locations.filters);
   const nextPage = useSelector((state) => state.locations.nextPage);
 
-  // Локальное состояние для отслеживания загрузки фильтров
-  const [filtersLoaded, setFiltersLoaded] = useState(false);
-
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
     const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
@@ -29,14 +26,14 @@ function Locations() {
       });
     }
     // Устанавливаем флаг, что фильтры загружены
-    setFiltersLoaded(true);
+    dispatch(fetchLocations({ page: 1, filters: savedFilters || {} }));
   }, [dispatch]);
 
   useEffect(() => {
-    if (filtersLoaded && status === "idle") {
-      dispatch(fetchLocations({ page: nextPage, filters }));
+    if (status === "idle") {
+      dispatch(fetchLocations({ page: 1, filters }));
     }
-  }, [filtersLoaded, status, nextPage, filters, dispatch]);
+  }, [status, filters, dispatch]);
 
   const onLoadMore = () => {
     dispatch(fetchLocations({ page: nextPage, filters }));

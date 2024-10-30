@@ -15,9 +15,7 @@ function Episodes() {
   const filters = useSelector((state) => state.episodes.filters);
   const nextPage = useSelector((state) => state.episodes.nextPage);
 
-  // Локальное состояние для отслеживания загрузки фильтров
-  const [filtersLoaded, setFiltersLoaded] = useState(false);
-
+  // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
     const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
     if (savedFilters) {
@@ -25,15 +23,16 @@ function Episodes() {
         dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
       });
     }
-    // Устанавливаем флаг, что фильтры загружены
-    setFiltersLoaded(true);
+    // Загружаем персонажей после применения фильтров
+    dispatch(fetchEpisodes({ page: 1, filters: savedFilters || {} }));
   }, [dispatch]);
 
+  // Следим за изменениями фильтров и загружаем персонажей
   useEffect(() => {
-    if (filtersLoaded && status === "idle") {
-      dispatch(fetchEpisodes({ page: nextPage, filters }));
+    if (status === "idle") {
+      dispatch(fetchEpisodes({ page: 1, filters }));
     }
-  }, [filtersLoaded, status, nextPage, filters, dispatch]);
+  }, [status, filters, dispatch]);
 
   const onLoadMore = () => {
     dispatch(fetchEpisodes({ page: nextPage, filters }));
@@ -44,7 +43,7 @@ function Episodes() {
     // Сохраняем фильтры в localStorage
     localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
     dispatch(setEpisodeFilter({ name: value }));
-    dispatch(fetchEpisodes({ page: 1, filters: { ...filters, filters: updatedFilters } }));
+    dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
   };
 
   return (

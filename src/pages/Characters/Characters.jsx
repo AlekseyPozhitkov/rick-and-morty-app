@@ -17,9 +17,6 @@ function Characters() {
   const filterOptions = useSelector((state) => state.characters.filterOptions);
   const nextPage = useSelector((state) => state.characters.nextPage);
 
-  // Локальное состояние для отслеживания загрузки фильтров
-  const [filtersLoaded, setFiltersLoaded] = useState(false);
-
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
     const savedFilters = JSON.parse(localStorage.getItem("characterFilters"));
@@ -28,16 +25,16 @@ function Characters() {
         dispatch(setCharacterFilter({ [key]: savedFilters[key] }));
       });
     }
-    // Устанавливаем флаг, что фильтры загружены
-    setFiltersLoaded(true);
+    // Загружаем персонажей после применения фильтров
+    dispatch(fetchCharacters({ page: 1, filters: savedFilters || {} }));
   }, [dispatch]);
 
-  // Загружаем данные после установки фильтров из localStorage
+  // Следим за изменениями фильтров и загружаем персонажей
   useEffect(() => {
-    if (filtersLoaded && status === "idle") {
-      dispatch(fetchCharacters({ page: nextPage, filters }));
+    if (status === "idle") {
+      dispatch(fetchCharacters({ page: 1, filters }));
     }
-  }, [filtersLoaded, status, nextPage, filters, dispatch]);
+  }, [filters, status, dispatch]);
 
   const onLoadMore = () => {
     dispatch(fetchCharacters({ page: nextPage, filters }));
