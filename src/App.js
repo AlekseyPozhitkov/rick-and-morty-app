@@ -1,9 +1,10 @@
-import Characters from './pages/Characters/Characters'
-import Locations from './pages/Locations/Locations'
-import Episodes from './pages/Episodes/Episodes'
-import Navbar from './components/Navbar/Navbar'
-import Footer from './components/Footer/Footer'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Characters from "./pages/Characters/Characters";
+import Locations from "./pages/Locations/Locations";
+import Episodes from "./pages/Episodes/Episodes";
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollTopButton from "./components/ScrollTopButton/ScrollTopButton";
 
 function App() {
   return (
@@ -17,8 +18,9 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <ScrollTopButton />
     </BrowserRouter>
   );
 }
 
-export default App
+export default App;
