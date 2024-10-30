@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEpisodes, setFilter } from "../../libs/redux/slices/episodesSlice";
+import { fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
 import { LoadMoreButton } from "../../components/LoadMoreButton/LoadMoreButton";
 import { ItemCard } from "../../components/ItemCard/ItemCard";
@@ -12,22 +12,39 @@ function Episodes() {
   const episodes = useSelector((state) => state.episodes.items);
   const status = useSelector((state) => state.episodes.status);
   const hasMore = useSelector((state) => state.episodes.hasMore); // Подключаем hasMore
-  const nextPage = useSelector((state) => state.episodes.nextPage);
   const filters = useSelector((state) => state.episodes.filters);
+  const nextPage = useSelector((state) => state.episodes.nextPage);
+
+  // Локальное состояние для отслеживания загрузки фильтров
+  const [filtersLoaded, setFiltersLoaded] = useState(false);
 
   useEffect(() => {
-    if (status === "idle") {
+    const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
+    if (savedFilters) {
+      Object.keys(savedFilters).forEach((key) => {
+        dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
+      });
+    }
+    // Устанавливаем флаг, что фильтры загружены
+    setFiltersLoaded(true);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (filtersLoaded && status === "idle") {
       dispatch(fetchEpisodes({ page: nextPage, filters }));
     }
-  }, [status, nextPage, filters, dispatch]);
+  }, [filtersLoaded, status, nextPage, filters, dispatch]);
 
   const onLoadMore = () => {
     dispatch(fetchEpisodes({ page: nextPage, filters }));
   };
 
   const handleFilterChange = (value) => {
-    dispatch(setFilter({ name: value }));
-    dispatch(fetchEpisodes({ page: 1, filters: { ...filters, name: value } }));
+    const updatedFilters = { ...filters, name: value || "" };
+    // Сохраняем фильтры в localStorage
+    localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
+    dispatch(setEpisodeFilter({ name: value }));
+    dispatch(fetchEpisodes({ page: 1, filters: { ...filters, filters: updatedFilters } }));
   };
 
   return (
@@ -35,6 +52,7 @@ function Episodes() {
       <img className="image" src={logo} alt="rick-and-morty-eyes" />
       <div className="sorts sortsEpisodes">
         <ItemInput
+          value={filters.name || ""}
           onChange={(e) => handleFilterChange(e.target.value)}
           placeholder="Filter by name or episode (ex. S01 or S01E02)"
           customStyles={{ box: { maxWidth: "500px" } }}

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLocations, setLocationFilter } from "../../libs/redux/slices/locationsSlice";
 import logo from "../../public/rick-and-morty-circle.svg";
@@ -16,13 +16,27 @@ function Locations() {
   const filterOptions = useSelector((state) => state.locations.filterOptions);
   const filters = useSelector((state) => state.locations.filters);
   const nextPage = useSelector((state) => state.locations.nextPage);
-  // const [currentPage, setCurrentPage] = useState(1);
+
+  // Локальное состояние для отслеживания загрузки фильтров
+  const [filtersLoaded, setFiltersLoaded] = useState(false);
+
+  // Устанавливаем фильтры из localStorage при первом рендере
+  useEffect(() => {
+    const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
+    if (savedFilters) {
+      Object.keys(savedFilters).forEach((key) => {
+        dispatch(setLocationFilter({ [key]: savedFilters[key] }));
+      });
+    }
+    // Устанавливаем флаг, что фильтры загружены
+    setFiltersLoaded(true);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (status === "idle") {
+    if (filtersLoaded && status === "idle") {
       dispatch(fetchLocations({ page: nextPage, filters }));
     }
-  }, [status, nextPage, filters, dispatch]);
+  }, [filtersLoaded, status, nextPage, filters, dispatch]);
 
   const onLoadMore = () => {
     dispatch(fetchLocations({ page: nextPage, filters }));
@@ -30,6 +44,8 @@ function Locations() {
 
   const handleFilterChange = (filterType, value) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
+    // Сохраняем фильтры в localStorage
+    localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
     dispatch(setLocationFilter({ [filterType]: value || "" }));
     dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
   };
@@ -39,17 +55,20 @@ function Locations() {
       <img className="image" src={logo} alt="rick-and-morty-circle" />
       <div className="sorts sortsLocations">
         <ItemInput
+          value={filters.name || ""}
           onChange={(e) => handleFilterChange("name", e.target.value)}
           customStyles={{ box: { maxWidth: "325px" } }}
         />
         <ItemSelect
           label="Type"
           options={filterOptions.type}
+          value={filters.type || ""}
           onChange={(value) => handleFilterChange("type", value)}
         />
         <ItemSelect
           label="Dimension"
           options={filterOptions.dimension}
+          value={filters.dimension || ""}
           onChange={(value) => handleFilterChange("dimension", value)}
         />
       </div>

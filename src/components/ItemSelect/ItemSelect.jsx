@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -6,18 +6,23 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 
-export const ItemSelect = ({ label, options, onChange, customStyles }) => {
-  const [value, setValue] = useState("");
-  const [open, setOpen] = useState(false);
+export const ItemSelect = ({ label, options, onChange, customStyles, value }) => {
+  const [internalValue, setInternalValue] = useState("");
+  const [open, setOpen] = useState(false); // добавлено обратно
+
+  // Обновляем внутреннее значение при изменении value пропа
+  useEffect(() => {
+    setInternalValue(value || "");
+  }, [value]);
 
   const handleChange = (event) => {
     const selectedValue = event.target.value;
-    setValue(selectedValue);
+    setInternalValue(selectedValue);
     onChange(selectedValue);
   };
 
   const handleReset = () => {
-    setValue(""); // Сбрасываем значение
+    setInternalValue(""); // Сбрасываем значение
     onChange(""); // Передаем пустое значение в `onChange` для сброса
   };
 
@@ -27,10 +32,10 @@ export const ItemSelect = ({ label, options, onChange, customStyles }) => {
         <InputLabel>{label}</InputLabel>
         <Select
           sx={{ textAlign: "left" }}
-          value={value}
+          value={internalValue} // Используем внутреннее значение
           label={label}
           onChange={handleChange}
-          open={open}
+          open={open} // добавлено обратно
           onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
           MenuProps={{

@@ -27,7 +27,7 @@ const episodesSlice = createSlice({
     },
   },
   reducers: {
-    setFilter: (state, action) => {
+    setEpisodeFilter: (state, action) => {
       state.filters = { ...state.filters, ...action.payload };
       state.items = [];
       state.nextPage = 1;
@@ -61,5 +61,5 @@ const episodesSlice = createSlice({
   },
 });
 
-export const { setFilter } = episodesSlice.actions;
+export const { setEpisodeFilter } = episodesSlice.actions;
 export default episodesSlice.reducer;
