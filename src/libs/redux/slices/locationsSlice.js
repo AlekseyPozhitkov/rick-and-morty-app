@@ -46,10 +46,12 @@ const locationsSlice = createSlice({
             .addCase(fetchLocations.fulfilled, (state, action) => {
                 state.status = 'succeeded';
 
-                // Только добавляем элементы, если у нас есть новые данные
-                if (action.payload.results.length > 0) {
-                    state.items = [...state.items, ...action.payload.results];
-                }
+                // Используем Set для отслеживания уникальных id
+                const existingIds = new Set(state.items.map(item => item.id));
+
+                // Добавляем только уникальные локации
+                const uniqueLocations = action.payload.results.filter(location => !existingIds.has(location.id));
+                state.items = [...state.items, ...uniqueLocations];
 
                 state.nextPage += 1;
                 state.hasMore = !!action.payload.info.next;
@@ -62,13 +64,6 @@ const locationsSlice = createSlice({
                     if (location.dimension && !state.filterOptions.dimension.includes(location.dimension)) {
                         state.filterOptions.dimension.push(location.dimension);
                     }
-                });
-                Object.keys(state.filterOptions).forEach((filterType) => {
-                    state.filterOptions[filterType] = state.filterOptions[filterType].sort((a, b) => {
-                        if (a === "unknown") return 1;
-                        if (b === "unknown") return -1;
-                        return a.localeCompare(b);
-                    });
                 });
             })
             .addCase(fetchLocations.rejected, (state) => {

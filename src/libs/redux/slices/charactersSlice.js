@@ -46,7 +46,14 @@ const charactersSlice = createSlice({
             })
             .addCase(fetchCharacters.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.items = [...state.items, ...action.payload.results];
+
+                // Используем Set для отслеживания уникальных id
+                const existingIds = new Set(state.items.map(item => item.id));
+
+                // Добавляем только уникальных персонажей
+                const uniqueCharacters = action.payload.results.filter(character => !existingIds.has(character.id));
+                state.items = [...state.items, ...uniqueCharacters];
+
                 state.nextPage += 1;
                 state.hasMore = !!action.payload.info.next;
 
