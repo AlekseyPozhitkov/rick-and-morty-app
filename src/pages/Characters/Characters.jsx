@@ -29,8 +29,9 @@ function Characters() {
   };
 
   const handleFilterChange = (filterType, value) => {
-    dispatch(setFilter({ [filterType]: value }));
-    dispatch(fetchCharacters({ page: 1, filters: { ...filters, [filterType]: value } }));
+    const updatedFilters = { ...filters, [filterType]: value || "" };
+    dispatch(setFilter({ [filterType]: value || "" }));
+    dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
   };
 
   return (

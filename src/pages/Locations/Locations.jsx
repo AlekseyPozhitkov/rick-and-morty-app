@@ -29,8 +29,9 @@ function Locations() {
   };
 
   const handleFilterChange = (filterType, value) => {
-    dispatch(setLocationFilter({ [filterType]: value }));
-    dispatch(fetchLocations({ page: 1, filters: { ...filters, [filterType]: value } }));
+    const updatedFilters = { ...filters, [filterType]: value || "" };
+    dispatch(setLocationFilter({ [filterType]: value || "" }));
+    dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
   };
 
   return (

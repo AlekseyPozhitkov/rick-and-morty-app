@@ -4,6 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import Button from "@mui/material/Button";
 
 export const ItemSelect = ({ label, options, onChange, customStyles }) => {
   const [value, setValue] = useState("");
@@ -13,6 +14,11 @@ export const ItemSelect = ({ label, options, onChange, customStyles }) => {
     const selectedValue = event.target.value;
     setValue(selectedValue);
     onChange(selectedValue);
+  };
+
+  const handleReset = () => {
+    setValue(""); // Сбрасываем значение
+    onChange(""); // Передаем пустое значение в `onChange` для сброса
   };
 
   return (
@@ -37,6 +43,11 @@ export const ItemSelect = ({ label, options, onChange, customStyles }) => {
             },
           }}
         >
+          <MenuItem onClick={handleReset}>
+            <Button fullWidth color="warning">
+              Reset
+            </Button>
+          </MenuItem>
           {options.map((option) => (
             <MenuItem sx={{ textAlign: "left" }} key={option} value={option}>
               {option}
