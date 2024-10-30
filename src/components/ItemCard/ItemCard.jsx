@@ -14,23 +14,14 @@ export const ItemCard = ({ itemId, itemType, showImage, customStyles }) => {
       sx={{
         width: "100%",
         maxWidth: "240px",
-        boxShadow:
-          "0px 2px 4px rgba(0, 0, 0, 0.14), 0px 3px 4px rgba(0, 0, 0, 0.12), 0px 1px 5px rgba(0, 0, 0, 0.20)",
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.14), 0px 3px 4px rgba(0, 0, 0, 0.12), 0px 1px 5px rgba(0, 0, 0, 0.20)",
       }}
     >
       <CardActionArea>
-        {showImage && (
-          <CardMedia
-            sx={{ maxHeight: "196px" }}
-            component="img"
-            image={item.image}
-            alt={item.name}
-          />
-        )}
+        {showImage && <CardMedia sx={{ maxHeight: "196px" }} component="img" image={item.image} alt={item.name} />}
         <CardContent
           sx={{
-            height: "112px",
-            padding: "12px 16px",
+            height: "100px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
