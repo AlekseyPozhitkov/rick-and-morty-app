@@ -57,7 +57,9 @@ function Episodes() {
           />
         ))}
       </div>
-      {status === "failed" && <div className="notFound">Oops! Not found</div>}
+      {status === "failed" && episodes.length === 0 && (
+        <div className="notFound">Oops! Not found</div>
+      )}
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );

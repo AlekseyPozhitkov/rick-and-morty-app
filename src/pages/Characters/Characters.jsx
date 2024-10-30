@@ -61,7 +61,9 @@ function Characters() {
           <ItemCard key={card.id} itemId={card.id} itemType="character" showImage customStyles />
         ))}
       </div>
-      {status === "failed" && <div className="notFound">Oops! Not found</div>}
+      {status === "failed" && characters.length === 0 && (
+        <div className="notFound">Oops! Not found</div>
+      )}
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
