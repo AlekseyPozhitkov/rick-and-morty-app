@@ -16,32 +16,38 @@ function Episodes() {
   const nextPage = useSelector((state) => state.episodes.nextPage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  // Устанавливаем фильтры из localStorage при первом рендере
+  // Загружаем фильтры из localStorage при первом рендере
   useEffect(() => {
-    const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
-    if (savedFilters) {
-      Object.keys(savedFilters).forEach((key) => {
-        dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
-      });
+    if (initialLoad) {
+      const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
+      if (savedFilters) {
+        Object.keys(savedFilters).forEach((key) => {
+          dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
+        });
+      }
+      // Первая загрузка эпизодов только после применения фильтров из localStorage
+      dispatch(fetchEpisodes({ page: 1, filters: savedFilters || filters }));
+      setInitialLoad(false);
     }
-    // Загружаем персонажей после применения фильтров
-    dispatch(fetchEpisodes({ page: 1, filters: savedFilters || {} }));
-  }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, initialLoad]);
 
-  // Следим за изменениями фильтров и загружаем персонажей
+  // Загрузка эпизодов при изменении фильтров или страницы
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchEpisodes({ page: 1, filters }));
+    if (!initialLoad && status === "idle") {
+      dispatch(fetchEpisodes({ page: nextPage, filters }));
     }
-  }, [status, filters, dispatch]);
+  }, [nextPage, filters, dispatch, initialLoad, status]);
 
+  // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
     if (isLoadMoreClicked && status === "succeeded") {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
       setIsLoadMoreClicked(false); // Сбрасываем флаг после выполнения скролла
     }
-  }, [episodes, status, isLoadMoreClicked]);
+  }, [status, isLoadMoreClicked]);
 
   const onLoadMore = () => {
     setIsLoadMoreClicked(true); // Устанавливаем флаг для активации скролла
@@ -50,10 +56,9 @@ function Episodes() {
 
   const handleFilterChange = (value) => {
     const updatedFilters = { ...filters, name: value || "" };
-    // Сохраняем фильтры в localStorage
     localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
     dispatch(setEpisodeFilter({ name: value }));
-    dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
+    dispatch(fetchEpisodes({ page: 1, filters: updatedFilters })); // Перезагрузка с первой страницы
   };
 
   return (
@@ -87,7 +92,7 @@ function Episodes() {
       {status === "failed" && episodes.length === 0 && (
         <div className="notFound">Oops! Not found</div>
       )}
-      {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
+      {hasMore && status !== "loading" && !initialLoad && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
 }
