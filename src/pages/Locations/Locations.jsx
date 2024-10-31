@@ -18,31 +18,38 @@ function Locations() {
   const nextPage = useSelector((state) => state.locations.nextPage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
+  const [initialLoad, setInitialLoad] = useState(true);
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
-    const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
-    if (savedFilters) {
-      Object.keys(savedFilters).forEach((key) => {
-        dispatch(setLocationFilter({ [key]: savedFilters[key] }));
-      });
+    if (initialLoad) {
+      const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
+      if (savedFilters) {
+        Object.keys(savedFilters).forEach((key) => {
+          dispatch(setLocationFilter({ [key]: savedFilters[key] }));
+        });
+      }
+      // Первая загрузка эпизодов только после применения фильтров из localStorage
+      dispatch(fetchLocations({ page: 1, filters: savedFilters || filters }));
+      setInitialLoad(false);
     }
-    // Устанавливаем флаг, что фильтры загружены
-    dispatch(fetchLocations({ page: 1, filters: savedFilters || {} }));
-  }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, initialLoad]);
 
+  // Загрузка эпизодов при изменении фильтров или страницы
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchLocations({ page: 1, filters }));
+    if (!initialLoad && status === "idle") {
+      dispatch(fetchLocations({ page: nextPage, filters }));
     }
-  }, [status, filters, dispatch]);
+  }, [dispatch, filters, nextPage, status, initialLoad]);
 
+  // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
     if (isLoadMoreClicked && status === "succeeded") {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
       setIsLoadMoreClicked(false); // Сбрасываем флаг после выполнения скролла
     }
-  }, [locations, status, isLoadMoreClicked]);
+  }, [status, isLoadMoreClicked]);
 
   const onLoadMore = () => {
     setIsLoadMoreClicked(true); // Устанавливаем флаг для активации скролла
@@ -51,7 +58,6 @@ function Locations() {
 
   const handleFilterChange = (filterType, value) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
-    // Сохраняем фильтры в localStorage
     localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
     dispatch(setLocationFilter({ [filterType]: value || "" }));
     dispatch(fetchLocations({ page: 1, filters: updatedFilters }));

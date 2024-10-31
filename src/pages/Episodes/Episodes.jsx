@@ -39,7 +39,7 @@ function Episodes() {
     if (!initialLoad && status === "idle") {
       dispatch(fetchEpisodes({ page: nextPage, filters }));
     }
-  }, [nextPage, filters, dispatch, initialLoad, status]);
+  }, [dispatch, filters, nextPage, status, initialLoad]);
 
   // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
