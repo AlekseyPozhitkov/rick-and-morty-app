@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCharacters, setCharacterFilter } from "../../libs/redux/slices/charactersSlice";
 import logo from "../../public/RICKANDMORTY.svg";
@@ -16,6 +16,8 @@ function Characters() {
   const filters = useSelector((state) => state.characters.filters);
   const filterOptions = useSelector((state) => state.characters.filterOptions);
   const nextPage = useSelector((state) => state.characters.nextPage);
+
+  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
@@ -36,7 +38,16 @@ function Characters() {
     }
   }, [filters, status, dispatch]);
 
+  // Скроллим, если данные загружены после нажатия на кнопку "LOAD MORE"
+  useEffect(() => {
+    if (isLoadMoreClicked && status === "succeeded") {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      setIsLoadMoreClicked(false); // Сбрасываем флаг после выполнения скролла
+    }
+  }, [characters, status, isLoadMoreClicked]);
+
   const onLoadMore = () => {
+    setIsLoadMoreClicked(true); // Устанавливаем флаг для активации скролла
     dispatch(fetchCharacters({ page: nextPage, filters }));
   };
 

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
@@ -14,6 +14,8 @@ function Episodes() {
   const hasMore = useSelector((state) => state.episodes.hasMore); // Подключаем hasMore
   const filters = useSelector((state) => state.episodes.filters);
   const nextPage = useSelector((state) => state.episodes.nextPage);
+
+  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
@@ -34,7 +36,15 @@ function Episodes() {
     }
   }, [status, filters, dispatch]);
 
+  useEffect(() => {
+    if (isLoadMoreClicked && status === "succeeded") {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      setIsLoadMoreClicked(false); // Сбрасываем флаг после выполнения скролла
+    }
+  }, [episodes, status, isLoadMoreClicked]);
+
   const onLoadMore = () => {
+    setIsLoadMoreClicked(true); // Устанавливаем флаг для активации скролла
     dispatch(fetchEpisodes({ page: nextPage, filters }));
   };
 

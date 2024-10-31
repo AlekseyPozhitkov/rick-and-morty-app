@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLocations, setLocationFilter } from "../../libs/redux/slices/locationsSlice";
 import logo from "../../public/rick-and-morty-circle.svg";
@@ -16,6 +16,8 @@ function Locations() {
   const filterOptions = useSelector((state) => state.locations.filterOptions);
   const filters = useSelector((state) => state.locations.filters);
   const nextPage = useSelector((state) => state.locations.nextPage);
+
+  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
@@ -35,7 +37,15 @@ function Locations() {
     }
   }, [status, filters, dispatch]);
 
+  useEffect(() => {
+    if (isLoadMoreClicked && status === "succeeded") {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      setIsLoadMoreClicked(false); // Сбрасываем флаг после выполнения скролла
+    }
+  }, [locations, status, isLoadMoreClicked]);
+
   const onLoadMore = () => {
+    setIsLoadMoreClicked(true); // Устанавливаем флаг для активации скролла
     dispatch(fetchLocations({ page: nextPage, filters }));
   };
 
