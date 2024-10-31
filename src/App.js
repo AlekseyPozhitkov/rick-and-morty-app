@@ -6,6 +6,7 @@ import Footer from "./components/Footer/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollTopButton from "./components/ScrollTopButton/ScrollTopButton";
 import CharacterDetails from "./pages/Characters/CharacterDetails";
+import LocationDetails from "./pages/Locations/LocationDetails";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/locations" element={<Locations />} />
           <Route path="/episodes" element={<Episodes />} />
           <Route path="/character/:id" element={<CharacterDetails />} />
+          <Route path="/location/:id" element={<LocationDetails />} />
         </Routes>
       </main>
       <Footer />

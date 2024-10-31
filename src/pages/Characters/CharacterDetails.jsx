@@ -28,11 +28,11 @@ function CharacterDetails() {
 
   return (
     <div>
-      <h1>{character.name}</h1>
       <img src={character.image} alt={character.name} />
+      <h1>{character.name}</h1>
+      <p>Gender: {character.gender}</p>
       <p>Status: {character.status}</p>
       <p>Species: {character.species}</p>
-      <p>Gender: {character.gender}</p>
       <p>Origin: {character.origin.name}</p>
       <p>Location: {character.location.name}</p>
     </div>

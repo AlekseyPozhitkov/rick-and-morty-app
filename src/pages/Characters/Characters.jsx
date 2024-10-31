@@ -93,7 +93,7 @@ function Characters() {
       <div className="items">
         {status === "loading" && <Spinner />}
         {characters.map((card) => (
-          <ItemCard key={card.id} itemId={card.id} itemType="character" showImage customStyles />
+          <ItemCard key={card.id} itemId={card.id} itemType="character" showImage />
         ))}
       </div>
       {status === "failed" && characters.length === 0 && (

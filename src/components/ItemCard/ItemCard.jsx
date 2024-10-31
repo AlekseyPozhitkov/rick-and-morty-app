@@ -12,7 +12,7 @@ export const ItemCard = ({ itemId, itemType, showImage, customStyles }) => {
   const navigate = useNavigate(); // Инициализируем useNavigate
 
   const handleCardClick = () => {
-    navigate(`/character/${itemId}`); // Переход на страницу персонажа
+    navigate(`/${itemType}/${itemId}`); // Переход на страницу персонажа
   };
 
   return (
