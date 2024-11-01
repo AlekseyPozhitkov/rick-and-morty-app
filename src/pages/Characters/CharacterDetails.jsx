@@ -2,18 +2,28 @@ import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
+import { fetchEpisodes } from "../../libs/redux/slices/episodesSlice";
 import { Spinner } from "../../components/Spinner/Spinner";
+import { ItemCard } from "../../components/ItemCard/ItemCard";
 
 function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { character, status, error } = useSelector((state) => state.characterDetails);
-  const episodes = useSelector((state) => state.episodes.items);
+  // Получаем нужные данные из Redux-хранилища
+  const { character, status: characterStatus, error } = useSelector((state) => state.characterDetails);
+  const { items: episodes, status: episodesStatus } = useSelector((state) => state.episodes);
 
   useEffect(() => {
     dispatch(fetchCharacterById(id));
   }, [dispatch, id]);
+
+  // Загружаем эпизоды, если они еще не загружены
+  useEffect(() => {
+    if (episodes.length === 0) {
+      dispatch(fetchEpisodes({ page: 1, filters: {} }));
+    }
+  }, [dispatch, episodes.length]);
 
   // Отфильтровываем эпизоды, используя URL эпизодов у персонажа
   const characterEpisodes = useMemo(() => {
@@ -22,11 +32,12 @@ function CharacterDetails() {
     return episodes.filter((episode) => episodeIds.includes(String(episode.id)));
   }, [character, episodes]);
 
-  if (status === "loading") {
+  // Обрабатываем состояние загрузки и ошибки
+  if (characterStatus === "loading" || (episodesStatus === "loading" && characterEpisodes.length === 0)) {
     return <Spinner />;
   }
 
-  if (status === "failed") {
+  if (characterStatus === "failed") {
     return <div>Error: {error}</div>;
   }
 
@@ -48,13 +59,25 @@ function CharacterDetails() {
       </div>
       <div style={{ maxHeight: "300px", overflowY: "auto" }}>
         <h2>Episodes</h2>
-        {characterEpisodes.map((episode) => (
-          <div key={episode.id}>
-            <p>
-              {episode.name} (Episode: {episode.episode}, Date: {episode.air_date}
-            </p>
-          </div>
-        ))}
+        {characterEpisodes.length > 0 ? (
+          characterEpisodes.map((episode) => (
+            <ItemCard
+              key={episode.id}
+              itemId={episode.id}
+              itemType="episode"
+              showImage={false} // Отключаем изображение, если оно не нужно
+              customStyles={{
+                cardContent: {
+                  height: "130px",
+                  justifyContent: "center",
+                  backgroundColor: "#FAFAFA",
+                },
+              }}
+            />
+          ))
+        ) : (
+          <p>No episodes</p> // Сообщение, если у персонажа нет эпизодов
+        )}
       </div>
     </div>
   );
