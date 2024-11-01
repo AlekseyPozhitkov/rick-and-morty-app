@@ -10,7 +10,7 @@ function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  // Получаем нужные данные из Redux-хранилища
+  // Получаем нужные данные из хранилища
   const { character, status: characterStatus, error } = useSelector((state) => state.characterDetails);
   const { items: episodes, status: episodesStatus } = useSelector((state) => state.episodes);
 

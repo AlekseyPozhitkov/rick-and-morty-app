@@ -1,16 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchCharacterById = createAsyncThunk(
-  "characterDetails/fetchCharacterById",
-  async (id) => {
-    const response = await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
-    return response.data;
-  }
-);
+export const fetchCharacterById = createAsyncThunk("characterDetails/fetchCharacterById", async (id) => {
+  const response = await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
+  return response.data;
+});
 
 const characterDetailsSlice = createSlice({
-  name: "characterDetail",
+  name: "characterDetails",
   initialState: {
     character: null,
     status: "idle",

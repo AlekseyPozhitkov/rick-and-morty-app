@@ -7,7 +7,7 @@ export const fetchEpisodeById = createAsyncThunk("episodeDetails/fetchepisodeByI
 });
 
 const episodeDetailsSlice = createSlice({
-  name: "episodeDetail",
+  name: "episodeDetails",
   initialState: {
     episode: null,
     status: "idle",
