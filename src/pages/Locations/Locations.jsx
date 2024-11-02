@@ -70,7 +70,7 @@ function Locations() {
         <ItemInput
           value={filters.name || ""}
           onChange={(e) => handleFilterChange("name", e.target.value)}
-          customStyles={{ box: { maxWidth: "325px" } }}
+          customStyles={{ box: { maxWidth: "326px" } }}
         />
         <ItemSelect
           label="Type"
@@ -101,9 +101,7 @@ function Locations() {
           />
         ))}
       </div>
-      {status === "failed" && locations.length === 0 && (
-        <div className="notFound">Oops! Not found</div>
-      )}
+      {status === "failed" && locations.length === 0 && <div className="notFound">Oops! Not found</div>}
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );

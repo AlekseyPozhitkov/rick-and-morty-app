@@ -46,38 +46,84 @@ function CharacterDetails() {
   }
 
   return (
-    <div>
-      <img src={character.image} alt={character.name} />
-      <h1>{character.name}</h1>
-      <div>
-        <h2>Informations</h2>
-        <p>Gender: {character.gender}</p>
-        <p>Status: {character.status}</p>
-        <p>Species: {character.species}</p>
-        <p>Origin: {character.origin.name}</p>
-        <p>Location: {character.location.name}</p>
-      </div>
-      <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-        <h2>Episodes</h2>
-        {characterEpisodes.length > 0 ? (
-          characterEpisodes.map((episode) => (
-            <ItemCard
-              key={episode.id}
-              itemId={episode.id}
-              itemType="episode"
-              showImage={false} // Отключаем изображение, если оно не нужно
-              customStyles={{
-                cardContent: {
-                  height: "130px",
-                  justifyContent: "center",
-                  backgroundColor: "#FAFAFA",
-                },
-              }}
-            />
-          ))
-        ) : (
-          <p>No episodes</p> // Сообщение, если у персонажа нет эпизодов
-        )}
+    <div className="detailPage">
+      <img className="image imageDetails" src={character.image} alt={character.name} />
+      <h1 className="textDetails">{character.name}</h1>
+      <div className="characterDetails">
+        <div className="info">
+          <h2 className="infoHeader">Informations</h2>
+          <div className="characterInfo">
+            <div>
+              <p>Gender</p>
+              <p>{character.gender}</p>
+            </div>
+            <div>
+              <p>Status</p>
+              <p>{character.status}</p>
+            </div>
+            <div>
+              <p>Species</p>
+              <p>{character.species}</p>
+            </div>
+            <div>
+              <p>Origin</p>
+              <p>{character.origin.name}</p>
+            </div>
+            <div>
+              <p>Type</p>
+              <p>{character.type || "Unknown"}</p>
+            </div>
+            <div>
+              <p>Location</p>
+              <p>{character.location.name}</p>
+            </div>
+          </div>
+        </div>
+        <div className="info">
+          <h2 className="infoHeader">Episodes</h2>
+          <div className="characterEpisodes">
+            {characterEpisodes.length > 0 ? (
+              characterEpisodes.map((episode) => (
+                <ItemCard
+                  key={episode.id}
+                  itemId={episode.id}
+                  itemType="episode"
+                  customStyles={{
+                    card: {
+                      maxWidth: "413px",
+                      height: "88px",
+                      backgroundColor: "#FFFFFF",
+                      boxShadow: "none",
+                      borderBottom: "1px solid rgba(33, 33, 33, 0.08)",
+                    },
+                    cardContent: {
+                      padding: "12px 16px",
+                      justifyContent: "start",
+                    },
+                    typography1: {
+                      fontSize: "14px",
+                    },
+                    typography2: {
+                      fontWeight: "400",
+                      fontSize: "14px",
+                      color: "#6E798C",
+                    },
+                    typography3: {
+                      fontWeight: "500",
+                      fontSize: "10px",
+                      textTransform: "uppercase",
+                      color: "#8E8E93",
+                      letterSpacing: "1.5px",
+                    },
+                  }}
+                  reverse
+                />
+              ))
+            ) : (
+              <p>No episodes</p> // Сообщение, если у персонажа нет эпизодов
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

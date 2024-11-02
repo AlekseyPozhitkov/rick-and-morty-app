@@ -1,19 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseUrl = "https://rickandmortyapi.com/api/episode";
+export const fetchEpisodes = createAsyncThunk("episodes/fetchEpisodes", async ({ page, filters }) => {
+  const { name } = filters;
 
-export const fetchEpisodes = createAsyncThunk(
-  "episodes/fetchEpisodes",
-  async ({ page, filters }) => {
-    const { name } = filters;
-
-    const response = await axios.get(baseUrl, {
-      params: { page, name },
-    });
-    return response.data;
-  }
-);
+  const response = await axios.get("https://rickandmortyapi.com/api/episode", {
+    params: { page, name },
+  });
+  return response.data;
+});
 
 const episodesSlice = createSlice({
   name: "episodes",
@@ -46,9 +41,7 @@ const episodesSlice = createSlice({
         const existingIds = new Set(state.items.map((item) => item.id));
 
         // Добавляем только уникальные эпизоды
-        const uniqueEpisodes = action.payload.results.filter(
-          (episode) => !existingIds.has(episode.id)
-        );
+        const uniqueEpisodes = action.payload.results.filter((episode) => !existingIds.has(episode.id));
         state.items = [...state.items, ...uniqueEpisodes];
 
         state.nextPage += 1;
