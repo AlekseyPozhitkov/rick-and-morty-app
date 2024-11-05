@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
-import { fetchEpisodes } from "../../libs/redux/slices/episodesSlice";
+import { fetchCharacterEpisodes } from "../../libs/redux/slices/episodesSlice";
 import { Spinner } from "../../components/Spinner/Spinner";
 import { ItemCard } from "../../components/ItemCard/ItemCard";
 
@@ -10,7 +10,7 @@ function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  // Получаем нужные данные из хранилища
+  // Получаем данные о персонаже и статус загрузки
   const { character, status: characterStatus, error } = useSelector((state) => state.characterDetails);
   const { items: episodes, status: episodesStatus } = useSelector((state) => state.episodes);
 
@@ -18,22 +18,14 @@ function CharacterDetails() {
     dispatch(fetchCharacterById(id));
   }, [dispatch, id]);
 
-  // Загружаем эпизоды, если они еще не загружены
   useEffect(() => {
-    if (episodes.length === 0) {
-      dispatch(fetchEpisodes({ page: 1, filters: {} }));
+    if (character?.episode) {
+      dispatch(fetchCharacterEpisodes(character.episode));
     }
-  }, [dispatch, episodes.length]);
-
-  // Отфильтровываем эпизоды, используя URL эпизодов у персонажа
-  const characterEpisodes = useMemo(() => {
-    if (!character?.episode) return [];
-    const episodeIds = character.episode.map((url) => url.split("/").pop());
-    return episodes.filter((episode) => episodeIds.includes(String(episode.id)));
-  }, [character, episodes]);
+  }, [dispatch, character]);
 
   // Обрабатываем состояние загрузки и ошибки
-  if (characterStatus === "loading" || (episodesStatus === "loading" && characterEpisodes.length === 0)) {
+  if (characterStatus === "loading" || episodesStatus === "loading") {
     return <Spinner />;
   }
 
@@ -82,8 +74,8 @@ function CharacterDetails() {
         <div className="info">
           <h2 className="infoHeader">Episodes</h2>
           <div className="characterEpisodes">
-            {characterEpisodes.length > 0 ? (
-              characterEpisodes.map((episode) => (
+            {episodes.length > 0 ? (
+              episodes.map((episode) => (
                 <ItemCard
                   key={episode.id}
                   itemId={episode.id}

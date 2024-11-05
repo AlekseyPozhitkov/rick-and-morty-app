@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchEpisodeById } from "../../libs/redux/slices/episodeDetailsSlice";
 import { Spinner } from "../../components/Spinner/Spinner";
-import { fetchCharacters } from "../../libs/redux/slices/charactersSlice";
+import { fetchEpisodeCharacters } from "../../libs/redux/slices/charactersSlice";
 import { ItemCard } from "../../components/ItemCard/ItemCard";
 
 function EpisodeDetails() {
@@ -13,27 +13,17 @@ function EpisodeDetails() {
   const { episode, status: episodeStatus, error } = useSelector((state) => state.episodeDetails);
   const { items: characters, status: charactersStatus } = useSelector((state) => state.characters);
 
-  // Загружаем данные локации при первом рендере
   useEffect(() => {
     dispatch(fetchEpisodeById(id));
   }, [dispatch, id]);
 
-  // Загружаем персонажей, если их нет в хранилище
   useEffect(() => {
-    if (characters.length === 0) {
-      dispatch(fetchCharacters({ page: 1, filters: {} }));
+    if (episode?.characters) {
+      dispatch(fetchEpisodeCharacters(episode.characters));
     }
-  }, [dispatch, characters.length]);
+  }, [dispatch, episode]);
 
-  // Отфильтровываем персонажей, основываясь на списке residents у локации
-  const episodeCharacters = useMemo(() => {
-    if (!episode?.characters) return [];
-    const residentIds = episode.characters.map((url) => url.split("/").pop());
-    return characters.filter((character) => residentIds.includes(String(character.id)));
-  }, [episode, characters]);
-
-  // Обработка состояния загрузки и ошибок
-  if (episodeStatus === "loading" || (charactersStatus === "loading" && episodeCharacters.length === 0)) {
+  if (episodeStatus === "loading" || charactersStatus === "loading") {
     return <Spinner />;
   }
 
@@ -51,9 +41,9 @@ function EpisodeDetails() {
       <p>Type: {episode.episode}</p>
       <p>Dimension: {episode.air_date}</p>
       <div className="items">
-        {episodeCharacters.length > 0 ? (
-          episodeCharacters.map((card) => (
-            <ItemCard key={card.id} itemId={card.id} itemType="character" showImage />
+        {characters.length > 0 ? (
+          characters.map((character) => (
+            <ItemCard key={character.id} itemId={character.id} itemType="character" showImage />
           ))
         ) : (
           <p>No characters found in this episode</p>

@@ -1,13 +1,30 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchCharacters = createAsyncThunk(
-  "characters/fetchCharacters",
-  async ({ page, filters }) => {
-    const { name, status, species, gender } = filters;
-    const response = await axios.get("https://rickandmortyapi.com/api/character", {
-      params: { page, name, status, species, gender },
-    });
+export const fetchCharacters = createAsyncThunk("characters/fetchCharacters", async ({ page, filters }) => {
+  const { name, status, species, gender } = filters;
+  const response = await axios.get("https://rickandmortyapi.com/api/character", {
+    params: { page, name, status, species, gender },
+  });
+  return response.data;
+});
+
+// Экшен для загрузки персонажей, относящихся к конкретной локации
+export const fetchLocationCharacters = createAsyncThunk(
+  "characters/fetchLocationCharacters",
+  async (residentUrls) => {
+    const characterIds = residentUrls.map((url) => url.split("/").pop()).join(",");
+    const response = await axios.get(`https://rickandmortyapi.com/api/character/${characterIds}`);
+    return response.data;
+  }
+);
+
+// Новый экшен для загрузки персонажей, относящихся к конкретному эпизоду
+export const fetchEpisodeCharacters = createAsyncThunk(
+  "characters/fetchEpisodeCharacters",
+  async (characterUrls) => {
+    const characterIds = characterUrls.map((url) => url.split("/").pop()).join(",");
+    const response = await axios.get(`https://rickandmortyapi.com/api/character/${characterIds}`);
     return response.data;
   }
 );
@@ -51,9 +68,7 @@ const charactersSlice = createSlice({
         const existingIds = new Set(state.items.map((item) => item.id));
 
         // Добавляем только уникальных персонажей
-        const uniqueCharacters = action.payload.results.filter(
-          (character) => !existingIds.has(character.id)
-        );
+        const uniqueCharacters = action.payload.results.filter((character) => !existingIds.has(character.id));
         state.items = [...state.items, ...uniqueCharacters];
 
         state.nextPage += 1;
@@ -75,6 +90,26 @@ const charactersSlice = createSlice({
       .addCase(fetchCharacters.rejected, (state) => {
         state.status = "failed";
         state.hasMore = false;
+      })
+      .addCase(fetchLocationCharacters.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchLocationCharacters.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.items = Array.isArray(action.payload) ? action.payload : [action.payload];
+      })
+      .addCase(fetchLocationCharacters.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(fetchEpisodeCharacters.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchEpisodeCharacters.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.items = Array.isArray(action.payload) ? action.payload : [action.payload];
+      })
+      .addCase(fetchEpisodeCharacters.rejected, (state) => {
+        state.status = "failed";
       });
   },
 });
