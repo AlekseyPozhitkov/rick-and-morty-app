@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLocations, setLocationFilter } from "../../libs/redux/slices/locationsSlice";
 import logo from "../../public/rick-and-morty-circle.svg";
-import { LoadMoreButton } from "../../components/LoadMoreButton/LoadMoreButton";
-import { ItemCard } from "../../components/ItemCard/ItemCard";
-import { ItemSelect } from "../../components/ItemSelect/ItemSelect";
-import { ItemInput } from "../../components/ItemInput/ItemInput";
-import { Spinner } from "../../components/Spinner/Spinner";
+import { LoadMoreButton } from "../../components/LoadMoreButton";
+import { ItemCard } from "../../components/ItemCard";
+import { ItemSelect } from "../../components/ItemSelect";
+import { ItemInput } from "../../components/ItemInput";
+import { Spinner } from "../../components/Spinner";
 
 function Locations() {
   const dispatch = useDispatch();
@@ -70,7 +70,7 @@ function Locations() {
         <ItemInput
           value={filters.name || ""}
           onChange={(e) => handleFilterChange("name", e.target.value)}
-          customStyles={{ box: { maxWidth: "326px" } }}
+          sx={{ box: { maxWidth: "326px" } }}
         />
         <ItemSelect
           label="Type"
@@ -92,7 +92,7 @@ function Locations() {
             key={location.id}
             itemId={location.id}
             itemType="location"
-            customStyles={{
+            sx={{
               cardContent: {
                 height: "130px",
                 backgroundColor: "#FAFAFA",

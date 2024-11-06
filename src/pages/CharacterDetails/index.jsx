@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
 import { fetchCharacterEpisodes } from "../../libs/redux/slices/episodesSlice";
-import { Spinner } from "../../components/Spinner/Spinner";
-import { ItemCard } from "../../components/ItemCard/ItemCard";
+import { Spinner } from "../../components/Spinner";
+import { ItemCard } from "../../components/ItemCard";
 
 function CharacterDetails() {
   const { id } = useParams();
@@ -80,7 +80,7 @@ function CharacterDetails() {
                   key={episode.id}
                   itemId={episode.id}
                   itemType="episode"
-                  customStyles={{
+                  sx={{
                     card: {
                       maxWidth: "413px",
                       height: "88px",
@@ -92,15 +92,15 @@ function CharacterDetails() {
                       padding: "12px 16px",
                       justifyContent: "start",
                     },
-                    typography1: {
+                    typographyTop: {
                       fontSize: "14px",
                     },
-                    typography2: {
+                    typographyMiddle: {
                       fontWeight: "400",
                       fontSize: "14px",
                       color: "#6E798C",
                     },
-                    typography3: {
+                    typographyBottom: {
                       fontWeight: "500",
                       fontSize: "10px",
                       textTransform: "uppercase",

@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Characters from "./pages/Characters/Characters";
-import Locations from "./pages/Locations/Locations";
-import Episodes from "./pages/Episodes/Episodes";
-import Navbar from "./components/Navbar/Navbar";
-import Footer from "./components/Footer/Footer";
-import ScrollTopButton from "./components/ScrollTopButton/ScrollTopButton";
-import CharacterDetails from "./pages/Characters/CharacterDetails";
-import LocationDetails from "./pages/Locations/LocationDetails";
-import EpisodeDetails from "./pages/Episodes/EpisodeDetails";
+import Characters from "./pages/Characters";
+import Locations from "./pages/Locations";
+import Episodes from "./pages/Episodes";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ScrollTopButton from "./components/ScrollTopButton";
+import CharacterDetails from "./pages/CharacterDetails";
+import LocationDetails from "./pages/LocationDetails";
+import EpisodeDetails from "./pages/EpisodeDetails";
 
 function App() {
   return (

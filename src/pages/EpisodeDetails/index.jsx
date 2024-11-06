@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchEpisodeById } from "../../libs/redux/slices/episodeDetailsSlice";
-import { Spinner } from "../../components/Spinner/Spinner";
+import { Spinner } from "../../components/Spinner";
 import { fetchEpisodeCharacters } from "../../libs/redux/slices/charactersSlice";
-import { ItemCard } from "../../components/ItemCard/ItemCard";
+import { ItemCard } from "../../components/ItemCard";
 
 function EpisodeDetails() {
   const { id } = useParams();

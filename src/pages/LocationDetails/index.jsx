@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchLocationById } from "../../libs/redux/slices/locationDetailsSlice";
-import { Spinner } from "../../components/Spinner/Spinner";
+import { Spinner } from "../../components/Spinner";
 import { fetchLocationCharacters } from "../../libs/redux/slices/charactersSlice";
-import { ItemCard } from "../../components/ItemCard/ItemCard";
+import { ItemCard } from "../../components/ItemCard";
 
 function LocationDetails() {
   const { id } = useParams();

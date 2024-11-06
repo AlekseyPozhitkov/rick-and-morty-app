@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCharacters, setCharacterFilter } from "../../libs/redux/slices/charactersSlice";
 import logo from "../../public/RICKANDMORTY.svg";
-import { LoadMoreButton } from "../../components/LoadMoreButton/LoadMoreButton";
-import { ItemCard } from "../../components/ItemCard/ItemCard";
-import { ItemSelect } from "../../components/ItemSelect/ItemSelect";
-import { ItemInput } from "../../components/ItemInput/ItemInput";
-import { Spinner } from "../../components/Spinner/Spinner";
+import { LoadMoreButton } from "../../components/LoadMoreButton";
+import { ItemCard } from "../../components/ItemCard";
+import { ItemSelect } from "../../components/ItemSelect";
+import { ItemInput } from "../../components/ItemInput";
+import { Spinner } from "../../components/Spinner";
 
 function Characters() {
   const dispatch = useDispatch();
@@ -67,10 +67,7 @@ function Characters() {
     <>
       <img className="image" src={logo} alt="RICKANDMORTY" />
       <div className="sorts">
-        <ItemInput
-          value={filters.name || ""}
-          onChange={(e) => handleFilterChange("name", e.target.value)}
-        />
+        <ItemInput value={filters.name || ""} onChange={(e) => handleFilterChange("name", e.target.value)} />
         <ItemSelect
           label="Species"
           options={filterOptions.species}
@@ -96,9 +93,7 @@ function Characters() {
           <ItemCard key={card.id} itemId={card.id} itemType="character" showImage />
         ))}
       </div>
-      {status === "failed" && characters.length === 0 && (
-        <div className="notFound">Oops! Not found</div>
-      )}
+      {status === "failed" && characters.length === 0 && <div className="notFound">Oops! Not found</div>}
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );

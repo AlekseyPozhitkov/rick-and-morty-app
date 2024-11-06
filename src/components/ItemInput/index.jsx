@@ -1,11 +1,12 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import { inputStyles } from "./styles";
 
-export const ItemInput = ({ onChange, placeholder, customStyles, value }) => {
+export const ItemInput = ({ onChange, placeholder, sx, value }) => {
   return (
-    <Box sx={{ width: "100%", maxWidth: 240, ...customStyles?.box }}>
+    <Box sx={{ ...inputStyles.box, ...sx?.box }}>
       <TextField
-        sx={{ width: "100%", ...customStyles?.textField }}
+        sx={{ ...inputStyles.textField, ...sx?.textField }}
         id="outlined-basic"
         label={placeholder || "Filter by name..."}
         variant="outlined"

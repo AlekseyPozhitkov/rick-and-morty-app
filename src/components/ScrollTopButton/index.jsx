@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Fab, Zoom } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { scrollTopStyles } from "./styles";
 
 function ScrollTopButton() {
   const [show, setShow] = useState(false);
@@ -24,15 +25,7 @@ function ScrollTopButton() {
 
   return (
     <Zoom in={show}>
-      <Fab
-        color="success"
-        onClick={scrollToTop}
-        sx={{
-          position: "fixed",
-          bottom: 30,
-          right: 30,
-        }}
-      >
+      <Fab sx={scrollTopStyles.fab} color="success" onClick={scrollToTop}>
         <KeyboardArrowUpIcon />
       </Fab>
     </Zoom>

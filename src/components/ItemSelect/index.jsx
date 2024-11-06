@@ -6,8 +6,9 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import { Backdrop } from "@mui/material";
+import { selectStyles } from "./styles";
 
-export const ItemSelect = ({ label, options, onChange, customStyles, value }) => {
+export const ItemSelect = ({ label, options, onChange, sx, value }) => {
   const [internalValue, setInternalValue] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -45,32 +46,19 @@ export const ItemSelect = ({ label, options, onChange, customStyles, value }) =>
 
   return (
     <>
-      <Backdrop
-        open={open}
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        }}
-      />
-      <Box sx={{ width: "100%", maxWidth: 240, ...customStyles?.box }}>
+      <Backdrop open={open} sx={selectStyles.backdrop} />
+      <Box sx={{ ...selectStyles.box, ...sx?.box }}>
         <FormControl fullWidth>
           <InputLabel>{label}</InputLabel>
           <Select
-            sx={{ textAlign: "left" }}
+            sx={selectStyles.select}
             value={internalValue} // Используем внутреннее значение
             label={label}
             onChange={handleChange}
             open={open} // добавлено обратно
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
-            MenuProps={{
-              PaperProps: {
-                style: {
-                  maxHeight: 200,
-                  overflowY: "auto",
-                },
-              },
-            }}
+            MenuProps={selectStyles.menuProps}
           >
             <MenuItem onClick={handleReset}>
               <Button fullWidth color="warning">
@@ -78,7 +66,7 @@ export const ItemSelect = ({ label, options, onChange, customStyles, value }) =>
               </Button>
             </MenuItem>
             {options.map((option) => (
-              <MenuItem sx={{ textAlign: "left" }} key={option} value={option}>
+              <MenuItem sx={selectStyles.menuItem} key={option} value={option}>
                 {option}
               </MenuItem>
             ))}

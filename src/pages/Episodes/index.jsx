@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
-import { LoadMoreButton } from "../../components/LoadMoreButton/LoadMoreButton";
-import { ItemCard } from "../../components/ItemCard/ItemCard";
-import { ItemInput } from "../../components/ItemInput/ItemInput";
-import { Spinner } from "../../components/Spinner/Spinner";
+import { LoadMoreButton } from "../../components/LoadMoreButton";
+import { ItemCard } from "../../components/ItemCard";
+import { ItemInput } from "../../components/ItemInput";
+import { Spinner } from "../../components/Spinner";
 
 function Episodes() {
   const dispatch = useDispatch();
@@ -69,7 +69,7 @@ function Episodes() {
           value={filters.name || ""}
           onChange={(e) => handleFilterChange(e.target.value)}
           placeholder="Filter by name or episode (ex. S01 or S01E02)"
-          customStyles={{ box: { maxWidth: "500px" } }}
+          sx={{ box: { maxWidth: "500px" } }}
         />
       </div>
       <div className="items">
@@ -79,7 +79,7 @@ function Episodes() {
             key={episode.id}
             itemId={episode.id}
             itemType="episode"
-            customStyles={{
+            sx={{
               cardContent: {
                 height: "130px",
                 justifyContent: "center",
@@ -89,9 +89,7 @@ function Episodes() {
           />
         ))}
       </div>
-      {status === "failed" && episodes.length === 0 && (
-        <div className="notFound">Oops! Not found</div>
-      )}
+      {status === "failed" && episodes.length === 0 && <div className="notFound">Oops! Not found</div>}
       {hasMore && status !== "loading" && !initialLoad && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );

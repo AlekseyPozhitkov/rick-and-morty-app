@@ -6,8 +6,9 @@ import CardActionArea from "@mui/material/CardActionArea";
 import { useSelector } from "react-redux";
 import { getItemById } from "../../libs/redux/selectors/itemsSelectors";
 import { useNavigate } from "react-router-dom";
+import { cardStyles } from "./styles";
 
-export const ItemCard = ({ itemId, itemType, showImage, customStyles, reverse }) => {
+export const ItemCard = ({ itemId, itemType, showImage, sx, reverse }) => {
   const item = useSelector((state) => getItemById(state, itemId, itemType));
   const navigate = useNavigate(); // Инициализируем useNavigate
 
@@ -18,58 +19,29 @@ export const ItemCard = ({ itemId, itemType, showImage, customStyles, reverse })
   return (
     <Card
       sx={{
-        width: "100%",
-        maxWidth: "240px",
-        boxShadow:
-          "0px 2px 4px rgba(0, 0, 0, 0.14), 0px 3px 4px rgba(0, 0, 0, 0.12), 0px 1px 5px rgba(0, 0, 0, 0.20)",
-        ...customStyles?.card,
+        ...cardStyles.card,
+        ...sx?.card,
       }}
       onClick={handleCardClick}
     >
       <CardActionArea>
         {showImage && (
-          <CardMedia
-            sx={{ maxHeight: "196px" }}
-            component="img"
-            image={item.image}
-            alt={item.name}
-          />
+          <CardMedia sx={cardStyles.cardMedia} component="img" image={item.image} alt={item.name} />
         )}
-        <CardContent
-          sx={{
-            height: "100px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            ...customStyles?.cardContent,
-          }}
-        >
+        <CardContent sx={{ ...cardStyles.cardContent, ...sx?.cardContent }}>
           <Typography
-            sx={{
-              margin: 0,
-              color: "rgba(0, 0, 0, 0.87)",
-              fontWeight: "700",
-              fontSize: "20px",
-              ...customStyles?.typography1,
-            }}
+            sx={{ ...cardStyles.typography, ...cardStyles.typographyTop, ...sx?.typographyTop }}
             gutterBottom
-            component="div"
           >
             {reverse ? item.episode : item.name}
           </Typography>
           <Typography
-            sx={{ margin: 0, color: "rgba(0, 0, 0, 0.6)", fontWeight: "400", fontSize: "14px" }}
+            sx={{ ...cardStyles.typography, ...cardStyles.typographyMiddle, ...sx?.typographyMiddle }}
           >
             {reverse ? item.name : item.species || item.type || item.air_date}
           </Typography>
           <Typography
-            sx={{
-              margin: 0,
-              color: "rgba(0, 0, 0, 0.6)",
-              fontWeight: "700",
-              fontSize: "14px",
-              ...customStyles?.typography3,
-            }}
+            sx={{ ...cardStyles.typography, ...cardStyles.typographyBottom, ...sx?.typographyBottom }}
           >
             {showImage ? "" : reverse ? item.air_date : item.episode}
           </Typography>
