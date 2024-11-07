@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchEpisodes = createAsyncThunk("episodes/fetchEpisodes", async ({ page, filters }) => {
   const { name } = filters;
   const response = await axios.get("https://rickandmortyapi.com/api/episode", {
-    params: { page, name },
+    params: { page, name }
   });
   return response.data;
 });
@@ -27,8 +27,8 @@ const episodesSlice = createSlice({
     nextPage: 1,
     hasMore: true, // Добавляем hasMore для отслеживания наличия данных
     filters: {
-      name: "",
-    },
+      name: ""
+    }
   },
   reducers: {
     setEpisodeFilter: (state, action) => {
@@ -36,7 +36,7 @@ const episodesSlice = createSlice({
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
-    },
+    }
   },
   // Добавляем обработку fetchCharacterEpisodes в extraReducers
   extraReducers: (builder) => {
@@ -67,7 +67,7 @@ const episodesSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       });
-  },
+  }
 });
 
 export const { setEpisodeFilter } = episodesSlice.actions;

@@ -1,31 +1,35 @@
-import logo from "../../public/rick&morty.svg";
+import { AppBar, Box, Toolbar } from "@mui/material";
 import { Link } from "react-router-dom";
-import Toolbar from "@mui/material/Toolbar";
-import AppBar from "@mui/material/AppBar";
-import { Box } from "@mui/material";
+
+import logo from "../../public/rick&morty.svg";
 import { navbarStyles } from "./styles";
 
-const linkItems = {
-  "/": "Characters",
-  "/locations": "Locations",
-  "/episodes": "Episodes",
-};
+const LinkItems = [
+  {
+    link: "/",
+    title: "Characters"
+  },
+  {
+    link: "/locations",
+    title: "Locations"
+  },
+  {
+    link: "/episodes",
+    title: "Episodes"
+  }
+];
 
-export default function Navbar() {
-  return (
-    <AppBar sx={navbarStyles.appBar}>
-      <Toolbar sx={navbarStyles.toolbar}>
-        <img src={logo} alt="RickAndMorty" />
-        <Box component="nav" sx={navbarStyles.navBox}>
-          {Object.entries(linkItems).map(([key, value]) => {
-            return (
-              <Box component={Link} sx={navbarStyles.navLink} to={key} color="inherit">
-                {value}
-              </Box>
-            );
-          })}
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
-}
+export const Navbar = () => (
+  <AppBar sx={navbarStyles.appBar}>
+    <Toolbar sx={navbarStyles.toolbar}>
+      <img src={logo} alt="RickAndMorty" />
+      <Box component="nav" sx={navbarStyles.navBox}>
+        {LinkItems.map((page, index) => (
+          <Box key={index} component={Link} sx={navbarStyles.navLink} to={page.link} color="inherit">
+            {page.title}
+          </Box>
+        ))}
+      </Box>
+    </Toolbar>
+  </AppBar>
+);

@@ -20,11 +20,11 @@ export const spinnerStyles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: "1200",
+    zIndex: "1200"
   },
   spinner: {
     width: "30%",
     height: "30%",
-    animation: `${spin} 1s linear infinite`,
-  },
+    animation: `${spin} 1s linear infinite`
+  }
 };

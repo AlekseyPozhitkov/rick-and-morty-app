@@ -13,6 +13,6 @@ export const footerStyles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: "40px 0 0",
-  },
+    margin: "40px 0 0"
+  }
 };

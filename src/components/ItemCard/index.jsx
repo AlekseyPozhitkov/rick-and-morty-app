@@ -1,14 +1,12 @@
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import CardActionArea from "@mui/material/CardActionArea";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import { getItemById } from "../../libs/redux/selectors/itemsSelectors";
 import { useNavigate } from "react-router-dom";
+
+import { getItemById } from "../../libs/redux/selectors/itemsSelectors";
 import { cardStyles } from "./styles";
 
-export const ItemCard = ({ itemId, itemType, showImage, sx, reverse }) => {
+export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow }) => {
   const item = useSelector((state) => getItemById(state, itemId, itemType));
   const navigate = useNavigate(); // Инициализируем useNavigate
 
@@ -20,11 +18,11 @@ export const ItemCard = ({ itemId, itemType, showImage, sx, reverse }) => {
     <Card
       sx={{
         ...cardStyles.card,
-        ...sx?.card,
+        ...sx?.card
       }}
       onClick={handleCardClick}
     >
-      <CardActionArea>
+      <CardActionArea sx={{ position: "relative" }}>
         {showImage && (
           <CardMedia sx={cardStyles.cardMedia} component="img" image={item.image} alt={item.name} />
         )}
@@ -46,6 +44,19 @@ export const ItemCard = ({ itemId, itemType, showImage, sx, reverse }) => {
             {showImage ? "" : reverse ? item.air_date : item.episode}
           </Typography>
         </CardContent>
+        {showArrow && (
+          <ArrowForwardIosIcon
+            sx={{
+              fontSize: "15px",
+              color: "#8E8E93",
+              position: "absolute",
+              right: "10px",
+              margin: "5px",
+              top: "calc(50% - 5px)",
+              transform: "translateY(-50%)"
+            }}
+          />
+        )}
       </CardActionArea>
     </Card>
   );

@@ -1,12 +1,11 @@
-import React from "react";
-import spiral from "../../public/spiral.svg"; // Подключаем загруженную картинку
+// Подключаем загруженную картинку
 import { Box } from "@mui/material";
+
+import spiral from "../../public/spiral.svg";
 import { spinnerStyles } from "./styles";
 
-export const Spinner = () => {
-  return (
-    <Box sx={spinnerStyles.spinnerOverlay}>
-      <Box component="img" src={spiral} sx={spinnerStyles.spinner} alt="Loading..." />
-    </Box>
-  );
-};
+export const Spinner = () => (
+  <Box sx={spinnerStyles.spinnerOverlay}>
+    <Box component="img" src={spiral} sx={spinnerStyles.spinner} alt="Loading..." />
+  </Box>
+);

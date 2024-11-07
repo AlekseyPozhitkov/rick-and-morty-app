@@ -1,15 +1,16 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Characters from "./pages/Characters";
-import Locations from "./pages/Locations";
-import Episodes from "./pages/Episodes";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ScrollTopButton from "./components/ScrollTopButton";
-import CharacterDetails from "./pages/CharacterDetails";
-import LocationDetails from "./pages/LocationDetails";
-import EpisodeDetails from "./pages/EpisodeDetails";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-function App() {
+import { Footer } from "./components/Footer";
+import { Navbar } from "./components/Navbar";
+import { ScrollTopButton } from "./components/ScrollTopButton";
+import CharacterDetails from "./pages/CharacterDetails";
+import Characters from "./pages/Characters";
+import EpisodeDetails from "./pages/EpisodeDetails";
+import Episodes from "./pages/Episodes";
+import LocationDetails from "./pages/LocationDetails";
+import Locations from "./pages/Locations";
+
+export const App = () => {
   return (
     <BrowserRouter>
       <Navbar />
@@ -27,6 +28,4 @@ function App() {
       <ScrollTopButton />
     </BrowserRouter>
   );
-}
-
-export default App;
+};

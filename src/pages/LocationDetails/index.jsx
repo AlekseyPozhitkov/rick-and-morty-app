@@ -1,12 +1,15 @@
+import { Box, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchLocationById } from "../../libs/redux/slices/locationDetailsSlice";
+
+import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
 import { fetchLocationCharacters } from "../../libs/redux/slices/charactersSlice";
-import { ItemCard } from "../../components/ItemCard";
+import { fetchLocationById } from "../../libs/redux/slices/locationDetailsSlice";
+import { pageStyles } from "../styles";
 
-function LocationDetails() {
+export default function LocationDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
@@ -28,29 +31,42 @@ function LocationDetails() {
   }
 
   if (locationStatus === "failed") {
-    return <div>Error: {error}</div>;
+    return <Typography>Error: {error}</Typography>;
   }
 
   if (!location) {
-    return <div>No character data available</div>;
+    return <Typography>No character data available</Typography>;
   }
 
   return (
-    <div>
-      <h1>{location.name}</h1>
-      <p>Type: {location.type}</p>
-      <p>Dimension: {location.dimension}</p>
-      <div className="items">
+    <Stack sx={{ ...pageStyles.details, gap: "0" }}>
+      <Typography variant="h4" sx={{ marginBottom: "24px", textAlign: "center" }}>
+        {location.name}
+      </Typography>
+
+      <Stack direction="row" spacing={2} sx={{ justifyContent: "center", marginBottom: "64px" }}>
+        {["type", "dimension"].map((key) => {
+          const displayValue = location[key] || "Unknown";
+
+          return (
+            <Stack sx={{ width: "100%", textAlign: "start", maxWidth: "240px" }} key={key}>
+              <Typography sx={{ textTransform: "capitalize", ...pageStyles.stackTitle }}>{key}</Typography>
+              <Typography sx={pageStyles.stackName}>{displayValue}</Typography>
+            </Stack>
+          );
+        })}
+      </Stack>
+      <Typography sx={{ ...pageStyles.header, marginBottom: "24px" }}>Residents</Typography>
+
+      <Box sx={pageStyles.items}>
         {characters.length > 0 ? (
           characters.map((character) => (
             <ItemCard key={character.id} itemId={character.id} itemType="character" showImage />
           ))
         ) : (
-          <p>No characters found on this location</p>
+          <Typography>No characters found on this location</Typography>
         )}
-      </div>
-    </div>
+      </Box>
+    </Stack>
   );
 }
-
-export default LocationDetails;

@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchCharacters = createAsyncThunk("characters/fetchCharacters", async ({ page, filters }) => {
   const { name, status, species, gender } = filters;
   const response = await axios.get("https://rickandmortyapi.com/api/character", {
-    params: { page, name, status, species, gender },
+    params: { page, name, status, species, gender }
   });
   return response.data;
 });
@@ -40,13 +40,13 @@ const charactersSlice = createSlice({
       name: "",
       status: "",
       species: "",
-      gender: "",
+      gender: ""
     },
     filterOptions: {
       species: [],
       gender: [],
-      status: [],
-    },
+      status: []
+    }
   },
   reducers: {
     setCharacterFilter: (state, action) => {
@@ -54,7 +54,7 @@ const charactersSlice = createSlice({
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -111,7 +111,7 @@ const charactersSlice = createSlice({
       .addCase(fetchEpisodeCharacters.rejected, (state) => {
         state.status = "failed";
       });
-  },
+  }
 });
 
 export const { setCharacterFilter } = charactersSlice.actions;

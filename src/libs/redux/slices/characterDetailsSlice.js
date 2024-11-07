@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchCharacterById = createAsyncThunk("characterDetails/fetchCharacterById", async (id) => {
@@ -11,7 +11,7 @@ const characterDetailsSlice = createSlice({
   initialState: {
     character: null,
     status: "idle",
-    error: null,
+    error: null
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -28,7 +28,7 @@ const characterDetailsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       });
-  },
+  }
 });
 
 export default characterDetailsSlice.reducer;

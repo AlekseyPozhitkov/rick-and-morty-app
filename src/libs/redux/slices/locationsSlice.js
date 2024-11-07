@@ -1,17 +1,14 @@
 // src/features/locations/locationsSlice.js
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchLocations = createAsyncThunk(
-  "locations/fetchLocations",
-  async ({ page, filters }) => {
-    const { name, type, dimension } = filters || {};
-    const response = await axios.get("https://rickandmortyapi.com/api/location", {
-      params: { page, name, type, dimension },
-    });
-    return response.data;
-  }
-);
+export const fetchLocations = createAsyncThunk("locations/fetchLocations", async ({ page, filters }) => {
+  const { name, type, dimension } = filters || {};
+  const response = await axios.get("https://rickandmortyapi.com/api/location", {
+    params: { page, name, type, dimension }
+  });
+  return response.data;
+});
 
 const locationsSlice = createSlice({
   name: "locations",
@@ -23,12 +20,12 @@ const locationsSlice = createSlice({
     filters: {
       name: "",
       type: "",
-      dimension: "",
+      dimension: ""
     },
     filterOptions: {
       type: [],
-      dimension: [],
-    },
+      dimension: []
+    }
   },
   reducers: {
     setLocationFilter: (state, action) => {
@@ -36,7 +33,7 @@ const locationsSlice = createSlice({
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -50,9 +47,7 @@ const locationsSlice = createSlice({
         const existingIds = new Set(state.items.map((item) => item.id));
 
         // Добавляем только уникальные локации
-        const uniqueLocations = action.payload.results.filter(
-          (location) => !existingIds.has(location.id)
-        );
+        const uniqueLocations = action.payload.results.filter((location) => !existingIds.has(location.id));
         state.items = [...state.items, ...uniqueLocations];
 
         state.nextPage += 1;
@@ -72,7 +67,7 @@ const locationsSlice = createSlice({
         state.status = "failed";
         state.hasMore = false;
       });
-  },
+  }
 });
 
 export const { setLocationFilter } = locationsSlice.actions;

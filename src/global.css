@@ -1,136 +1,27 @@
 * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html,
 body {
-    text-align: center;
-    max-width: 100%;
-    font-family: "Roboto", sans-serif;
+  text-align: center;
+  max-width: 100%;
+  font-family: "Roboto", sans-serif;
 }
 
 #root {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 main {
-    flex: 1;
+  flex: 1;
 }
 
 a {
-    color: inherit;
-    text-decoration: none;
-}
-
-/* pages */
-
-.image {
-    margin: 20px 0;
-}
-
-.sorts,
-.items,
-.characterDetails {
-    width: 100%;
-    max-width: 1020px;
-    display: flex;
-    justify-content: left;
-    margin: 0 auto 40px;
-    gap: 20px;
-}
-
-.sorts {
-    margin-bottom: 60px;
-}
-
-.items {
-    flex-wrap: wrap;
-}
-
-/* locations */
-
-.sortsLocations {
-    max-width: 846px;
-}
-
-/* episodes */
-
-.sortsEpisodes {
-    max-width: 500px;
-}
-
-/* notFound */
-
-.notFound {
-    font-size: 4em;
-    font-weight: 500;
-}
-
-/* characterDetails */
-
-.detailPage {
-    color: #081F32;
-}
-
-.imageDetails {
-    border-radius: 50%;
-}
-
-.textDetails {
-    font-weight: 400;
-    font-size: 48px;
-    margin-bottom: 42px;
-}
-
-.characterDetails {
-    max-width: 846px;
-    margin-bottom: 0;
-}
-
-.info {
-    width: 100%;
-    max-width: 413px;
-    text-align: start;
-}
-
-.infoHeader {
-    font-weight: 500;
-    font-size: 20px;
-    color: #8E8E93;
-    margin-bottom: 35px;
-    text-align: left;
-}
-
-.characterEpisodes {
-    max-height: 300px;
-    overflow-y: scroll;
-}
-
-.characterEpisodes::-webkit-scrollbar {
-    display: none;
-}
-
-.info>div {
-    margin-left: 16px;
-}
-
-.characterInfo>div {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(33, 33, 33, 0.08);
-}
-
-.characterInfo>div>p:first-of-type {
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 5px;
-}
-
-.characterInfo>div>p:nth-of-type(2) {
-    font-weight: 400;
-    font-size: 14px;
-    color: #6E798C;
+  color: inherit;
+  text-decoration: none;
 }

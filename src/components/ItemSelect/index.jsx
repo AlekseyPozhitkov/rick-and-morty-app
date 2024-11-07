@@ -1,11 +1,6 @@
+import { Backdrop, Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Button from "@mui/material/Button";
-import { Backdrop } from "@mui/material";
+
 import { selectStyles } from "./styles";
 
 export const ItemSelect = ({ label, options, onChange, sx, value }) => {

@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import charactersReducer from "./slices/charactersSlice";
-import episodesReducer from "./slices/episodesSlice";
-import locationsReducer from "./slices/locationsSlice";
+
 import characterDetailsReducer from "./slices/characterDetailsSlice";
-import locationDetailsReducer from "./slices/locationDetailsSlice";
+import charactersReducer from "./slices/charactersSlice";
 import episodeDetailsReducer from "./slices/episodeDetailsSlice";
+import episodesReducer from "./slices/episodesSlice";
+import locationDetailsReducer from "./slices/locationDetailsSlice";
+import locationsReducer from "./slices/locationsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -13,8 +14,8 @@ export const store = configureStore({
     locations: locationsReducer,
     characterDetails: characterDetailsReducer,
     locationDetails: locationDetailsReducer,
-    episodeDetails: episodeDetailsReducer,
-  },
+    episodeDetails: episodeDetailsReducer
+  }
 });
 
 export default store;

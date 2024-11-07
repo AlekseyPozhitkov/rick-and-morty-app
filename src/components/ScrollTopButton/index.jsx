@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Fab, Zoom } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { Fab, Zoom } from "@mui/material";
+import { useEffect, useState } from "react";
+
 import { scrollTopStyles } from "./styles";
 
-function ScrollTopButton() {
+export const ScrollTopButton = () => {
   const [show, setShow] = useState(false);
 
   // Показать кнопку при прокрутке вниз на 300px
@@ -19,7 +20,7 @@ function ScrollTopButton() {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: "smooth"
     });
   };
 
@@ -30,6 +31,4 @@ function ScrollTopButton() {
       </Fab>
     </Zoom>
   );
-}
-
-export default ScrollTopButton;
+};

@@ -1,14 +1,17 @@
+import { Box, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { ItemCard } from "../../components/ItemCard";
+import { ItemInput } from "../../components/ItemInput";
+import { ItemSelect } from "../../components/ItemSelect";
+import { LoadMoreButton } from "../../components/LoadMoreButton";
+import { Spinner } from "../../components/Spinner";
 import { fetchLocations, setLocationFilter } from "../../libs/redux/slices/locationsSlice";
 import logo from "../../public/rick-and-morty-circle.svg";
-import { LoadMoreButton } from "../../components/LoadMoreButton";
-import { ItemCard } from "../../components/ItemCard";
-import { ItemSelect } from "../../components/ItemSelect";
-import { ItemInput } from "../../components/ItemInput";
-import { Spinner } from "../../components/Spinner";
+import { pageStyles } from "../styles";
 
-function Locations() {
+export default function Locations() {
   const dispatch = useDispatch();
   const locations = useSelector((state) => state.locations.items);
   const status = useSelector((state) => state.locations.status);
@@ -65,8 +68,9 @@ function Locations() {
 
   return (
     <>
-      <img className="image" src={logo} alt="rick-and-morty-circle" />
-      <div className="sorts sortsLocations">
+      <Box component="img" src={logo} alt="rick-and-morty-circle" sx={pageStyles.image} />
+
+      <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput
           value={filters.name || ""}
           onChange={(e) => handleFilterChange("name", e.target.value)}
@@ -84,8 +88,9 @@ function Locations() {
           value={filters.dimension || ""}
           onChange={(value) => handleFilterChange("dimension", value)}
         />
-      </div>
-      <div className="items">
+      </Stack>
+
+      <Stack sx={pageStyles.items} direction="row">
         {status === "loading" && <Spinner />}
         {locations.map((location) => (
           <ItemCard
@@ -95,16 +100,18 @@ function Locations() {
             sx={{
               cardContent: {
                 height: "130px",
-                backgroundColor: "#FAFAFA",
-              },
+                backgroundColor: "#FAFAFA"
+              }
             }}
           />
         ))}
-      </div>
-      {status === "failed" && locations.length === 0 && <div className="notFound">Oops! Not found</div>}
+      </Stack>
+
+      {status === "failed" && locations.length === 0 && (
+        <Typography sx={pageStyles.notFound}>Oops! Not found</Typography>
+      )}
+
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
 }
-
-export default Locations;

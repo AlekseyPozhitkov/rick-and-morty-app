@@ -6,6 +6,6 @@ export const buttonStyles = {
     color: "#2196F3",
     font: "Roboto",
     fontWeight: "500",
-    fontSize: "14px",
-  },
+    fontSize: "14px"
+  }
 };

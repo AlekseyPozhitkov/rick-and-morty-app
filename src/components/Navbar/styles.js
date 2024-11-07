@@ -4,6 +4,7 @@ export const navbarStyles = {
     color: "#000",
     position: "static",
     boxShadow: "-2px 0px 8px 2px rgba(0, 0, 0, 0.1)",
+    marginBottom: "20px"
   },
   toolbar: {
     height: "100%",
@@ -12,11 +13,11 @@ export const navbarStyles = {
     maxWidth: "1020px",
     padding: "0 !important",
     margin: "0 auto",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
   navBox: {
     display: "flex",
-    gap: "24px",
+    gap: "24px"
   },
   navLink: {
     fontFamily: '"Karla", serif',
@@ -24,6 +25,6 @@ export const navbarStyles = {
     fontWeight: "700",
     fontSize: "18px",
     textTransform: "capitalize",
-    fontStyle: "normal",
-  },
+    fontStyle: "normal"
+  }
 };

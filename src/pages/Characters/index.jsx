@@ -1,14 +1,17 @@
+import { Box, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { ItemCard } from "../../components/ItemCard";
+import { ItemInput } from "../../components/ItemInput";
+import { ItemSelect } from "../../components/ItemSelect";
+import { LoadMoreButton } from "../../components/LoadMoreButton";
+import { Spinner } from "../../components/Spinner";
 import { fetchCharacters, setCharacterFilter } from "../../libs/redux/slices/charactersSlice";
 import logo from "../../public/RICKANDMORTY.svg";
-import { LoadMoreButton } from "../../components/LoadMoreButton";
-import { ItemCard } from "../../components/ItemCard";
-import { ItemSelect } from "../../components/ItemSelect";
-import { ItemInput } from "../../components/ItemInput";
-import { Spinner } from "../../components/Spinner";
+import { pageStyles } from "../styles";
 
-function Characters() {
+export default function Characters() {
   const dispatch = useDispatch();
   const characters = useSelector((state) => state.characters.items);
   const status = useSelector((state) => state.characters.status);
@@ -65,8 +68,9 @@ function Characters() {
 
   return (
     <>
-      <img className="image" src={logo} alt="RICKANDMORTY" />
-      <div className="sorts">
+      <Box component="img" src={logo} alt="RICKANDMORTY" sx={pageStyles.image} />
+
+      <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput value={filters.name || ""} onChange={(e) => handleFilterChange("name", e.target.value)} />
         <ItemSelect
           label="Species"
@@ -86,17 +90,20 @@ function Characters() {
           value={filters.status || ""}
           onChange={(value) => handleFilterChange("status", value)}
         />
-      </div>
-      <div className="items">
+      </Stack>
+
+      <Stack sx={pageStyles.items} direction="row">
         {status === "loading" && <Spinner />}
         {characters.map((card) => (
           <ItemCard key={card.id} itemId={card.id} itemType="character" showImage />
         ))}
-      </div>
-      {status === "failed" && characters.length === 0 && <div className="notFound">Oops! Not found</div>}
+      </Stack>
+
+      {status === "failed" && characters.length === 0 && (
+        <Typography sx={pageStyles.notFound}>Oops! Not found</Typography>
+      )}
+
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
 }
-
-export default Characters;

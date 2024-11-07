@@ -1,12 +1,17 @@
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Box, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+
+import { ItemCard } from "../../components/ItemCard";
+import { Spinner } from "../../components/Spinner";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
 import { fetchCharacterEpisodes } from "../../libs/redux/slices/episodesSlice";
-import { Spinner } from "../../components/Spinner";
-import { ItemCard } from "../../components/ItemCard";
+import { pageStyles } from "../styles";
+import { detailsStyles, itemCard } from "./styles";
 
-function CharacterDetails() {
+export default function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
@@ -30,95 +35,98 @@ function CharacterDetails() {
   }
 
   if (characterStatus === "failed") {
-    return <div>Error: {error}</div>;
+    return <Typography>Error: {error}</Typography>;
   }
 
   if (!character) {
-    return <div>No character data available</div>;
+    return <Typography>No character data available</Typography>;
   }
 
   return (
-    <div className="detailPage">
-      <img className="image imageDetails" src={character.image} alt={character.name} />
-      <h1 className="textDetails">{character.name}</h1>
-      <div className="characterDetails">
-        <div className="info">
-          <h2 className="infoHeader">Informations</h2>
-          <div className="characterInfo">
-            <div>
-              <p>Gender</p>
-              <p>{character.gender}</p>
-            </div>
-            <div>
-              <p>Status</p>
-              <p>{character.status}</p>
-            </div>
-            <div>
-              <p>Species</p>
-              <p>{character.species}</p>
-            </div>
-            <div>
-              <p>Origin</p>
-              <p>{character.origin.name}</p>
-            </div>
-            <div>
-              <p>Type</p>
-              <p>{character.type || "Unknown"}</p>
-            </div>
-            <div>
-              <p>Location</p>
-              <p>{character.location.name}</p>
-            </div>
-          </div>
-        </div>
-        <div className="info">
-          <h2 className="infoHeader">Episodes</h2>
-          <div className="characterEpisodes">
-            {episodes.length > 0 ? (
-              episodes.map((episode) => (
-                <ItemCard
-                  key={episode.id}
-                  itemId={episode.id}
-                  itemType="episode"
-                  sx={{
-                    card: {
-                      maxWidth: "413px",
-                      height: "88px",
-                      backgroundColor: "#FFFFFF",
-                      boxShadow: "none",
-                      borderBottom: "1px solid rgba(33, 33, 33, 0.08)",
-                    },
-                    cardContent: {
-                      padding: "12px 16px",
-                      justifyContent: "start",
-                    },
-                    typographyTop: {
-                      fontSize: "14px",
-                    },
-                    typographyMiddle: {
-                      fontWeight: "400",
-                      fontSize: "14px",
-                      color: "#6E798C",
-                    },
-                    typographyBottom: {
-                      fontWeight: "500",
-                      fontSize: "10px",
-                      textTransform: "uppercase",
-                      color: "#8E8E93",
-                      letterSpacing: "1.5px",
-                    },
-                  }}
-                  reverse
-                />
-              ))
-            ) : (
-              <p>No episodes</p> // Сообщение, если у персонажа нет эпизодов
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <Box
+        component="img"
+        src={character.image}
+        alt={character.name}
+        sx={{ ...pageStyles.image, borderRadius: "50%" }}
+      />
+
+      <Stack sx={pageStyles.details}>
+        <Typography variant="h3" sx={{ marginBottom: "42px" }}>
+          {character.name}
+        </Typography>
+
+        <Stack direction="row" spacing={2} sx={{ justifyContent: "center" }}>
+          <Stack sx={detailsStyles.stack}>
+            <Typography sx={{ ...pageStyles.header, marginBottom: "35px" }}>Informations</Typography>
+            {Object.entries(character).map(([key, value]) => {
+              if (["id", "name", "image", "location", "episode", "url", "created"].includes(key)) {
+                return null;
+              }
+
+              const displayValue = typeof value === "object" ? value.name || "Unknown" : value || "Unknown";
+
+              return (
+                <Stack sx={pageStyles.stackItem} key={key}>
+                  <Typography sx={{ textTransform: "capitalize", ...pageStyles.stackTitle }}>
+                    {key}
+                  </Typography>
+                  <Typography sx={pageStyles.stackName}>{displayValue}</Typography>
+                </Stack>
+              );
+            })}
+
+            <Stack
+              component={Link}
+              to={`/location/${character.location.url.split("/").pop()}`}
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{
+                textDecoration: "none",
+                color: "inherit",
+                borderRadius: "5px",
+                "&:hover": { backgroundColor: "#f6f6f6" },
+                ...pageStyles.stackText
+              }}
+            >
+              <Stack sx={pageStyles.stackItem}>
+                <Typography sx={pageStyles.stackTitle}>Location</Typography>
+                <Typography sx={pageStyles.stackName}>{character.location.name}</Typography>
+              </Stack>
+              <ArrowForwardIosIcon sx={{ color: "#8E8E93", margin: "5px", fontSize: "15px" }} />
+            </Stack>
+          </Stack>
+
+          <Stack sx={detailsStyles.stack}>
+            <Typography sx={{ ...pageStyles.header, marginBottom: "35px" }}>Episodes</Typography>
+            <Box
+              sx={{
+                maxHeight: "352px",
+                overflowY: "scroll",
+                "&::-webkit-scrollbar": {
+                  display: "none"
+                }
+              }}
+            >
+              {episodes.length > 0 ? (
+                episodes.map((episode) => (
+                  <ItemCard
+                    key={episode.id}
+                    itemId={episode.id}
+                    itemType="episode"
+                    sx={itemCard}
+                    reverse
+                    showArrow
+                  />
+                ))
+              ) : (
+                <Typography>No episodes</Typography> // Сообщение, если у персонажа нет эпизодов
+              )}
+            </Box>
+          </Stack>
+        </Stack>
+      </Stack>
+    </>
   );
 }
-
-export default CharacterDetails;

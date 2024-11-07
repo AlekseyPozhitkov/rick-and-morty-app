@@ -1,12 +1,15 @@
+import { Box, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchEpisodeById } from "../../libs/redux/slices/episodeDetailsSlice";
+
+import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
 import { fetchEpisodeCharacters } from "../../libs/redux/slices/charactersSlice";
-import { ItemCard } from "../../components/ItemCard";
+import { fetchEpisodeById } from "../../libs/redux/slices/episodeDetailsSlice";
+import { pageStyles } from "../styles";
 
-function EpisodeDetails() {
+export default function EpisodeDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
@@ -28,29 +31,45 @@ function EpisodeDetails() {
   }
 
   if (episodeStatus === "failed") {
-    return <div>Error: {error}</div>;
+    return <Typography>Error: {error}</Typography>;
   }
 
   if (!episode) {
-    return <div>No character data available</div>;
+    return <Typography>No character data available</Typography>;
   }
 
   return (
-    <div>
-      <h1>{episode.name}</h1>
-      <p>Type: {episode.episode}</p>
-      <p>Dimension: {episode.air_date}</p>
-      <div className="items">
+    <Stack sx={{ ...pageStyles.details, gap: "0" }}>
+      <Typography variant="h4" sx={{ marginBottom: "24px", textAlign: "center" }}>
+        {episode.name}
+      </Typography>
+
+      <Stack direction="row" spacing={2} sx={{ justifyContent: "center", marginBottom: "64px" }}>
+        {["episode", "air_date"].map((key) => {
+          const displayValue = episode[key] || "Unknown";
+          const displayKey = key === "air_date" ? "Date" : key;
+
+          return (
+            <Stack sx={{ width: "100%", textAlign: "start", maxWidth: "240px" }} key={key}>
+              <Typography sx={{ textTransform: "capitalize", ...pageStyles.stackTitle }}>
+                {displayKey}
+              </Typography>
+              <Typography sx={pageStyles.stackName}>{displayValue}</Typography>
+            </Stack>
+          );
+        })}
+      </Stack>
+      <Typography sx={{ ...pageStyles.header, marginBottom: "24px" }}>Cast</Typography>
+
+      <Box sx={pageStyles.items}>
         {characters.length > 0 ? (
           characters.map((character) => (
             <ItemCard key={character.id} itemId={character.id} itemType="character" showImage />
           ))
         ) : (
-          <p>No characters found in this episode</p>
+          <Typography>No characters found in this episode</Typography>
         )}
-      </div>
-    </div>
+      </Box>
+    </Stack>
   );
 }
-
-export default EpisodeDetails;

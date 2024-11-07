@@ -1,13 +1,16 @@
+import { Box, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
-import logo from "../../public/rick-and-morty-eyes.svg";
-import { LoadMoreButton } from "../../components/LoadMoreButton";
+
 import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
+import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
+import { fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
+import logo from "../../public/rick-and-morty-eyes.svg";
+import { pageStyles } from "../styles";
 
-function Episodes() {
+export default function Episodes() {
   const dispatch = useDispatch();
   const episodes = useSelector((state) => state.episodes.items);
   const status = useSelector((state) => state.episodes.status);
@@ -63,36 +66,34 @@ function Episodes() {
 
   return (
     <>
-      <img className="image" src={logo} alt="rick-and-morty-eyes" />
-      <div className="sorts sortsEpisodes">
+      <Box component="img" src={logo} alt="rick-and-morty-eyes" sx={pageStyles.image} />
+
+      <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput
           value={filters.name || ""}
           onChange={(e) => handleFilterChange(e.target.value)}
           placeholder="Filter by name or episode (ex. S01 or S01E02)"
           sx={{ box: { maxWidth: "500px" } }}
         />
-      </div>
-      <div className="items">
+      </Stack>
+
+      <Stack sx={pageStyles.items} direction="row">
         {status === "loading" && <Spinner />}
         {episodes.map((episode) => (
           <ItemCard
             key={episode.id}
             itemId={episode.id}
             itemType="episode"
-            sx={{
-              cardContent: {
-                height: "130px",
-                justifyContent: "center",
-                backgroundColor: "#FAFAFA",
-              },
-            }}
+            sx={{ cardContent: { height: "130px", justifyContent: "center", backgroundColor: "#FAFAFA" } }}
           />
         ))}
-      </div>
-      {status === "failed" && episodes.length === 0 && <div className="notFound">Oops! Not found</div>}
+      </Stack>
+
+      {status === "failed" && episodes.length === 0 && (
+        <Typography sx={pageStyles.notFound}>Oops! Not found</Typography>
+      )}
+
       {hasMore && status !== "loading" && !initialLoad && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
 }
-
-export default Episodes;

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchLocationById = createAsyncThunk("locationDetails/fetchlocationById", async (id) => {
@@ -11,7 +11,7 @@ const locationDetailsSlice = createSlice({
   initialState: {
     location: null,
     status: "idle",
-    error: null,
+    error: null
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -28,7 +28,7 @@ const locationDetailsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       });
-  },
+  }
 });
 
 export default locationDetailsSlice.reducer;
