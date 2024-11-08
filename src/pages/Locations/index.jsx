@@ -19,6 +19,7 @@ export default function Locations() {
   const filterOptions = useSelector((state) => state.locations.filterOptions);
   const filters = useSelector((state) => state.locations.filters);
   const nextPage = useSelector((state) => state.locations.nextPage);
+  const errorMessage = useSelector((state) => state.locations.errorMessage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [initialLoad, setInitialLoad] = useState(true);
@@ -108,7 +109,7 @@ export default function Locations() {
       </Stack>
 
       {status === "failed" && locations.length === 0 && (
-        <Typography sx={pageStyles.notFound}>Oops! Not found</Typography>
+        <Typography sx={pageStyles.notFound}>{errorMessage || "Oops! Not found"}</Typography>
       )}
 
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}

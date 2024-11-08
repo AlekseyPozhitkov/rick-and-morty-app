@@ -1,13 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchCharacters = createAsyncThunk("characters/fetchCharacters", async ({ page, filters }) => {
-  const { name, status, species, gender } = filters;
-  const response = await axios.get("https://rickandmortyapi.com/api/character", {
-    params: { page, name, status, species, gender }
-  });
-  return response.data;
-});
+export const fetchCharacters = createAsyncThunk(
+  "characters/fetchCharacters",
+  async ({ page, filters }, { rejectWithValue }) => {
+    try {
+      const { name, status, species, gender } = filters;
+      const response = await axios.get("https://rickandmortyapi.com/api/character", {
+        params: { page, name, status, species, gender }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || "Failed to fetch characters.");
+    }
+  }
+);
 
 // Экшен для загрузки персонажей, относящихся к конкретной локации
 export const fetchLocationCharacters = createAsyncThunk(
@@ -46,7 +53,8 @@ const charactersSlice = createSlice({
       species: [],
       gender: [],
       status: []
-    }
+    },
+    errorMessage: "" // Добавляем поле для хранения сообщения об ошибке
   },
   reducers: {
     setCharacterFilter: (state, action) => {
@@ -54,15 +62,18 @@ const charactersSlice = createSlice({
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
+      state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCharacters.pending, (state) => {
         state.status = "loading";
+        state.errorMessage = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
       })
       .addCase(fetchCharacters.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.errorMessage = "";
 
         // Используем Set для отслеживания уникальных id
         const existingIds = new Set(state.items.map((item) => item.id));
@@ -87,9 +98,10 @@ const charactersSlice = createSlice({
           }
         });
       })
-      .addCase(fetchCharacters.rejected, (state) => {
+      .addCase(fetchCharacters.rejected, (state, action) => {
         state.status = "failed";
         state.hasMore = false;
+        state.errorMessage = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
       })
       .addCase(fetchLocationCharacters.pending, (state) => {
         state.status = "loading";

@@ -17,6 +17,7 @@ export default function Episodes() {
   const hasMore = useSelector((state) => state.episodes.hasMore); // Подключаем hasMore
   const filters = useSelector((state) => state.episodes.filters);
   const nextPage = useSelector((state) => state.episodes.nextPage);
+  const errorMessage = useSelector((state) => state.episodes.errorMessage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [initialLoad, setInitialLoad] = useState(true);
@@ -90,7 +91,7 @@ export default function Episodes() {
       </Stack>
 
       {status === "failed" && episodes.length === 0 && (
-        <Typography sx={pageStyles.notFound}>Oops! Not found</Typography>
+        <Typography sx={pageStyles.notFound}>{errorMessage || "Oops! Not found"}</Typography>
       )}
 
       {hasMore && status !== "loading" && !initialLoad && <LoadMoreButton onClick={onLoadMore} />}

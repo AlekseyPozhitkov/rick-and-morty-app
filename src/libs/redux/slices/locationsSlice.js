@@ -2,13 +2,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchLocations = createAsyncThunk("locations/fetchLocations", async ({ page, filters }) => {
-  const { name, type, dimension } = filters || {};
-  const response = await axios.get("https://rickandmortyapi.com/api/location", {
-    params: { page, name, type, dimension }
-  });
-  return response.data;
-});
+export const fetchLocations = createAsyncThunk(
+  "locations/fetchLocations",
+  async ({ page, filters }, { rejectWithValue }) => {
+    try {
+      const { name, type, dimension } = filters || {};
+      const response = await axios.get("https://rickandmortyapi.com/api/location", {
+        params: { page, name, type, dimension }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || "Failed to fetch locations.");
+    }
+  }
+);
 
 const locationsSlice = createSlice({
   name: "locations",
@@ -25,7 +32,8 @@ const locationsSlice = createSlice({
     filterOptions: {
       type: [],
       dimension: []
-    }
+    },
+    errorMessage: "" // Добавляем поле для хранения сообщения об ошибке
   },
   reducers: {
     setLocationFilter: (state, action) => {
@@ -33,23 +41,26 @@ const locationsSlice = createSlice({
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
+      state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchLocations.pending, (state) => {
         state.status = "loading";
+        state.errorMessage = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
       })
       .addCase(fetchLocations.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.errorMessage = "";
 
         // Используем Set для отслеживания уникальных id
         const existingIds = new Set(state.items.map((item) => item.id));
 
         // Добавляем только уникальные локации
         const uniqueLocations = action.payload.results.filter((location) => !existingIds.has(location.id));
-        state.items = [...state.items, ...uniqueLocations];
 
+        state.items = [...state.items, ...uniqueLocations];
         state.nextPage += 1;
         state.hasMore = !!action.payload.info.next;
 
@@ -63,9 +74,10 @@ const locationsSlice = createSlice({
           }
         });
       })
-      .addCase(fetchLocations.rejected, (state) => {
+      .addCase(fetchLocations.rejected, (state, action) => {
         state.status = "failed";
         state.hasMore = false;
+        state.errorMessage = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
       });
   }
 });
