@@ -1,5 +1,3 @@
-import zIndex from "@mui/material/styles/zIndex";
-
 const commonContainerStyles = {
   width: "100%",
   maxWidth: "1020px",
