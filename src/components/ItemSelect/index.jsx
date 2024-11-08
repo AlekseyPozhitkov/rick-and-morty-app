@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { selectStyles } from "./styles";
 
-export const ItemSelect = ({ label, options, onChange, sx, value }) => {
+export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) => {
   const [internalValue, setInternalValue] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -29,13 +29,17 @@ export const ItemSelect = ({ label, options, onChange, sx, value }) => {
   const handleChange = (event) => {
     const selectedValue = event.target.value;
     setInternalValue(selectedValue);
-    onChange(selectedValue);
+    if (onChange) {
+      onChange(selectedValue); // Вызываем onChange только если он есть
+    }
     setOpen(false); // Закрываем селект после выбора
   };
 
   const handleReset = () => {
     setInternalValue(""); // Сбрасываем значение
-    onChange(""); // Передаем пустое значение в `onChange` для сброса
+    if (onChange) {
+      onChange(""); // Передаем пустое значение в `onChange` для сброса
+    }
     setOpen(false); // Закрываем селект после сброса
   };
 
@@ -50,7 +54,7 @@ export const ItemSelect = ({ label, options, onChange, sx, value }) => {
             value={internalValue} // Используем внутреннее значение
             label={label}
             onChange={handleChange}
-            open={open} // добавлено обратно
+            open={open}
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
             MenuProps={selectStyles.menuProps}
