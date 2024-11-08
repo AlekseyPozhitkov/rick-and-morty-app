@@ -12,19 +12,19 @@ export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) =
     setInternalValue(value || "");
   }, [value]);
 
-  // Блокировка и разблокировка прокрутки
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden"; // Блокируем прокрутку при открытии
-    } else {
-      document.body.style.overflow = ""; // Возвращаем прокрутку при закрытии
-    }
+  // // Блокировка и разблокировка прокрутки
+  // useEffect(() => {
+  //   if (open) {
+  //     document.body.style.overflow = "hidden"; // Блокируем прокрутку при открытии
+  //   } else {
+  //     document.body.style.overflow = ""; // Возвращаем прокрутку при закрытии
+  //   }
 
-    // Очистка стилей при размонтировании
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  //   // Очистка стилей при размонтировании
+  //   return () => {
+  //     document.body.style.overflow = "";
+  //   };
+  // }, [open]);
 
   const handleChange = (event) => {
     const selectedValue = event.target.value;
@@ -32,7 +32,7 @@ export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) =
     if (onChange) {
       onChange(selectedValue); // Вызываем onChange только если он есть
     }
-    setOpen(false); // Закрываем селект после выбора
+    // setOpen(false); // Закрываем селект после выбора
   };
 
   const handleReset = () => {
@@ -40,7 +40,7 @@ export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) =
     if (onChange) {
       onChange(""); // Передаем пустое значение в `onChange` для сброса
     }
-    setOpen(false); // Закрываем селект после сброса
+    // setOpen(false); // Закрываем селект после сброса
   };
 
   return (
@@ -54,9 +54,9 @@ export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) =
             value={internalValue} // Используем внутреннее значение
             label={label}
             onChange={handleChange}
-            open={open}
-            onOpen={() => setOpen(true)}
-            onClose={() => setOpen(false)}
+            // open={open}
+            // onOpen={() => setOpen(true)}
+            // onClose={() => setOpen(false)}
             MenuProps={selectStyles.menuProps}
           >
             <MenuItem onClick={handleReset}>
