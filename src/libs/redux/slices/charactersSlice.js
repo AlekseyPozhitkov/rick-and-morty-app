@@ -69,8 +69,8 @@ const charactersSlice = createSlice({
 
         // Добавляем только уникальных персонажей
         const uniqueCharacters = action.payload.results.filter((character) => !existingIds.has(character.id));
-        state.items = [...state.items, ...uniqueCharacters];
 
+        state.items = [...state.items, ...uniqueCharacters];
         state.nextPage += 1;
         state.hasMore = !!action.payload.info.next;
 

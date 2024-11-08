@@ -1,7 +1,8 @@
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
@@ -12,6 +13,7 @@ import { pageStyles } from "../styles";
 export default function EpisodeDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { episode, status: episodeStatus, error } = useSelector((state) => state.episodeDetails);
   const { items: characters, status: charactersStatus } = useSelector((state) => state.characters);
@@ -21,7 +23,7 @@ export default function EpisodeDetails() {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (episode?.characters) {
+    if (episode?.characters?.length > 0) {
       dispatch(fetchEpisodeCharacters(episode.characters));
     }
   }, [dispatch, episode]);
@@ -40,7 +42,12 @@ export default function EpisodeDetails() {
 
   return (
     <Stack sx={{ ...pageStyles.details, gap: "0" }}>
-      <Typography variant="h4" sx={{ marginBottom: "24px", textAlign: "center" }}>
+      <Box onClick={() => navigate(-1)} sx={pageStyles.arrow}>
+        <ArrowBackIcon sx={{ fontSize: "20px" }} />
+        <Typography sx={{ fontWeight: "700", fontSize: "18px" }}>GO BACK</Typography>
+      </Box>
+
+      <Typography variant="h4" sx={{ marginBottom: "24px", textAlign: "center", marginTop: "-30px" }}>
         {episode.name}
       </Typography>
 
@@ -67,7 +74,7 @@ export default function EpisodeDetails() {
             <ItemCard key={character.id} itemId={character.id} itemType="character" showImage />
           ))
         ) : (
-          <Typography>No characters found in this episode</Typography>
+          <Typography variant="h4">No characters found in this episode</Typography>
         )}
       </Box>
     </Stack>

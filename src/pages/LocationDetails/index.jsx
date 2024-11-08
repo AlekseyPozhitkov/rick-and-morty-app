@@ -1,7 +1,8 @@
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
@@ -12,6 +13,7 @@ import { pageStyles } from "../styles";
 export default function LocationDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { location, status: locationStatus, error } = useSelector((state) => state.locationDetails);
   const { items: characters, status: charactersStatus } = useSelector((state) => state.characters);
@@ -21,7 +23,7 @@ export default function LocationDetails() {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (location?.residents) {
+    if (location?.residents?.length > 0) {
       dispatch(fetchLocationCharacters(location.residents));
     }
   }, [dispatch, location]);
@@ -38,9 +40,16 @@ export default function LocationDetails() {
     return <Typography>No character data available</Typography>;
   }
 
+  console.log(location);
+
   return (
     <Stack sx={{ ...pageStyles.details, gap: "0" }}>
-      <Typography variant="h4" sx={{ marginBottom: "24px", textAlign: "center" }}>
+      <Box onClick={() => navigate(-1)} sx={pageStyles.arrow}>
+        <ArrowBackIcon sx={{ fontSize: "20px" }} />
+        <Typography sx={{ fontWeight: "700", fontSize: "18px" }}>GO BACK</Typography>
+      </Box>
+
+      <Typography variant="h4" sx={{ marginBottom: "24px", textAlign: "center", marginTop: "-30px" }}>
         {location.name}
       </Typography>
 
@@ -64,7 +73,7 @@ export default function LocationDetails() {
             <ItemCard key={character.id} itemId={character.id} itemType="character" showImage />
           ))
         ) : (
-          <Typography>No characters found on this location</Typography>
+          <Typography variant="h4">No characters found on this location</Typography>
         )}
       </Box>
     </Stack>

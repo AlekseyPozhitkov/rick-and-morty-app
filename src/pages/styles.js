@@ -1,3 +1,5 @@
+import zIndex from "@mui/material/styles/zIndex";
+
 const commonContainerStyles = {
   width: "100%",
   maxWidth: "1020px",
@@ -8,7 +10,7 @@ const commonContainerStyles = {
 
 export const pageStyles = {
   image: {
-    marginBottom: "20px"
+    margin: "0 auto 20px"
   },
   sorts: {
     ...commonContainerStyles,
@@ -50,5 +52,16 @@ export const pageStyles = {
     fontSize: "20px",
     color: "#8e8e93",
     textAlign: "left"
+  },
+  arrow: {
+    display: "inline-flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    maxWidth: "108px",
+    maxHeight: "20px",
+    marginTop: "20px",
+    cursor: "pointer",
+    zIndex: "1",
+    "&:hover": { color: "#8E8E93" }
   }
 };

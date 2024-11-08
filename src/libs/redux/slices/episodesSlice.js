@@ -46,8 +46,10 @@ const episodesSlice = createSlice({
       })
       .addCase(fetchEpisodes.fulfilled, (state, action) => {
         state.status = "succeeded";
+
         const existingIds = new Set(state.items.map((item) => item.id));
         const uniqueEpisodes = action.payload.results.filter((episode) => !existingIds.has(episode.id));
+
         state.items = [...state.items, ...uniqueEpisodes];
         state.nextPage += 1;
         state.hasMore = !!action.payload.info.next;
