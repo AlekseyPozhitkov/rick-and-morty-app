@@ -5,7 +5,6 @@ import { selectStyles } from "./styles";
 
 export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) => {
   const [internalValue, setInternalValue] = useState("");
-  const [open, setOpen] = useState(false);
 
   // Обновляем внутреннее значение при изменении value пропа
   useEffect(() => {
