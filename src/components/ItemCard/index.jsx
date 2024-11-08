@@ -3,12 +3,20 @@ import { Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/m
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { getItemById } from "../../libs/redux/selectors/itemsSelectors";
+import { selectCharacterById } from "../../libs/redux/slices/charactersSlice";
+import { selectEpisodeById } from "../../libs/redux/slices/episodesSlice";
+import { selectLocationById } from "../../libs/redux/slices/locationsSlice";
 import { cardStyles } from "./styles";
 
 export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow }) => {
-  const item = useSelector((state) => getItemById(state, itemId, itemType));
-  const navigate = useNavigate(); // Инициализируем useNavigate
+  const selectors = {
+    character: selectCharacterById,
+    location: selectLocationById,
+    episode: selectEpisodeById
+  };
+  const item = useSelector((state) => selectors[itemType]?.(state, itemId));
+
+  const navigate = useNavigate();
 
   const handleCardClick = () => {
     navigate(`/${itemType}/${itemId}`); // Переход на страницу персонажа

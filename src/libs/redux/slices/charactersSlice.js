@@ -126,5 +126,9 @@ const charactersSlice = createSlice({
   }
 });
 
+// Селектор
+export const selectCharacterById = (state, itemId) =>
+  state.characters.items.find((item) => item.id === itemId) || null;
+
 export const { setCharacterFilter } = charactersSlice.actions;
 export default charactersSlice.reducer;

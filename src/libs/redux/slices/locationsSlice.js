@@ -82,5 +82,9 @@ const locationsSlice = createSlice({
   }
 });
 
+// Селектор
+export const selectLocationById = (state, itemId) =>
+  state.locations.items.find((item) => item.id === itemId) || null;
+
 export const { setLocationFilter } = locationsSlice.actions;
 export default locationsSlice.reducer;

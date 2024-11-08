@@ -87,5 +87,9 @@ const episodesSlice = createSlice({
   }
 });
 
+// Селектор
+export const selectEpisodeById = (state, itemId) =>
+  state.episodes.items.find((item) => item.id === itemId) || null;
+
 export const { setEpisodeFilter } = episodesSlice.actions;
 export default episodesSlice.reducer;

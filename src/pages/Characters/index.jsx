@@ -21,7 +21,7 @@ export default function Characters() {
   const nextPage = useSelector((state) => state.characters.nextPage);
   const errorMessage = useSelector((state) => state.characters.errorMessage);
 
-  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
+  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживания загрузки по кнопке
   const [initialLoad, setInitialLoad] = useState(true);
 
   // Устанавливаем фильтры из localStorage при первом рендере
@@ -40,7 +40,7 @@ export default function Characters() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, initialLoad]);
 
-  // Загрузка эпизодов при изменении фильтров или страницы
+  // Загрузка персонажей при изменении фильтров или страницы
   useEffect(() => {
     if (!initialLoad && status === "idle") {
       dispatch(fetchCharacters({ page: nextPage, filters }));
