@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,6 +11,14 @@ import { Spinner } from "../../components/Spinner";
 import { fetchCharacters, setCharacterFilter } from "../../libs/redux/slices/charactersSlice";
 import logo from "../../public/RICKANDMORTY.svg";
 import { pageStyles } from "../styles";
+
+// Выносим debounce за пределы компонента
+const debouncedFetchCharacters = debounce((dispatch, filters, name) => {
+  const updatedFilters = { ...filters, name };
+  localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+  dispatch(setCharacterFilter({ name }));
+  dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
+}, 700);
 
 export default function Characters() {
   const dispatch = useDispatch();
@@ -23,6 +32,7 @@ export default function Characters() {
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживания загрузки по кнопке
   const [initialLoad, setInitialLoad] = useState(true);
+  const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
@@ -60,6 +70,13 @@ export default function Characters() {
     dispatch(fetchCharacters({ page: nextPage, filters }));
   };
 
+  const handleInputChange = (e) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+    // Вызываем debounce-функцию, передавая текущие значения dispatch и filters
+    debouncedFetchCharacters(dispatch, filters, newValue);
+  };
+
   const handleFilterChange = (filterType, value) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
     localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
@@ -72,7 +89,7 @@ export default function Characters() {
       <Box component="img" src={logo} alt="RICKANDMORTY" sx={pageStyles.image} />
 
       <Stack sx={pageStyles.sorts} direction="row">
-        <ItemInput value={filters.name || ""} onChange={(e) => handleFilterChange("name", e.target.value)} />
+        <ItemInput value={inputValue} onChange={handleInputChange} />
         <ItemSelect
           label="Species"
           options={filterOptions.species}
