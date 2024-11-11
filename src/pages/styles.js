@@ -8,7 +8,8 @@ const commonContainerStyles = {
 
 export const pageStyles = {
   image: {
-    margin: "0 auto 20px"
+    margin: "0 auto 20px",
+    maxWidth: "100%"
   },
   sorts: {
     ...commonContainerStyles,
