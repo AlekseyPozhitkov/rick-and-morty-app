@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,6 +12,14 @@ import { fetchLocations, setLocationFilter } from "../../libs/redux/slices/locat
 import logo from "../../public/rick-and-morty-circle.svg";
 import { pageStyles } from "../styles";
 
+// Выносим debounce за пределы компонента
+const debouncedFetchByName = debounce((dispatch, filters, name) => {
+  const updatedFilters = { ...filters, name };
+  localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
+  dispatch(setLocationFilter({ name }));
+  dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
+}, 700);
+
 export default function Locations() {
   const dispatch = useDispatch();
   const locations = useSelector((state) => state.locations.items);
@@ -22,30 +31,19 @@ export default function Locations() {
   const errorMessage = useSelector((state) => state.locations.errorMessage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
-    if (initialLoad) {
-      const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
-      if (savedFilters) {
-        Object.keys(savedFilters).forEach((key) => {
-          dispatch(setLocationFilter({ [key]: savedFilters[key] }));
-        });
-      }
-      // Первая загрузка эпизодов только после применения фильтров из localStorage
-      dispatch(fetchLocations({ page: 1, filters: savedFilters || filters }));
-      setInitialLoad(false);
+    const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
+    if (savedFilters) {
+      Object.keys(savedFilters).forEach((key) => {
+        dispatch(setLocationFilter({ [key]: savedFilters[key] }));
+      });
     }
+    dispatch(fetchLocations({ page: 1, filters: savedFilters || filters }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, initialLoad]);
-
-  // Загрузка эпизодов при изменении фильтров или страницы
-  useEffect(() => {
-    if (!initialLoad && status === "idle") {
-      dispatch(fetchLocations({ page: nextPage, filters }));
-    }
-  }, [dispatch, filters, nextPage, status, initialLoad]);
+  }, [dispatch]);
 
   // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
@@ -60,6 +58,12 @@ export default function Locations() {
     dispatch(fetchLocations({ page: nextPage, filters }));
   };
 
+  const handleInputChange = (e) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+    debouncedFetchByName(dispatch, filters, newValue);
+  };
+
   const handleFilterChange = (filterType, value) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
     localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
@@ -72,11 +76,7 @@ export default function Locations() {
       <Box component="img" src={logo} alt="rick-and-morty-circle" sx={pageStyles.image} />
 
       <Stack sx={pageStyles.sorts} direction="row">
-        <ItemInput
-          value={filters.name || ""}
-          onChange={(e) => handleFilterChange("name", e.target.value)}
-          sx={{ box: { maxWidth: "326px" } }}
-        />
+        <ItemInput value={inputValue} onChange={handleInputChange} sx={{ box: { maxWidth: "326px" } }} />
         <ItemSelect
           label="Type"
           options={filterOptions.type}

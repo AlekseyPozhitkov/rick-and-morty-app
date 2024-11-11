@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,6 +11,14 @@ import { fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episode
 import logo from "../../public/rick-and-morty-eyes.svg";
 import { pageStyles } from "../styles";
 
+// Выносим debounce за пределы компонента
+const debouncedFetchByName = debounce((dispatch, filters, name) => {
+  const updatedFilters = { ...filters, name };
+  localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
+  dispatch(setEpisodeFilter({ name }));
+  dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
+}, 700);
+
 export default function Episodes() {
   const dispatch = useDispatch();
   const episodes = useSelector((state) => state.episodes.items);
@@ -20,30 +29,19 @@ export default function Episodes() {
   const errorMessage = useSelector((state) => state.episodes.errorMessage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Загружаем фильтры из localStorage при первом рендере
   useEffect(() => {
-    if (initialLoad) {
-      const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
-      if (savedFilters) {
-        Object.keys(savedFilters).forEach((key) => {
-          dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
-        });
-      }
-      // Первая загрузка эпизодов только после применения фильтров из localStorage
-      dispatch(fetchEpisodes({ page: 1, filters: savedFilters || filters }));
-      setInitialLoad(false);
+    const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
+    if (savedFilters) {
+      Object.keys(savedFilters).forEach((key) => {
+        dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
+      });
     }
+    dispatch(fetchEpisodes({ page: 1, filters: savedFilters || filters }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, initialLoad]);
-
-  // Загрузка эпизодов при изменении фильтров или страницы
-  useEffect(() => {
-    if (!initialLoad && status === "idle") {
-      dispatch(fetchEpisodes({ page: nextPage, filters }));
-    }
-  }, [dispatch, filters, nextPage, status, initialLoad]);
+  }, [dispatch]);
 
   // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
@@ -58,11 +56,10 @@ export default function Episodes() {
     dispatch(fetchEpisodes({ page: nextPage, filters }));
   };
 
-  const handleFilterChange = (value) => {
-    const updatedFilters = { ...filters, name: value || "" };
-    localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
-    dispatch(setEpisodeFilter({ name: value }));
-    dispatch(fetchEpisodes({ page: 1, filters: updatedFilters })); // Перезагрузка с первой страницы
+  const handleInputChange = (e) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+    debouncedFetchByName(dispatch, filters, newValue);
   };
 
   return (
@@ -71,8 +68,8 @@ export default function Episodes() {
 
       <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput
-          value={filters.name || ""}
-          onChange={(e) => handleFilterChange(e.target.value)}
+          value={inputValue}
+          onChange={handleInputChange}
           placeholder="Filter by name or episode (ex. S01 or S01E02)"
           sx={{ box: { maxWidth: "500px" } }}
         />
@@ -94,7 +91,7 @@ export default function Episodes() {
         <Typography sx={pageStyles.notFound}>{errorMessage || "Oops! Not found"}</Typography>
       )}
 
-      {hasMore && status !== "loading" && !initialLoad && <LoadMoreButton onClick={onLoadMore} />}
+      {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}
     </>
   );
 }
