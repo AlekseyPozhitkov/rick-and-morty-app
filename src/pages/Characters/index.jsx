@@ -110,12 +110,12 @@ export default function Characters() {
         />
       </Stack>
 
-      <Stack sx={pageStyles.items} direction="row">
+      <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}
         {characters.map((card) => (
           <ItemCard key={card.id} itemId={card.id} itemType="character" showImage />
         ))}
-      </Stack>
+      </Box>
 
       {status === "failed" && characters.length === 0 && (
         <Typography sx={pageStyles.notFound}>{errorMessage || "Oops! Not found"}</Typography>

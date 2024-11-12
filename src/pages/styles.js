@@ -51,17 +51,7 @@ export const pageStyles = {
     fontWeight: "500",
     fontSize: "20px",
     color: "#8e8e93",
-    textAlign: "left"
-  },
-  arrow: {
-    display: "inline-flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    maxWidth: "108px",
-    maxHeight: "20px",
-    marginTop: "20px",
-    cursor: "pointer",
-    zIndex: "1",
-    "&:hover": { color: "#8E8E93" }
+    textAlign: "left",
+    marginBottom: { xs: "16px", sm: "35px" }
   }
 };

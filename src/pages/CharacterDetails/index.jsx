@@ -1,10 +1,10 @@
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
+import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
@@ -15,7 +15,6 @@ import { detailsStyles, itemCard } from "./styles";
 export default function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // Получаем данные о персонаже и статус загрузки
   const { character, status: characterStatus, error } = useSelector((state) => state.characterDetails);
@@ -46,25 +45,30 @@ export default function CharacterDetails() {
 
   return (
     <Stack sx={{ ...pageStyles.details, gap: "0" }}>
-      <Box onClick={() => navigate(-1)} sx={pageStyles.arrow}>
-        <ArrowBackIcon sx={{ fontSize: "20px" }} />
-        <Typography sx={{ fontWeight: "700", fontSize: "18px" }}>GO BACK</Typography>
-      </Box>
+      <GoBackButton />
 
       <Box
         component="img"
         src={character.image}
         alt={character.name}
-        sx={{ ...pageStyles.image, borderRadius: "50%", maxWidth: "300px", marginTop: "-50px" }}
+        sx={{
+          ...pageStyles.image,
+          borderRadius: "50%",
+          maxWidth: { xs: "146px", sm: "300px" },
+          marginTop: { xs: "0", sm: "-50px" }
+        }}
       />
 
-      <Typography variant="h3" sx={{ marginBottom: "42px" }}>
+      <Typography
+        variant="h3"
+        sx={{ marginBottom: { xs: "32px", sm: "42px" }, fontSize: { xs: "32px", sm: "48px" } }}
+      >
         {character.name}
       </Typography>
 
-      <Stack direction="row" spacing={2} sx={{ justifyContent: "center" }}>
+      <Stack direction={{ xs: "column", sm: "row" }} sx={{ justifyContent: "center", gap: { xs: "50px" } }}>
         <Stack sx={detailsStyles.stack}>
-          <Typography sx={{ ...pageStyles.header, marginBottom: "35px" }}>Informations</Typography>
+          <Typography sx={{ ...pageStyles.header }}>Informations</Typography>
           {Object.entries(character).map(([key, value]) => {
             if (["id", "name", "image", "location", "episode", "url", "created"].includes(key)) {
               return null;
@@ -103,7 +107,7 @@ export default function CharacterDetails() {
         </Stack>
 
         <Stack sx={detailsStyles.stack}>
-          <Typography sx={{ ...pageStyles.header, marginBottom: "35px" }}>Episodes</Typography>
+          <Typography sx={{ ...pageStyles.header }}>Episodes</Typography>
           <Box
             sx={{
               maxHeight: "352px",
