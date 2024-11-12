@@ -71,7 +71,7 @@ export default function Episodes() {
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Filter by name or episode (ex. S01 or S01E02)"
-          sx={{ box: { maxWidth: "500px" } }}
+          sx={{ box: { maxWidth: { sm: "500px" } } }}
         />
       </Stack>
 

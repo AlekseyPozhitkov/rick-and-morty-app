@@ -1,9 +1,6 @@
 export const selectStyles = {
-  backdrop: {
-    zIndex: (theme) => theme.zIndex.drawer + 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)"
-  },
   box: {
+    display: { xs: "none", sm: "flex" },
     width: "100%",
     maxWidth: "240px"
   },

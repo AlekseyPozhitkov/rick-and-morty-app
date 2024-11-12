@@ -76,7 +76,11 @@ export default function Locations() {
       <Box component="img" src={logo} alt="rick-and-morty-circle" sx={pageStyles.image} />
 
       <Stack sx={pageStyles.sorts} direction="row">
-        <ItemInput value={inputValue} onChange={handleInputChange} sx={{ box: { maxWidth: "326px" } }} />
+        <ItemInput
+          value={inputValue}
+          onChange={handleInputChange}
+          sx={{ box: { maxWidth: { sm: "326px" } } }}
+        />
         <ItemSelect
           label="Type"
           options={filterOptions.type}

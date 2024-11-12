@@ -1,7 +1,6 @@
 export const inputStyles = {
   box: {
-    width: "100%",
-    maxWidth: "240px"
+    width: "100%"
   },
   textField: {
     width: "100%"

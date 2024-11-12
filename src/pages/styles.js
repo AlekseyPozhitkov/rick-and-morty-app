@@ -18,8 +18,9 @@ export const pageStyles = {
   },
   items: {
     ...commonContainerStyles,
-    flexWrap: "wrap",
-    justifyContent: "left"
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
+    justifyContent: "center"
   },
   details: {
     ...commonContainerStyles,
