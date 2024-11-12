@@ -7,17 +7,23 @@ export const navbarStyles = {
     marginBottom: "20px"
   },
   toolbar: {
-    height: "100%",
-    maxHeight: "60px",
-    width: "100%",
+    height: "64px",
+    width: "90%",
     maxWidth: "1020px",
     padding: "0 !important",
     margin: "0 auto",
     justifyContent: "space-between"
   },
   navBox: {
-    display: "flex",
-    gap: "24px"
+    gap: { xs: "48px", sm: "24px" },
+    flexDirection: { xs: "column", sm: "row" },
+    position: { xs: "fixed", sm: "static" },
+    top: "64px",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingTop: { xs: "48px", sm: 0 },
+    backgroundColor: { xs: "#FFF" }
   },
   navLink: {
     fontFamily: '"Karla", serif',
@@ -26,5 +32,10 @@ export const navbarStyles = {
     fontSize: "18px",
     textTransform: "capitalize",
     fontStyle: "normal"
+  },
+  burger: {
+    display: { xs: "block", sm: "none" },
+    padding: "0",
+    margin: "0"
   }
 };

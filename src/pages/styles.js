@@ -1,5 +1,5 @@
 const commonContainerStyles = {
-  width: "100%",
+  width: "90%",
   maxWidth: "1020px",
   display: "flex",
   margin: "0 auto 40px",
@@ -9,7 +9,7 @@ const commonContainerStyles = {
 export const pageStyles = {
   image: {
     margin: "0 auto 20px",
-    maxWidth: "100%"
+    maxWidth: "90%"
   },
   sorts: {
     ...commonContainerStyles,
