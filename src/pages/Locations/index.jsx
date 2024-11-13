@@ -81,18 +81,16 @@ export default function Locations() {
           onChange={handleInputChange}
           sx={{ box: { maxWidth: { sm: "326px" } } }}
         />
-        <ItemSelect
-          label="Type"
-          options={filterOptions.type}
-          value={filters.type || ""}
-          onChange={(value) => handleFilterChange("type", value)}
-        />
-        <ItemSelect
-          label="Dimension"
-          options={filterOptions.dimension}
-          value={filters.dimension || ""}
-          onChange={(value) => handleFilterChange("dimension", value)}
-        />
+
+        {["type", "dimension"].map((filterType) => (
+          <ItemSelect
+            key={filterType}
+            label={filterType[0].toUpperCase() + filterType.slice(1)}
+            options={filterOptions[filterType]}
+            value={filters[filterType] || ""}
+            onChange={(value) => handleFilterChange(filterType, value)}
+          />
+        ))}
       </Stack>
 
       <Stack sx={pageStyles.items} direction="row">

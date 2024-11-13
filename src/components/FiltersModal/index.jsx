@@ -14,6 +14,7 @@ export default function FiltersModal() {
   return (
     <Box>
       <Button onClick={handleOpen}>Open modal</Button>
+
       <Modal
         open={open}
         onClose={handleClose}

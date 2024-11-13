@@ -90,24 +90,16 @@ export default function Characters() {
 
       <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput value={inputValue} onChange={handleInputChange} />
-        <ItemSelect
-          label="Species"
-          options={filterOptions.species}
-          value={filters.species || ""}
-          onChange={(value) => handleFilterChange("species", value)}
-        />
-        <ItemSelect
-          label="Gender"
-          options={filterOptions.gender}
-          value={filters.gender || ""}
-          onChange={(value) => handleFilterChange("gender", value)}
-        />
-        <ItemSelect
-          label="Status"
-          options={filterOptions.status}
-          value={filters.status || ""}
-          onChange={(value) => handleFilterChange("status", value)}
-        />
+
+        {["species", "gender", "status"].map((filterType) => (
+          <ItemSelect
+            key={filterType}
+            label={filterType[0].toUpperCase() + filterType.slice(1)}
+            options={filterOptions[filterType]}
+            value={filters[filterType] || ""}
+            onChange={(value) => handleFilterChange(filterType, value)}
+          />
+        ))}
       </Stack>
 
       <Box sx={pageStyles.items}>

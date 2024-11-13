@@ -16,6 +16,7 @@ export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) =
       <Box sx={{ ...selectStyles.box, ...sx?.box }}>
         <FormControl fullWidth>
           <InputLabel>{label}</InputLabel>
+
           <Select
             sx={selectStyles.select}
             value={value}
