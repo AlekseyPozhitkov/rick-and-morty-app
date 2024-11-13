@@ -18,7 +18,7 @@ export const Navbar = () => {
 
   return (
     <AppBar sx={navbarStyles.appBar}>
-      <Toolbar sx={navbarStyles.toolbar}>
+      <Toolbar disableGutters sx={navbarStyles.toolbar}>
         <img src={logo} alt="RickAndMorty" />
 
         <IconButton onClick={toggleMenu} sx={navbarStyles.burger}>
@@ -31,10 +31,10 @@ export const Navbar = () => {
         >
           {LINK_ITEMS.map((page, index) => (
             <Box
-              key={index}
+              key={page.title}
               component={Link}
               sx={navbarStyles.navLink}
-              to={page.link}
+              to={page.path}
               onClick={() => setMenuOpen(false)}
             >
               {page.title}

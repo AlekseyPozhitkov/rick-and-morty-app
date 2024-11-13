@@ -95,10 +95,10 @@ export default function CharacterDetails() {
               color: "inherit",
               borderRadius: "5px",
               "&:hover": { backgroundColor: "#f6f6f6" },
-              ...pageStyles.stackText
+              ...pageStyles.stackItem
             }}
           >
-            <Stack sx={pageStyles.stackItem}>
+            <Stack>
               <Typography sx={pageStyles.stackTitle}>Location</Typography>
               <Typography sx={pageStyles.stackName}>{character.location.name}</Typography>
             </Stack>

@@ -1,14 +1,14 @@
 export const LINK_ITEMS = [
   {
-    link: "/",
+    path: "/",
     title: "Characters"
   },
   {
-    link: "/locations",
+    path: "/locations",
     title: "Locations"
   },
   {
-    link: "/episodes",
+    path: "/episodes",
     title: "Episodes"
   }
 ];
