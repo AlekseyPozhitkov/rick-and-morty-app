@@ -3,6 +3,7 @@ import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import FiltersModal from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
@@ -88,7 +89,7 @@ export default function Characters() {
     <>
       <Box component="img" src={logo} alt="RICKANDMORTY" sx={pageStyles.image} />
 
-      <Stack sx={pageStyles.sorts} direction="row">
+      <Stack sx={pageStyles.sorts} direction={{ xs: "column", sm: "row" }}>
         <ItemInput value={inputValue} onChange={handleInputChange} />
 
         {["species", "gender", "status"].map((filterType) => (
@@ -100,6 +101,13 @@ export default function Characters() {
             onChange={(value) => handleFilterChange(filterType, value)}
           />
         ))}
+
+        <FiltersModal
+          filterOptions={filterOptions}
+          filters={filters}
+          handleFilterChange={handleFilterChange}
+          filterTypes={["species", "gender", "status"]}
+        />
       </Stack>
 
       <Box sx={pageStyles.items}>

@@ -1,6 +1,7 @@
 export const buttonStyles = {
   button: {
-    width: "155px",
+    maxWidth: "155px",
+    width: "100%",
     height: "35px",
     backgroundColor: "#F2F9FE",
     color: "#2196F3",

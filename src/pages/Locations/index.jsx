@@ -3,6 +3,7 @@ import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import FiltersModal from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
@@ -75,7 +76,7 @@ export default function Locations() {
     <>
       <Box component="img" src={logo} alt="rick-and-morty-circle" sx={pageStyles.image} />
 
-      <Stack sx={pageStyles.sorts} direction="row">
+      <Stack sx={pageStyles.sorts} direction={{ xs: "column", sm: "row" }}>
         <ItemInput
           value={inputValue}
           onChange={handleInputChange}
@@ -89,8 +90,16 @@ export default function Locations() {
             options={filterOptions[filterType]}
             value={filters[filterType] || ""}
             onChange={(value) => handleFilterChange(filterType, value)}
+            sx={{ box: { maxWidth: "240px" } }}
           />
         ))}
+
+        <FiltersModal
+          filterOptions={filterOptions}
+          filters={filters}
+          handleFilterChange={handleFilterChange}
+          filterTypes={["type", "dimension"]}
+        />
       </Stack>
 
       <Stack sx={pageStyles.items} direction="row">

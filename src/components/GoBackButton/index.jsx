@@ -8,7 +8,7 @@ export const GoBackButton = () => {
   const navigate = useNavigate();
 
   return (
-    <Box onClick={() => navigate(-1)} sx={arrowStyles.arrow}>
+    <Box onClick={() => navigate(-1)} sx={arrowStyles}>
       <ArrowBackIcon sx={{ fontSize: "20px" }} />
       <Typography sx={{ fontWeight: "700", fontSize: "18px" }}>GO BACK</Typography>
     </Box>

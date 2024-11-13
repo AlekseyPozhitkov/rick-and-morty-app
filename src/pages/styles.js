@@ -13,8 +13,9 @@ export const pageStyles = {
   },
   sorts: {
     ...commonContainerStyles,
-    marginBottom: "60px",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginBottom: { xs: "35px", sm: "60px" },
+    gap: { xs: "16px", sm: "20px" }
   },
   items: {
     ...commonContainerStyles,

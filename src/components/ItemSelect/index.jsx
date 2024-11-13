@@ -13,7 +13,12 @@ export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) =
 
   return (
     <>
-      <Box sx={{ ...selectStyles.box, ...sx?.box }}>
+      <Box
+        sx={{
+          ...selectStyles.box,
+          ...sx?.box
+        }}
+      >
         <FormControl fullWidth>
           <InputLabel>{label}</InputLabel>
 
