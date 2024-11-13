@@ -1,6 +1,5 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Typography } from "@mui/material";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { arrowStyles } from "./styles";

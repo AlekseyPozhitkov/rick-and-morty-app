@@ -77,10 +77,10 @@ export default function CharacterDetails() {
             const displayValue = typeof value === "object" ? value.name || "Unknown" : value || "Unknown";
 
             return (
-              <Stack sx={pageStyles.stackItem} key={key}>
+              <Box sx={pageStyles.stackItem} key={key}>
                 <Typography sx={{ textTransform: "capitalize", ...pageStyles.stackTitle }}>{key}</Typography>
                 <Typography sx={pageStyles.stackName}>{displayValue}</Typography>
-              </Stack>
+              </Box>
             );
           })}
 

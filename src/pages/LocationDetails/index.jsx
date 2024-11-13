@@ -53,15 +53,17 @@ export default function LocationDetails() {
             const displayValue = location[key] || "Unknown";
 
             return (
-              <Stack sx={{ width: "100%", textAlign: "start", maxWidth: "240px" }} key={key}>
+              <Box sx={{ width: "100%", textAlign: "start", maxWidth: "240px" }} key={key}>
                 <Typography sx={{ textTransform: "capitalize", ...pageStyles.stackTitle }}>{key}</Typography>
                 <Typography sx={pageStyles.stackName}>{displayValue}</Typography>
-              </Stack>
+              </Box>
             );
           })}
         </Stack>
+
         <Typography sx={{ ...pageStyles.header, marginBottom: "24px" }}>Residents</Typography>
       </Stack>
+
       <Box sx={pageStyles.items}>
         {characters.length > 0 ? (
           characters.map((character) => (

@@ -63,8 +63,10 @@ export default function EpisodeDetails() {
             );
           })}
         </Stack>
+
         <Typography sx={{ ...pageStyles.header, marginBottom: "24px" }}>Cast</Typography>
       </Stack>
+
       <Box sx={pageStyles.items}>
         {characters.length > 0 ? (
           characters.map((character) => (
