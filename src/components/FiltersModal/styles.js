@@ -18,12 +18,17 @@ export const modalStyle = {
   },
   button: {
     display: { xs: "block", sm: "none" },
-    margin: "0 auto",
+    position: "relative",
     width: "100%",
     backgroundColor: "#E3F2FD",
     color: "#2196F3",
     font: "Roboto",
     fontWeight: "500",
     fontSize: "14px"
+  },
+  icon: {
+    position: "absolute",
+    left: "16px",
+    color: "#676e74"
   }
 };

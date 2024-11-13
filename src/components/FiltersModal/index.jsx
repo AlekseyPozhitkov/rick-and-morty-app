@@ -1,6 +1,8 @@
+import FilterListIcon from "@mui/icons-material/FilterList";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import { useState } from "react";
 
+// Import the icon
 import { ItemSelect } from "../ItemSelect";
 import { modalStyle } from "./styles";
 
@@ -17,6 +19,7 @@ export default function FiltersModal({ filterOptions, filters, handleFilterChang
         onClick={handleOpen}
         sx={{ ...modalStyle.button, height: "56px" }}
       >
+        <FilterListIcon sx={modalStyle.icon} />
         Advanced filters
       </Button>
 
