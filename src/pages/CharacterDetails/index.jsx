@@ -54,7 +54,7 @@ export default function CharacterDetails() {
         sx={{
           ...pageStyles.image,
           borderRadius: "50%",
-          maxWidth: { xs: "146px", sm: "300px" },
+          maxWidth: { xs: "200px", sm: "300px" },
           marginTop: { xs: "0", sm: "-50px" }
         }}
       />
