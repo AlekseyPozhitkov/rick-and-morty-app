@@ -1,25 +1,13 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-// import { useEffect, useState } from "react";
 import { selectStyles } from "./styles";
 
 export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) => {
-  // const [internalValue, setInternalValue] = useState("");
-
-  // Обновляем внутреннее значение при изменении value пропа
-  // useEffect(() => {
-  //   setInternalValue(value || "");
-  // }, [value]);
-
   const handleChange = (event) => {
     onChange(event.target.value);
-    // const selectedValue = event.target.value;
-    // setInternalValue(selectedValue);
-    // onChange(selectedValue);
   };
 
   const handleReset = () => {
-    // setInternalValue(""); // Сбрасываем значение
     onChange("");
   };
 
@@ -30,7 +18,7 @@ export const ItemSelect = ({ label, options, onChange = () => {}, sx, value }) =
           <InputLabel>{label}</InputLabel>
           <Select
             sx={selectStyles.select}
-            value={value} // Используем внутреннее значение
+            value={value}
             label={label}
             onChange={handleChange}
             MenuProps={selectStyles.menuProps}
