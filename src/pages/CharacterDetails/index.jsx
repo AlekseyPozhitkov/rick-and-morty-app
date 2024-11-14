@@ -17,8 +17,17 @@ export default function CharacterDetails() {
   const dispatch = useDispatch();
 
   // Получаем данные о персонаже и статус загрузки
-  const { character, status: characterStatus, error } = useSelector((state) => state.characterDetails);
-  const { items: episodes, status: episodesStatus } = useSelector((state) => state.episodes);
+  const {
+    character,
+    status: characterStatus,
+    error: characterError
+  } = useSelector((state) => state.characterDetails);
+
+  const {
+    items: episodes,
+    status: episodesStatus,
+    error: episodesError
+  } = useSelector((state) => state.episodes);
 
   useEffect(() => {
     dispatch(fetchCharacterById(id));
@@ -36,7 +45,7 @@ export default function CharacterDetails() {
   }
 
   if (characterStatus === "failed") {
-    return <Typography>Error: {error}</Typography>;
+    return <Typography>Error loading character: {characterError}</Typography>;
   }
 
   if (!character) {
@@ -117,7 +126,11 @@ export default function CharacterDetails() {
               }
             }}
           >
-            {episodes.length > 0 ? (
+            {episodesStatus === "loading" ? (
+              <Spinner />
+            ) : episodesStatus === "failed" ? (
+              <Typography>Error loading episodes: {episodesError}</Typography>
+            ) : episodes.length > 0 ? (
               episodes.map((episode) => (
                 <ItemCard
                   key={episode.id}

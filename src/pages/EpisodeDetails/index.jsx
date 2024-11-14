@@ -14,8 +14,16 @@ export default function EpisodeDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { episode, status: episodeStatus, error } = useSelector((state) => state.episodeDetails);
-  const { items: characters, status: charactersStatus } = useSelector((state) => state.characters);
+  const {
+    episode,
+    status: episodeStatus,
+    error: episodeError
+  } = useSelector((state) => state.episodeDetails);
+  const {
+    items: characters,
+    status: charactersStatus,
+    error: charactersError
+  } = useSelector((state) => state.characters);
 
   useEffect(() => {
     dispatch(fetchEpisodeById(id));
@@ -32,7 +40,7 @@ export default function EpisodeDetails() {
   }
 
   if (episodeStatus === "failed") {
-    return <Typography>Error: {error}</Typography>;
+    return <Typography>Error loading episode: {episodeError}</Typography>;
   }
 
   if (!episode) {
@@ -68,7 +76,11 @@ export default function EpisodeDetails() {
       </Stack>
 
       <Box sx={pageStyles.items}>
-        {characters.length > 0 ? (
+        {charactersStatus === "loading" ? (
+          <Spinner />
+        ) : charactersStatus === "failed" ? (
+          <Typography>Error loading characters: {charactersError}</Typography>
+        ) : characters.length > 0 ? (
           characters.map((character) => (
             <ItemCard key={character.id} itemId={character.id} itemType="character" showImage />
           ))

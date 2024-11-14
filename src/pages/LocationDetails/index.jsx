@@ -14,8 +14,17 @@ export default function LocationDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { location, status: locationStatus, error } = useSelector((state) => state.locationDetails);
-  const { items: characters, status: charactersStatus } = useSelector((state) => state.characters);
+  const {
+    location,
+    status: locationStatus,
+    error: locationError
+  } = useSelector((state) => state.locationDetails);
+
+  const {
+    items: characters,
+    status: charactersStatus,
+    error: charactersError
+  } = useSelector((state) => state.characters);
 
   useEffect(() => {
     dispatch(fetchLocationById(id));
@@ -32,7 +41,7 @@ export default function LocationDetails() {
   }
 
   if (locationStatus === "failed") {
-    return <Typography>Error: {error}</Typography>;
+    return <Typography>Error loading location: {locationError}</Typography>;
   }
 
   if (!location) {
@@ -65,7 +74,11 @@ export default function LocationDetails() {
       </Stack>
 
       <Box sx={pageStyles.items}>
-        {characters.length > 0 ? (
+        {charactersStatus === "loading" ? (
+          <Spinner />
+        ) : charactersStatus === "failed" ? (
+          <Typography>Error loading residents: {charactersError}</Typography>
+        ) : characters.length > 0 ? (
           characters.map((character) => (
             <ItemCard key={character.id} itemId={character.id} itemType="character" showImage />
           ))
