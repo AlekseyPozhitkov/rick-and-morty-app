@@ -32,31 +32,20 @@ export default function Characters() {
   const errorMessage = useSelector((state) => state.characters.errorMessage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживания загрузки по кнопке
-  const [initialLoad, setInitialLoad] = useState(true);
   const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
-    if (initialLoad) {
-      const savedFilters = JSON.parse(localStorage.getItem("characterFilters"));
-      if (savedFilters) {
-        Object.keys(savedFilters).forEach((key) => {
-          dispatch(setCharacterFilter({ [key]: savedFilters[key] }));
-        });
-      }
-      // Первая загрузка эпизодов только после применения фильтров из localStorage
-      dispatch(fetchCharacters({ page: 1, filters: savedFilters || filters }));
-      setInitialLoad(false);
+    const savedFilters = JSON.parse(localStorage.getItem("characterFilters"));
+    if (savedFilters) {
+      Object.keys(savedFilters).forEach((key) => {
+        dispatch(setCharacterFilter({ [key]: savedFilters[key] }));
+      });
     }
+    // Первая загрузка эпизодов только после применения фильтров из localStorage
+    dispatch(fetchCharacters({ page: 1, filters: savedFilters || filters }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, initialLoad]);
-
-  // Загрузка персонажей при изменении фильтров или страницы
-  useEffect(() => {
-    if (!initialLoad && status === "idle") {
-      dispatch(fetchCharacters({ page: nextPage, filters }));
-    }
-  }, [dispatch, filters, nextPage, status, initialLoad]);
+  }, [dispatch]);
 
   // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
@@ -74,7 +63,6 @@ export default function Characters() {
   const handleInputChange = (e) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    // Вызываем debounce-функцию, передавая текущие значения dispatch и filters
     debouncedFetchCharacters(dispatch, filters, newValue);
   };
 
