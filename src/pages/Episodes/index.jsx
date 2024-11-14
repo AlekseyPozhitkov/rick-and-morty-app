@@ -38,6 +38,9 @@ export default function Episodes() {
       Object.keys(savedFilters).forEach((key) => {
         dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
       });
+      if (savedFilters.name) {
+        setInputValue(savedFilters.name);
+      }
     }
     dispatch(fetchEpisodes({ page: 1, filters: savedFilters || filters }));
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -41,6 +41,9 @@ export default function Locations() {
       Object.keys(savedFilters).forEach((key) => {
         dispatch(setLocationFilter({ [key]: savedFilters[key] }));
       });
+      if (savedFilters.name) {
+        setInputValue(savedFilters.name);
+      }
     }
     dispatch(fetchLocations({ page: 1, filters: savedFilters || filters }));
     // eslint-disable-next-line react-hooks/exhaustive-deps

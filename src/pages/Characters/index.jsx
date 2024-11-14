@@ -41,8 +41,10 @@ export default function Characters() {
       Object.keys(savedFilters).forEach((key) => {
         dispatch(setCharacterFilter({ [key]: savedFilters[key] }));
       });
+      if (savedFilters.name) {
+        setInputValue(savedFilters.name);
+      }
     }
-    // Первая загрузка эпизодов только после применения фильтров из localStorage
     dispatch(fetchCharacters({ page: 1, filters: savedFilters || filters }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
