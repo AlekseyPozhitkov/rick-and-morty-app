@@ -65,7 +65,7 @@ export default function Locations() {
     debouncedFetchByName(dispatch, filters, newValue);
   };
 
-  const handleFilterChange = (filterType, value) => {
+  const handleFilterChangeOnMainPage = (filterType, value) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
     localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
     dispatch(setLocationFilter({ [filterType]: value || "" }));
@@ -89,7 +89,7 @@ export default function Locations() {
             label={filterType[0].toUpperCase() + filterType.slice(1)}
             options={filterOptions[filterType]}
             value={filters[filterType] || ""}
-            onChange={(value) => handleFilterChange(filterType, value)}
+            onChange={(value) => handleFilterChangeOnMainPage(filterType, value)}
             sx={{ box: { maxWidth: "240px" } }}
           />
         ))}
@@ -98,7 +98,11 @@ export default function Locations() {
       <FiltersModal
         filterOptions={filterOptions}
         filters={filters}
-        handleFilterChange={handleFilterChange}
+        handleFilterChange={(updatedFilters) => {
+          localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+          dispatch(setLocationFilter(updatedFilters));
+          dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
+        }}
         filterTypes={["type", "dimension"]}
       />
 

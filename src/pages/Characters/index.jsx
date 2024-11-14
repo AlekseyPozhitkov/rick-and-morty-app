@@ -78,7 +78,7 @@ export default function Characters() {
     debouncedFetchCharacters(dispatch, filters, newValue);
   };
 
-  const handleFilterChange = (filterType, value) => {
+  const handleFilterChangeOnMainPage = (filterType, value) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
     localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
     dispatch(setCharacterFilter({ [filterType]: value || "" }));
@@ -98,7 +98,7 @@ export default function Characters() {
             label={filterType[0].toUpperCase() + filterType.slice(1)}
             options={filterOptions[filterType]}
             value={filters[filterType] || ""}
-            onChange={(value) => handleFilterChange(filterType, value)}
+            onChange={(value) => handleFilterChangeOnMainPage(filterType, value)}
           />
         ))}
       </Stack>
@@ -106,7 +106,11 @@ export default function Characters() {
       <FiltersModal
         filterOptions={filterOptions}
         filters={filters}
-        handleFilterChange={handleFilterChange}
+        handleFilterChange={(updatedFilters) => {
+          localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+          dispatch(setCharacterFilter(updatedFilters));
+          dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
+        }}
         filterTypes={["species", "gender", "status"]}
       />
 
