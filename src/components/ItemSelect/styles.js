@@ -2,7 +2,6 @@ export const selectStyles = {
   box: {
     display: { xs: "none", sm: "flex" },
     width: "100%"
-    // maxWidth: "240px"
   },
   select: {
     textAlign: "left"

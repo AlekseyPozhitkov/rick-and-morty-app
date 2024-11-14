@@ -10,7 +10,7 @@ export const ItemInput = ({ onChange, placeholder, sx, value }) => (
       label={placeholder || ` Filter by name...`}
       variant="outlined"
       onChange={onChange}
-      value={value} // Добавлено для отображения текущего значения
+      value={value}
     />
   </Box>
 );

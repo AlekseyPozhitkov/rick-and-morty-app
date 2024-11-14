@@ -76,7 +76,7 @@ export default function Locations() {
     <>
       <Box component="img" src={logo} alt="rick-and-morty-circle" sx={pageStyles.image} />
 
-      <Stack sx={pageStyles.sorts} direction={{ xs: "column", sm: "row" }}>
+      <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput
           value={inputValue}
           onChange={handleInputChange}
@@ -93,14 +93,14 @@ export default function Locations() {
             sx={{ box: { maxWidth: "240px" } }}
           />
         ))}
-
-        <FiltersModal
-          filterOptions={filterOptions}
-          filters={filters}
-          handleFilterChange={handleFilterChange}
-          filterTypes={["type", "dimension"]}
-        />
       </Stack>
+
+      <FiltersModal
+        filterOptions={filterOptions}
+        filters={filters}
+        handleFilterChange={handleFilterChange}
+        filterTypes={["type", "dimension"]}
+      />
 
       <Stack sx={pageStyles.items} direction="row">
         {status === "loading" && <Spinner />}

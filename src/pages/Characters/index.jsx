@@ -89,7 +89,7 @@ export default function Characters() {
     <>
       <Box component="img" src={logo} alt="RICKANDMORTY" sx={pageStyles.image} />
 
-      <Stack sx={pageStyles.sorts} direction={{ xs: "column", sm: "row" }}>
+      <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput value={inputValue} onChange={handleInputChange} />
 
         {["species", "gender", "status"].map((filterType) => (
@@ -101,14 +101,14 @@ export default function Characters() {
             onChange={(value) => handleFilterChange(filterType, value)}
           />
         ))}
-
-        <FiltersModal
-          filterOptions={filterOptions}
-          filters={filters}
-          handleFilterChange={handleFilterChange}
-          filterTypes={["species", "gender", "status"]}
-        />
       </Stack>
+
+      <FiltersModal
+        filterOptions={filterOptions}
+        filters={filters}
+        handleFilterChange={handleFilterChange}
+        filterTypes={["species", "gender", "status"]}
+      />
 
       <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}

@@ -19,7 +19,8 @@ export const modalStyle = {
   button: {
     display: { xs: "block", sm: "none" },
     position: "relative",
-    width: "100%",
+    width: "90%",
+    margin: "-19px auto 35px",
     backgroundColor: "#E3F2FD",
     color: "#2196F3",
     font: "Roboto",
