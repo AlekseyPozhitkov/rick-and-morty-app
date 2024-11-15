@@ -7,6 +7,7 @@ export const selectStyles = {
     textAlign: "left"
   },
   menuProps: {
+    disableScrollLock: true,
     PaperProps: {
       style: {
         maxHeight: "200px",
