@@ -1,3 +1,4 @@
+import CloseIcon from "@mui/icons-material/Close";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -46,9 +47,10 @@ export default function FiltersModal({ filterOptions, filters, handleFilterChang
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle.modal}>
-          <Typography align="left" variant="h6">
-            Filters
-          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography variant="h6">Filters</Typography>
+            <CloseIcon onClick={handleClose} sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
+          </Box>
           {filterTypes.map((filterType) => (
             <ItemSelect
               key={filterType}

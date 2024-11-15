@@ -12,7 +12,7 @@ export const modalStyle = {
     borderRadius: "4px",
     boxShadow: 24,
     p: 2,
-    display: "flex",
+    display: { xs: "flex", sm: "none" },
     flexDirection: "column",
     gap: "16px"
   },
