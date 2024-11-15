@@ -19,7 +19,9 @@ export const Navbar = () => {
   return (
     <AppBar sx={navbarStyles.appBar}>
       <Toolbar disableGutters sx={navbarStyles.toolbar}>
-        <img src={logo} alt="RickAndMorty" />
+        <Link to="/">
+          <img src={logo} alt="RickAndMorty" />
+        </Link>
 
         <IconButton onClick={toggleMenu} sx={navbarStyles.burger}>
           {menuOpen ? <CloseIcon /> : <MenuIcon />}
@@ -29,7 +31,7 @@ export const Navbar = () => {
           component="nav"
           sx={{ ...navbarStyles.navBox, display: { xs: menuOpen ? "flex" : "none", sm: "flex" } }}
         >
-          {LINK_ITEMS.map((page, index) => (
+          {LINK_ITEMS.map((page) => (
             <Box
               key={page.title}
               component={Link}
