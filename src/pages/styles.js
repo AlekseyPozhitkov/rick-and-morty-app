@@ -32,17 +32,17 @@ export const pageStyles = {
     fontSize: "4em",
     fontWeight: "500"
   },
-  stackItem: {
+  boxItem: {
     padding: "12px 16px",
     borderBottom: "1px solid rgba(33, 33, 33, 0.08)"
   },
-  stackTitle: {
+  boxTitle: {
     fontWeight: "700",
     fontSize: "16px",
     marginBottom: "5px",
     margin: "0"
   },
-  stackName: {
+  boxName: {
     fontWeight: "400",
     fontSize: "14px",
     color: "#6E798C",

@@ -1,51 +1,51 @@
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
 import { GoBackButton } from "../../components/GoBackButton";
-import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
-import { fetchCharacterEpisodes } from "../../libs/redux/slices/episodesSlice";
 import { pageStyles } from "../styles";
 import { detailsStyles, itemCard } from "./styles";
 
 export default function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const [episodes, setEpisodes] = useState([]);
 
   // Получаем данные о персонаже и статус загрузки
-  const {
-    character,
-    status: characterStatus,
-    error: characterError
-  } = useSelector((state) => state.characterDetails);
-
-  const {
-    items: episodes,
-    status: episodesStatus,
-    error: episodesError
-  } = useSelector((state) => state.episodes);
+  const { character, status, error } = useSelector((state) => state.characterDetails);
 
   useEffect(() => {
     dispatch(fetchCharacterById(id));
   }, [dispatch, id]);
 
+  // Загружаем информацию о каждом эпизоде
   useEffect(() => {
-    if (character?.episode?.length > 0) {
-      dispatch(fetchCharacterEpisodes(character.episode));
+    if (character?.episode) {
+      const fetchEpisodes = async () => {
+        try {
+          const episodePromises = character.episode.map((url) => axios.get(url));
+          const responses = await Promise.all(episodePromises);
+          setEpisodes(responses.map((res) => res.data));
+        } catch (error) {
+          console.error("Failed to load episodes:", error);
+        }
+      };
+      fetchEpisodes();
     }
-  }, [dispatch, character]);
+  }, [character]);
 
   // Обрабатываем состояние загрузки и ошибки
-  if (characterStatus === "loading" || episodesStatus === "loading") {
+  if (status === "loading") {
     return <Spinner />;
   }
 
-  if (characterStatus === "failed") {
-    return <Typography>Error loading character: {characterError}</Typography>;
+  if (status === "failed") {
+    return <Typography>Error loading character: {error}</Typography>;
   }
 
   if (!character) {
@@ -86,9 +86,9 @@ export default function CharacterDetails() {
             const displayValue = typeof value === "object" ? value.name || "Unknown" : value || "Unknown";
 
             return (
-              <Box sx={pageStyles.stackItem} key={key}>
-                <Typography sx={{ textTransform: "capitalize", ...pageStyles.stackTitle }}>{key}</Typography>
-                <Typography sx={pageStyles.stackName}>{displayValue}</Typography>
+              <Box sx={pageStyles.boxItem} key={key}>
+                <Typography sx={{ textTransform: "capitalize", ...pageStyles.boxTitle }}>{key}</Typography>
+                <Typography sx={pageStyles.boxName}>{displayValue}</Typography>
               </Box>
             );
           })}
@@ -99,18 +99,12 @@ export default function CharacterDetails() {
             direction="row"
             alignItems="center"
             justifyContent="space-between"
-            sx={{
-              textDecoration: "none",
-              color: "inherit",
-              borderRadius: "5px",
-              "&:hover": { backgroundColor: "#f6f6f6" },
-              ...pageStyles.stackItem
-            }}
+            sx={{ ...pageStyles.boxItem, ...detailsStyles.link }}
           >
-            <Stack>
-              <Typography sx={pageStyles.stackTitle}>Location</Typography>
-              <Typography sx={pageStyles.stackName}>{character.location.name}</Typography>
-            </Stack>
+            <Box>
+              <Typography sx={pageStyles.boxTitle}>Location</Typography>
+              <Typography sx={pageStyles.boxName}>{character.location.name}</Typography>
+            </Box>
             <ArrowForwardIosIcon sx={{ color: "#8E8E93", margin: "5px", fontSize: "15px" }} />
           </Stack>
         </Stack>
@@ -126,20 +120,34 @@ export default function CharacterDetails() {
               }
             }}
           >
-            {episodesStatus === "loading" ? (
-              <Spinner />
-            ) : episodesStatus === "failed" ? (
-              <Typography>Error loading episodes: {episodesError}</Typography>
-            ) : episodes.length > 0 ? (
+            {episodes.length > 0 ? (
               episodes.map((episode) => (
-                <ItemCard
+                <Stack
+                  component={Link}
                   key={episode.id}
-                  itemId={episode.id}
-                  itemType="episode"
-                  sx={itemCard}
-                  reverse
-                  showArrow
-                />
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  to={`/episode/${episode.id}`}
+                  sx={{ ...pageStyles.boxItem, ...detailsStyles.link }}
+                >
+                  <Box>
+                    <Typography sx={pageStyles.boxTitle}>{episode.episode}</Typography>
+                    <Typography sx={pageStyles.boxName}>{episode.name}</Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: "500",
+                        fontSize: "10px",
+                        textTransform: "uppercase",
+                        color: "#8E8E93",
+                        letterSpacing: "1.5px"
+                      }}
+                    >
+                      {episode.air_date}
+                    </Typography>
+                  </Box>
+                  <ArrowForwardIosIcon sx={{ color: "#8E8E93", marginLeft: "5px" }} />
+                </Stack>
               ))
             ) : (
               <Typography>No episodes</Typography> // Сообщение, если у персонажа нет эпизодов
