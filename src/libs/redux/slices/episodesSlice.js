@@ -60,7 +60,6 @@ const episodesSlice = createSlice({
 
         // Используем Set для отслеживания уникальных id
         const existingIds = new Set(state.items.map((item) => item.id));
-
         // Добавляем только уникальные эпизоды
         const uniqueEpisodes = action.payload.results.filter((episode) => !existingIds.has(episode.id));
 
@@ -75,10 +74,15 @@ const episodesSlice = createSlice({
       })
       .addCase(fetchCharacterEpisodes.pending, (state) => {
         state.status = "loading";
+        state.items = [];
+        state.error = null;
       })
       .addCase(fetchCharacterEpisodes.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.items = action.payload; // Сохраняем эпизоды персонажа в items
+        // Преобразуем данные в массив, если это объект
+        const episodes = Array.isArray(action.payload) ? action.payload : [action.payload];
+
+        state.items = episodes; // Перезаписываем массив новыми эпизодами
       })
       .addCase(fetchCharacterEpisodes.rejected, (state, action) => {
         state.status = "failed";
