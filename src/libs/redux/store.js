@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import characterDetailsReducer from "./slices/characterDetailsSlice";
+import characterEpisodesReducer from "./slices/characterEpisodesSlice";
 import charactersReducer from "./slices/charactersSlice";
 import episodeDetailsReducer from "./slices/episodeDetailsSlice";
 import episodesReducer from "./slices/episodesSlice";
@@ -14,7 +15,8 @@ export const store = configureStore({
     locations: locationsReducer,
     characterDetails: characterDetailsReducer,
     locationDetails: locationDetailsReducer,
-    episodeDetails: episodeDetailsReducer
+    episodeDetails: episodeDetailsReducer,
+    characterEpisodes: characterEpisodesReducer
   }
 });
 

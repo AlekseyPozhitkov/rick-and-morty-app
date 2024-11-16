@@ -8,7 +8,7 @@ import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
-import { fetchCharacterEpisodes } from "../../libs/redux/slices/episodesSlice";
+import { fetchCharacterEpisodes } from "../../libs/redux/slices/characterEpisodesSlice";
 import { pageStyles } from "../styles";
 import { detailsStyles, itemCard } from "./styles";
 
@@ -27,7 +27,7 @@ export default function CharacterDetails() {
     items: episodes,
     status: episodesStatus,
     error: episodesError
-  } = useSelector((state) => state.episodes);
+  } = useSelector((state) => state.characterEpisodes);
 
   useEffect(() => {
     dispatch(fetchCharacterById(id));

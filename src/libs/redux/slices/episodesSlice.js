@@ -16,16 +16,6 @@ export const fetchEpisodes = createAsyncThunk(
   }
 );
 
-// Асинхронный экшн для загрузки эпизодов персонажа
-export const fetchCharacterEpisodes = createAsyncThunk(
-  "episodes/fetchCharacterEpisodes",
-  async (episodeUrls) => {
-    const episodeIds = episodeUrls.map((url) => url.split("/").pop()).join(",");
-    const response = await axios.get(`https://rickandmortyapi.com/api/episode/${episodeIds}`);
-    return response.data;
-  }
-);
-
 const episodesSlice = createSlice({
   name: "episodes",
   initialState: {
@@ -71,21 +61,6 @@ const episodesSlice = createSlice({
         state.status = "failed";
         state.hasMore = false;
         state.errorMessage = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
-      })
-      .addCase(fetchCharacterEpisodes.pending, (state) => {
-        state.status = "loading";
-        state.items = [];
-        state.error = null;
-      })
-      .addCase(fetchCharacterEpisodes.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        // Преобразуем данные в массив, если это объект
-        const episodes = Array.isArray(action.payload) ? action.payload : [action.payload];
-        state.items = episodes; // Перезаписываем массив новыми эпизодами
-      })
-      .addCase(fetchCharacterEpisodes.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
       });
   }
 });
