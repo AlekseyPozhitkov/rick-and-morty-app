@@ -8,18 +8,22 @@ import { selectEpisodeById } from "../../libs/redux/slices/episodesSlice";
 import { selectLocationById } from "../../libs/redux/slices/locationsSlice";
 import { cardStyles } from "./styles";
 
-export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow }) => {
+export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow, itemData }) => {
   const selectors = {
     character: selectCharacterById,
     location: selectLocationById,
     episode: selectEpisodeById
   };
-  const item = useSelector((state) => selectors[itemType]?.(state, itemId));
+
+  const itemFromRedux = useSelector((state) => selectors[itemType]?.(state, itemId));
+  const item = itemData || itemFromRedux; // Приоритет у itemData
 
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/${itemType}/${itemId}`); // Переход на страницу персонажа
+    if (!itemData) {
+      navigate(`/${itemType}/${itemId}`);
+    }
   };
 
   return (
@@ -52,19 +56,7 @@ export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow }
             {showImage ? "" : reverse ? item.air_date : item.episode}
           </Typography>
         </CardContent>
-        {showArrow && (
-          <ArrowForwardIosIcon
-            sx={{
-              fontSize: "15px",
-              color: "#8E8E93",
-              position: "absolute",
-              right: "10px",
-              margin: "5px",
-              top: "calc(50% - 5px)",
-              transform: "translateY(-50%)"
-            }}
-          />
-        )}
+        {showArrow && <ArrowForwardIosIcon sx={cardStyles.arrow} />}
       </CardActionArea>
     </Card>
   );

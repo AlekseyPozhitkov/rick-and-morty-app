@@ -16,26 +16,6 @@ export const fetchCharacters = createAsyncThunk(
   }
 );
 
-// Экшен для загрузки персонажей, относящихся к конкретной локации
-export const fetchLocationCharacters = createAsyncThunk(
-  "characters/fetchLocationCharacters",
-  async (residentUrls) => {
-    const characterIds = residentUrls.map((url) => url.split("/").pop()).join(",");
-    const response = await axios.get(`https://rickandmortyapi.com/api/character/${characterIds}`);
-    return response.data;
-  }
-);
-
-// Новый экшен для загрузки персонажей, относящихся к конкретному эпизоду
-export const fetchEpisodeCharacters = createAsyncThunk(
-  "characters/fetchEpisodeCharacters",
-  async (characterUrls) => {
-    const characterIds = characterUrls.map((url) => url.split("/").pop()).join(",");
-    const response = await axios.get(`https://rickandmortyapi.com/api/character/${characterIds}`);
-    return response.data;
-  }
-);
-
 const charactersSlice = createSlice({
   name: "characters",
   initialState: {
@@ -102,26 +82,6 @@ const charactersSlice = createSlice({
         state.status = "failed";
         state.hasMore = false;
         state.errorMessage = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
-      })
-      .addCase(fetchLocationCharacters.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchLocationCharacters.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.items = Array.isArray(action.payload) ? action.payload : [action.payload];
-      })
-      .addCase(fetchLocationCharacters.rejected, (state) => {
-        state.status = "failed";
-      })
-      .addCase(fetchEpisodeCharacters.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchEpisodeCharacters.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.items = Array.isArray(action.payload) ? action.payload : [action.payload];
-      })
-      .addCase(fetchEpisodeCharacters.rejected, (state) => {
-        state.status = "failed";
       });
   }
 });

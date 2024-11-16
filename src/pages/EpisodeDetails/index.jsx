@@ -1,46 +1,80 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
-import { fetchEpisodeCharacters } from "../../libs/redux/slices/charactersSlice";
 import { fetchEpisodeById } from "../../libs/redux/slices/episodeDetailsSlice";
+import { detailsStyles } from "../LocationDetails/styles";
 import { pageStyles } from "../styles";
 
 export default function EpisodeDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const {
-    episode,
-    status: episodeStatus,
-    error: episodeError
-  } = useSelector((state) => state.episodeDetails);
-  const {
-    items: characters,
-    status: charactersStatus,
-    error: charactersError
-  } = useSelector((state) => state.characters);
+  const [characters, setCharacters] = useState([]);
+  const [isLoadingCharacters, setIsLoadingCharacters] = useState(false);
+  const [charactersError, setCharactersError] = useState(null);
+
+  const { episode, status, error } = useSelector((state) => state.episodeDetails);
 
   useEffect(() => {
     dispatch(fetchEpisodeById(id));
   }, [dispatch, id]);
 
-  useEffect(() => {
-    if (episode?.characters?.length > 0) {
-      dispatch(fetchEpisodeCharacters(episode.characters));
-    }
-  }, [dispatch, episode]);
+  const resetCharactersState = () => {
+    setCharacters([]);
+    setCharactersError(null);
+    setIsLoadingCharacters(false);
+  };
 
-  if (episodeStatus === "loading" || charactersStatus === "loading") {
+  useEffect(() => {
+    resetCharactersState();
+  }, [id]);
+
+  useEffect(() => {
+    let isMounted = true; // Флаг для контроля актуальности загрузки
+
+    if (episode?.characters && episode.characters.length > 0) {
+      const characterIds = episode.characters.map((url) => url.split("/").pop()).join(",");
+
+      const fetchCharacters = async () => {
+        setIsLoadingCharacters(true);
+
+        try {
+          const response = await axios.get(`https://rickandmortyapi.com/api/character/${characterIds}`);
+
+          if (isMounted) {
+            setCharacters(Array.isArray(response.data) ? response.data : [response.data]);
+          }
+        } catch (error) {
+          setCharactersError("Failed to load characters.");
+        } finally {
+          if (isMounted) {
+            setIsLoadingCharacters(false);
+          }
+        }
+      };
+
+      fetchCharacters();
+    } else if (episode?.characters?.length === 0) {
+      resetCharactersState();
+    }
+
+    return () => {
+      isMounted = false; // Отменяем обновления при размонтировании
+    };
+  }, [episode]);
+
+  if (status === "loading") {
     return <Spinner />;
   }
 
-  if (episodeStatus === "failed") {
-    return <Typography>Error loading episode: {episodeError}</Typography>;
+  if (status === "failed") {
+    return <Typography color="error">{error || "Failed to load episode."}</Typography>;
   }
 
   if (!episode) {
@@ -52,22 +86,22 @@ export default function EpisodeDetails() {
       <Stack sx={{ ...pageStyles.details, gap: "0" }}>
         <GoBackButton />
 
-        <Typography variant="h4" sx={{ marginBottom: "24px", textAlign: "center", marginTop: "-30px" }}>
+        <Typography variant="h4" sx={detailsStyles.name}>
           {episode.name}
         </Typography>
 
-        <Stack direction="row" sx={{ justifyContent: "center", marginBottom: "64px" }}>
+        <Stack direction="row" sx={detailsStyles.title}>
           {["episode", "air_date"].map((key) => {
             const displayValue = episode[key] || "Unknown";
             const displayKey = key === "air_date" ? "Date" : key;
 
             return (
-              <Stack sx={{ width: "100%", textAlign: "start", maxWidth: "240px" }} key={key}>
-                <Typography sx={{ textTransform: "capitalize", ...pageStyles.stackTitle }}>
+              <Box sx={detailsStyles.titlePart} key={key}>
+                <Typography sx={{ textTransform: "capitalize", ...pageStyles.boxTitle }}>
                   {displayKey}
                 </Typography>
-                <Typography sx={pageStyles.stackName}>{displayValue}</Typography>
-              </Stack>
+                <Typography sx={pageStyles.boxName}>{displayValue}</Typography>
+              </Box>
             );
           })}
         </Stack>
@@ -75,19 +109,21 @@ export default function EpisodeDetails() {
         <Typography sx={{ ...pageStyles.header, marginBottom: "24px" }}>Cast</Typography>
       </Stack>
 
-      <Box sx={pageStyles.items}>
-        {charactersStatus === "loading" ? (
-          <Spinner />
-        ) : charactersStatus === "failed" ? (
-          <Typography>Error loading characters: {charactersError}</Typography>
-        ) : characters.length > 0 ? (
-          characters.map((character) => (
-            <ItemCard key={character.id} itemId={character.id} itemType="character" showImage />
-          ))
-        ) : (
-          <Typography variant="h4">No characters found in this episode</Typography>
-        )}
-      </Box>
+      {isLoadingCharacters ? (
+        <Typography>Loading...</Typography>
+      ) : charactersError ? (
+        <Typography color="error">{charactersError}</Typography>
+      ) : characters.length > 0 ? (
+        <Stack sx={pageStyles.items}>
+          {characters.map((character) => (
+            <Stack component={Link} to={`/character/${character.id}`} key={character.id}>
+              <ItemCard itemData={character} showImage />
+            </Stack>
+          ))}
+        </Stack>
+      ) : (
+        <Typography sx={pageStyles.notFound}>No characters found in this episode</Typography>
+      )}
     </>
   );
 }

@@ -29,8 +29,8 @@ export const pageStyles = {
     marginBottom: "0"
   },
   notFound: {
-    fontSize: "4em",
-    fontWeight: "500"
+    fontSize: "3em",
+    fontWeight: "400"
   },
   boxItem: {
     padding: "12px 16px",

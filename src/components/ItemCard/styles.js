@@ -30,5 +30,14 @@ export const cardStyles = {
   typographyBottom: {
     fontWeight: "700",
     fontSize: "14px"
+  },
+  arrow: {
+    fontSize: "15px",
+    color: "#8E8E93",
+    position: "absolute",
+    right: "10px",
+    margin: "5px",
+    top: "calc(50% - 5px)",
+    transform: "translateY(-50%)"
   }
 };

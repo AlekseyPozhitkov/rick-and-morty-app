@@ -14,8 +14,10 @@ import { detailsStyles } from "./styles";
 export default function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
+
   const [episodes, setEpisodes] = useState([]);
-  const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false); // Добавлено состояние загрузки
+  const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false);
+  const [episodesError, setEpisodesError] = useState(null);
 
   // Получаем данные о персонаже и статус загрузки
   const { character, status, error } = useSelector((state) => state.characterDetails);
@@ -23,6 +25,17 @@ export default function CharacterDetails() {
   useEffect(() => {
     dispatch(fetchCharacterById(id));
   }, [dispatch, id]);
+
+  const resetEpisodesState = () => {
+    setEpisodes([]);
+    setEpisodesError(null);
+    setIsLoadingEpisodes(false);
+  };
+
+  // Сбрасываем состояние эпизодов при изменении ID персонажа
+  useEffect(() => {
+    resetEpisodesState();
+  }, [id]);
 
   // Загружаем информацию о каждом эпизоде
   useEffect(() => {
@@ -33,7 +46,7 @@ export default function CharacterDetails() {
 
       const fetchEpisodes = async () => {
         setIsLoadingEpisodes(true);
-        setEpisodes([]); // Очищаем эпизоды сразу
+
         try {
           const response = await axios.get(`https://rickandmortyapi.com/api/episode/${episodeIds}`);
 
@@ -41,7 +54,7 @@ export default function CharacterDetails() {
             setEpisodes(Array.isArray(response.data) ? response.data : [response.data]);
           }
         } catch (error) {
-          console.error("Failed to load episodes:", error);
+          setEpisodesError("Failed to load episodes."); // Устанавливаем текст ошибки
         } finally {
           if (isMounted) {
             setIsLoadingEpisodes(false);
@@ -50,6 +63,9 @@ export default function CharacterDetails() {
       };
 
       fetchEpisodes();
+    } else if (character?.episode?.length === 0) {
+      // Обрабатываем случай, когда у персонажа нет эпизодов
+      resetEpisodesState();
     }
 
     return () => {
@@ -63,7 +79,7 @@ export default function CharacterDetails() {
   }
 
   if (status === "failed") {
-    return <Typography>Error loading character: {error}</Typography>;
+    return <Typography color="error">{error || "Failed to load character."}</Typography>;
   }
 
   if (!character) {
@@ -78,24 +94,16 @@ export default function CharacterDetails() {
         component="img"
         src={character.image}
         alt={character.name}
-        sx={{
-          ...pageStyles.image,
-          borderRadius: "50%",
-          maxWidth: { xs: "200px", sm: "300px" },
-          marginTop: { xs: "0", sm: "-50px" }
-        }}
+        sx={{ ...pageStyles.image, ...detailsStyles.image }}
       />
 
-      <Typography
-        variant="h3"
-        sx={{ marginBottom: { xs: "32px", sm: "42px" }, fontSize: { xs: "32px", sm: "48px" } }}
-      >
+      <Typography variant="h3" sx={detailsStyles.name}>
         {character.name}
       </Typography>
 
-      <Stack direction={{ xs: "column", sm: "row" }} sx={{ justifyContent: "center", gap: { xs: "50px" } }}>
+      <Stack direction={{ xs: "column", sm: "row" }} sx={detailsStyles.informations}>
         <Stack sx={detailsStyles.stack}>
-          <Typography sx={{ ...pageStyles.header }}>Informations</Typography>
+          <Typography sx={pageStyles.header}>Informations</Typography>
           {Object.entries(character).map(([key, value]) => {
             if (["id", "name", "image", "location", "episode", "url", "created"].includes(key)) {
               return null;
@@ -123,23 +131,17 @@ export default function CharacterDetails() {
               <Typography sx={pageStyles.boxTitle}>Location</Typography>
               <Typography sx={pageStyles.boxName}>{character.location.name}</Typography>
             </Box>
-            <ArrowForwardIosIcon sx={{ color: "#8E8E93", margin: "5px", fontSize: "15px" }} />
+            <ArrowForwardIosIcon sx={detailsStyles.arrow} />
           </Stack>
         </Stack>
 
         <Stack sx={detailsStyles.stack}>
-          <Typography sx={{ ...pageStyles.header }}>Episodes</Typography>
-          <Box
-            sx={{
-              maxHeight: "352px",
-              overflowY: "scroll",
-              "&::-webkit-scrollbar": {
-                display: "none"
-              }
-            }}
-          >
+          <Typography sx={pageStyles.header}>Episodes</Typography>
+          <Box sx={detailsStyles.episodes}>
             {isLoadingEpisodes ? (
               <Typography>Loading...</Typography>
+            ) : episodesError ? (
+              <Typography color="error">{episodesError}</Typography>
             ) : episodes.length > 0 ? (
               episodes.map((episode) => (
                 <Stack
@@ -154,23 +156,13 @@ export default function CharacterDetails() {
                   <Box>
                     <Typography sx={pageStyles.boxTitle}>{episode.episode}</Typography>
                     <Typography sx={pageStyles.boxName}>{episode.name}</Typography>
-                    <Typography
-                      sx={{
-                        fontWeight: "500",
-                        fontSize: "10px",
-                        textTransform: "uppercase",
-                        color: "#8E8E93",
-                        letterSpacing: "1.5px"
-                      }}
-                    >
-                      {episode.air_date}
-                    </Typography>
+                    <Typography sx={detailsStyles.date}>{episode.air_date}</Typography>
                   </Box>
-                  <ArrowForwardIosIcon sx={{ color: "#8E8E93", marginLeft: "5px" }} />
+                  <ArrowForwardIosIcon sx={detailsStyles.arrow} />
                 </Stack>
               ))
             ) : (
-              <Typography>No episodes</Typography> // Сообщение, если у персонажа нет эпизодов
+              <Typography>No episodes found</Typography>
             )}
           </Box>
         </Stack>
