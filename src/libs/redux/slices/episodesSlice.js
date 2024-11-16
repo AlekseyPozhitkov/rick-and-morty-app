@@ -81,7 +81,6 @@ const episodesSlice = createSlice({
         state.status = "succeeded";
         // Преобразуем данные в массив, если это объект
         const episodes = Array.isArray(action.payload) ? action.payload : [action.payload];
-
         state.items = episodes; // Перезаписываем массив новыми эпизодами
       })
       .addCase(fetchCharacterEpisodes.rejected, (state, action) => {

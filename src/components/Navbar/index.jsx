@@ -19,7 +19,9 @@ export const Navbar = () => {
   return (
     <AppBar sx={navbarStyles.appBar}>
       <Toolbar disableGutters sx={navbarStyles.toolbar}>
-        <img src={logo} alt="RickAndMorty" />
+        <Link to="/">
+          <img src={logo} alt="RickAndMorty" />
+        </Link>
 
         <IconButton onClick={toggleMenu} sx={navbarStyles.burger}>
           {menuOpen ? <CloseIcon /> : <MenuIcon />}

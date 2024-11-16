@@ -14,6 +14,7 @@ export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow }
     location: selectLocationById,
     episode: selectEpisodeById
   };
+
   const item = useSelector((state) => selectors[itemType]?.(state, itemId));
 
   const navigate = useNavigate();
