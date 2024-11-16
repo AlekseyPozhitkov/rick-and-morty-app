@@ -9,12 +9,13 @@ import { GoBackButton } from "../../components/GoBackButton";
 import { Spinner } from "../../components/Spinner";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
 import { pageStyles } from "../styles";
-import { detailsStyles, itemCard } from "./styles";
+import { detailsStyles } from "./styles";
 
 export default function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [episodes, setEpisodes] = useState([]);
+  const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false); // Добавлено состояние загрузки
 
   // Получаем данные о персонаже и статус загрузки
   const { character, status, error } = useSelector((state) => state.characterDetails);
@@ -25,18 +26,35 @@ export default function CharacterDetails() {
 
   // Загружаем информацию о каждом эпизоде
   useEffect(() => {
-    if (character?.episode) {
+    let isMounted = true; // Флаг для контроля актуальности загрузки
+
+    if (character?.episode && character.episode.length > 0) {
+      const episodeIds = character.episode.map((url) => url.split("/").pop()).join(",");
+
       const fetchEpisodes = async () => {
+        setIsLoadingEpisodes(true);
+        setEpisodes([]); // Очищаем эпизоды сразу
         try {
-          const episodePromises = character.episode.map((url) => axios.get(url));
-          const responses = await Promise.all(episodePromises);
-          setEpisodes(responses.map((res) => res.data));
+          const response = await axios.get(`https://rickandmortyapi.com/api/episode/${episodeIds}`);
+
+          if (isMounted) {
+            setEpisodes(Array.isArray(response.data) ? response.data : [response.data]);
+          }
         } catch (error) {
           console.error("Failed to load episodes:", error);
+        } finally {
+          if (isMounted) {
+            setIsLoadingEpisodes(false);
+          }
         }
       };
+
       fetchEpisodes();
     }
+
+    return () => {
+      isMounted = false; // Устанавливаем флаг в false при размонтировании
+    };
   }, [character]);
 
   // Обрабатываем состояние загрузки и ошибки
@@ -120,7 +138,9 @@ export default function CharacterDetails() {
               }
             }}
           >
-            {episodes.length > 0 ? (
+            {isLoadingEpisodes ? (
+              <Typography>Loading...</Typography>
+            ) : episodes.length > 0 ? (
               episodes.map((episode) => (
                 <Stack
                   component={Link}

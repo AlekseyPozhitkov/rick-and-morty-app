@@ -1,4 +1,3 @@
-// src/features/locations/locationsSlice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
