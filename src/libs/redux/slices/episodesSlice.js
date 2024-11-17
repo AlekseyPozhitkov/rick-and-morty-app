@@ -23,9 +23,7 @@ const episodesSlice = createSlice({
     status: "idle",
     nextPage: 1,
     hasMore: true,
-    filters: {
-      name: ""
-    },
+    filters: { name: "" },
     errorMessage: "" // Добавляем поле для хранения сообщения об ошибке
   },
   reducers: {
@@ -35,6 +33,15 @@ const episodesSlice = createSlice({
       state.nextPage = 1;
       state.hasMore = true;
       state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
+    },
+    resetEpisodes: (state) => {
+      // Сбрасываем состояние к исходному
+      state.items = [];
+      state.status = "idle";
+      state.nextPage = 1;
+      state.hasMore = true;
+      state.filters = { name: "" };
+      state.errorMessage = "";
     }
   },
   // Добавляем обработку fetchCharacterEpisodes в extraReducers
@@ -70,5 +77,5 @@ const episodesSlice = createSlice({
 export const selectEpisodeById = (state, itemId) =>
   state.episodes.items.find((item) => item.id === itemId) || null;
 
-export const { setEpisodeFilter } = episodesSlice.actions;
+export const { setEpisodeFilter, resetEpisodes } = episodesSlice.actions;
 export default episodesSlice.reducer;

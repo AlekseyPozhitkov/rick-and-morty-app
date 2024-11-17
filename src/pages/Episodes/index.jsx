@@ -7,7 +7,7 @@ import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
+import { fetchEpisodes, resetEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
 import { pageStyles } from "../styles";
 
@@ -33,6 +33,7 @@ export default function Episodes() {
 
   // Загружаем фильтры из localStorage при первом рендере
   useEffect(() => {
+    dispatch(resetEpisodes()); // Сбрасываем состояние
     const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
     if (savedFilters) {
       Object.keys(savedFilters).forEach((key) => {

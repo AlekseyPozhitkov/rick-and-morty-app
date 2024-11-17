@@ -43,6 +43,15 @@ const charactersSlice = createSlice({
       state.nextPage = 1;
       state.hasMore = true;
       state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
+    },
+    resetCharacters: (state) => {
+      // Сбрасываем состояние к исходному
+      state.items = [];
+      state.status = "idle";
+      state.nextPage = 1;
+      state.hasMore = true;
+      state.filters = { name: "" };
+      state.errorMessage = "";
     }
   },
   extraReducers: (builder) => {
@@ -90,5 +99,5 @@ const charactersSlice = createSlice({
 export const selectCharacterById = (state, itemId) =>
   state.characters.items.find((item) => item.id === itemId) || null;
 
-export const { setCharacterFilter } = charactersSlice.actions;
+export const { setCharacterFilter, resetCharacters } = charactersSlice.actions;
 export default charactersSlice.reducer;

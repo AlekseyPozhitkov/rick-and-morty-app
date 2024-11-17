@@ -41,6 +41,15 @@ const locationsSlice = createSlice({
       state.nextPage = 1;
       state.hasMore = true;
       state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
+    },
+    resetLocations: (state) => {
+      // Сбрасываем состояние к исходному
+      state.items = [];
+      state.status = "idle";
+      state.nextPage = 1;
+      state.hasMore = true;
+      state.filters = { name: "" };
+      state.errorMessage = "";
     }
   },
   extraReducers: (builder) => {
@@ -85,5 +94,5 @@ const locationsSlice = createSlice({
 export const selectLocationById = (state, itemId) =>
   state.locations.items.find((item) => item.id === itemId) || null;
 
-export const { setLocationFilter } = locationsSlice.actions;
+export const { setLocationFilter, resetLocations } = locationsSlice.actions;
 export default locationsSlice.reducer;

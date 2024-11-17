@@ -9,7 +9,7 @@ import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { fetchLocations, setLocationFilter } from "../../libs/redux/slices/locationsSlice";
+import { fetchLocations, resetLocations, setLocationFilter } from "../../libs/redux/slices/locationsSlice";
 import logo from "../../public/rick-and-morty-circle.svg";
 import { pageStyles } from "../styles";
 
@@ -36,6 +36,7 @@ export default function Locations() {
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
+    dispatch(resetLocations()); // Сбрасываем состояние
     const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
     if (savedFilters) {
       Object.keys(savedFilters).forEach((key) => {
@@ -109,7 +110,7 @@ export default function Locations() {
         filterTypes={["type", "dimension"]}
       />
 
-      <Stack sx={pageStyles.items} direction="row">
+      <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}
         {locations.map((location) => (
           <ItemCard
@@ -124,7 +125,7 @@ export default function Locations() {
             }}
           />
         ))}
-      </Stack>
+      </Box>
 
       {status === "failed" && locations.length === 0 && (
         <Typography sx={pageStyles.notFound}>{errorMessage || "Oops! Not found"}</Typography>

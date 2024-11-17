@@ -9,7 +9,11 @@ import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { fetchCharacters, setCharacterFilter } from "../../libs/redux/slices/charactersSlice";
+import {
+  fetchCharacters,
+  resetCharacters,
+  setCharacterFilter
+} from "../../libs/redux/slices/charactersSlice";
 import logo from "../../public/RICKANDMORTY.svg";
 import { pageStyles } from "../styles";
 
@@ -36,6 +40,7 @@ export default function Characters() {
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
+    dispatch(resetCharacters()); // Сбрасываем состояние
     const savedFilters = JSON.parse(localStorage.getItem("characterFilters"));
     if (savedFilters) {
       Object.keys(savedFilters).forEach((key) => {
