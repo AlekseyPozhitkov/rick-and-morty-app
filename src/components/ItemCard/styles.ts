@@ -1,4 +1,6 @@
-export const cardStyles = {
+import { SxProps } from "@mui/material";
+
+export const cardStyles: Record<string, SxProps> = {
   card: {
     // width: "100%",
     // maxWidth: "240px",

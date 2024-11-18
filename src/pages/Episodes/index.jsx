@@ -7,7 +7,11 @@ import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { fetchEpisodes, resetEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
+import {
+  fetchEpisodes,
+  resetEpisodes,
+  setEpisodeFilter
+} from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
 import { pageStyles } from "../styles";
 
@@ -21,12 +25,12 @@ const debouncedFetchByName = debounce((dispatch, filters, name) => {
 
 export default function Episodes() {
   const dispatch = useDispatch();
-  const episodes = useSelector((state) => state.episodes.items);
-  const status = useSelector((state) => state.episodes.status);
-  const hasMore = useSelector((state) => state.episodes.hasMore); // Подключаем hasMore
-  const filters = useSelector((state) => state.episodes.filters);
-  const nextPage = useSelector((state) => state.episodes.nextPage);
-  const errorMessage = useSelector((state) => state.episodes.errorMessage);
+  const episodes = useSelector(state => state.episodes.items);
+  const status = useSelector(state => state.episodes.status);
+  const hasMore = useSelector(state => state.episodes.hasMore); // Подключаем hasMore
+  const filters = useSelector(state => state.episodes.filters);
+  const nextPage = useSelector(state => state.episodes.nextPage);
+  const errorMessage = useSelector(state => state.episodes.errorMessage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
@@ -36,7 +40,7 @@ export default function Episodes() {
     dispatch(resetEpisodes()); // Сбрасываем состояние
     const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
     if (savedFilters) {
-      Object.keys(savedFilters).forEach((key) => {
+      Object.keys(savedFilters).forEach(key => {
         dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
       });
       if (savedFilters.name) {
@@ -60,7 +64,7 @@ export default function Episodes() {
     dispatch(fetchEpisodes({ page: nextPage, filters }));
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const newValue = e.target.value;
     setInputValue(newValue);
     debouncedFetchByName(dispatch, filters, newValue);
@@ -81,12 +85,14 @@ export default function Episodes() {
 
       <Stack sx={pageStyles.items} direction="row">
         {status === "loading" && <Spinner />}
-        {episodes.map((episode) => (
+        {episodes.map(episode => (
           <ItemCard
             key={episode.id}
             itemId={episode.id}
             itemType="episode"
-            sx={{ cardContent: { height: "130px", justifyContent: "center", backgroundColor: "#FAFAFA" } }}
+            sx={{
+              cardContent: { height: "130px", justifyContent: "center", backgroundColor: "#FAFAFA" }
+            }}
           />
         ))}
       </Stack>

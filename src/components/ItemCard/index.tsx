@@ -15,7 +15,7 @@ export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow, 
     episode: selectEpisodeById
   };
 
-  const itemFromRedux = useSelector((state) => selectors[itemType]?.(state, itemId));
+  const itemFromRedux = useSelector(state => selectors[itemType]?.(state, itemId));
   const item = itemData || itemFromRedux; // Приоритет у itemData
 
   const navigate = useNavigate();
@@ -46,12 +46,20 @@ export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow, 
             {reverse ? item.episode : item.name}
           </Typography>
           <Typography
-            sx={{ ...cardStyles.typography, ...cardStyles.typographyMiddle, ...sx?.typographyMiddle }}
+            sx={{
+              ...cardStyles.typography,
+              ...cardStyles.typographyMiddle,
+              ...sx?.typographyMiddle
+            }}
           >
             {reverse ? item.name : item.species || item.type || item.air_date}
           </Typography>
           <Typography
-            sx={{ ...cardStyles.typography, ...cardStyles.typographyBottom, ...sx?.typographyBottom }}
+            sx={{
+              ...cardStyles.typography,
+              ...cardStyles.typographyBottom,
+              ...sx?.typographyBottom
+            }}
           >
             {showImage ? "" : reverse ? item.air_date : item.episode}
           </Typography>

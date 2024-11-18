@@ -19,7 +19,7 @@ export default function LocationDetails() {
   const [isLoadingResidents, setIsLoadingResidents] = useState(false);
   const [residentsError, setResidentsError] = useState(null);
 
-  const { location, status, error } = useSelector((state) => state.locationDetails);
+  const { location, status, error } = useSelector(state => state.locationDetails);
 
   useEffect(() => {
     dispatch(fetchLocationById(id));
@@ -40,13 +40,15 @@ export default function LocationDetails() {
     let isMounted = true; // Флаг для контроля актуальности загрузки
 
     if (location?.residents && location.residents.length > 0) {
-      const residentIds = location.residents.map((url) => url.split("/").pop()).join(",");
+      const residentIds = location.residents.map(url => url.split("/").pop()).join(",");
 
       const fetchResidents = async () => {
         setIsLoadingResidents(true);
 
         try {
-          const response = await axios.get(`https://rickandmortyapi.com/api/character/${residentIds}`);
+          const response = await axios.get(
+            `https://rickandmortyapi.com/api/character/${residentIds}`
+          );
 
           if (isMounted) {
             setResidents(Array.isArray(response.data) ? response.data : [response.data]);
@@ -92,12 +94,14 @@ export default function LocationDetails() {
         </Typography>
 
         <Stack direction="row" sx={detailsStyles.title}>
-          {["type", "dimension"].map((key) => {
+          {["type", "dimension"].map(key => {
             const displayValue = location[key] || "Unknown";
 
             return (
               <Box sx={detailsStyles.titlePart} key={key}>
-                <Typography sx={{ ...pageStyles.boxTitle, textTransform: "capitalize" }}>{key}</Typography>
+                <Typography sx={{ ...pageStyles.boxTitle, textTransform: "capitalize" }}>
+                  {key}
+                </Typography>
                 <Typography sx={pageStyles.boxName}>{displayValue}</Typography>
               </Box>
             );
@@ -115,7 +119,7 @@ export default function LocationDetails() {
         <Typography sx={pageStyles.notFound}>No residents found in this location</Typography>
       ) : (
         <Stack sx={pageStyles.items}>
-          {residents.map((resident) => (
+          {residents.map(resident => (
             <Stack component={Link} to={`/character/${resident.id}`} key={resident.id}>
               <ItemCard itemData={resident} showImage />
             </Stack>

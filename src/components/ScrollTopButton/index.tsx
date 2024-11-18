@@ -26,7 +26,7 @@ export const ScrollTopButton = () => {
 
   return (
     <Zoom in={show}>
-      <Fab sx={scrollTopStyles.fab} color="success" onClick={scrollToTop}>
+      <Fab sx={scrollTopStyles} color="success" onClick={scrollToTop}>
         <KeyboardArrowUpIcon />
       </Fab>
     </Zoom>

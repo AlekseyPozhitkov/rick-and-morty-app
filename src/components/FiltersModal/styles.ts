@@ -1,4 +1,6 @@
-export const modalStyle = {
+import { SxProps } from "@mui/material";
+
+export const modalStyle: Record<string, SxProps> = {
   modal: {
     position: "absolute",
     top: "50%",

@@ -34,7 +34,7 @@ const episodesSlice = createSlice({
       state.hasMore = true;
       state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
     },
-    resetEpisodes: (state) => {
+    resetEpisodes: state => {
       // Сбрасываем состояние к исходному
       state.items = [];
       state.status = "idle";
@@ -45,9 +45,9 @@ const episodesSlice = createSlice({
     }
   },
   // Добавляем обработку fetchCharacterEpisodes в extraReducers
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchEpisodes.pending, (state) => {
+      .addCase(fetchEpisodes.pending, state => {
         state.status = "loading";
         state.errorMessage = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
       })
@@ -56,10 +56,12 @@ const episodesSlice = createSlice({
         state.errorMessage = "";
 
         // Используем Set для отслеживания уникальных id
-        const existingIds = new Set(state.items.map((item) => item.id));
+        const existingIds = new Set(state.items.map(item => item.id));
 
         // Добавляем только уникальные эпизоды
-        const uniqueEpisodes = action.payload.results.filter((episode) => !existingIds.has(episode.id));
+        const uniqueEpisodes = action.payload.results.filter(
+          episode => !existingIds.has(episode.id)
+        );
 
         state.items = [...state.items, ...uniqueEpisodes];
         state.nextPage += 1;
@@ -75,7 +77,7 @@ const episodesSlice = createSlice({
 
 // Селектор
 export const selectEpisodeById = (state, itemId) =>
-  state.episodes.items.find((item) => item.id === itemId) || null;
+  state.episodes.items.find(item => item.id === itemId) || null;
 
 export const { setEpisodeFilter, resetEpisodes } = episodesSlice.actions;
 export default episodesSlice.reducer;

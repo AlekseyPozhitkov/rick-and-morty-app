@@ -6,7 +6,19 @@ import { useEffect, useState } from "react";
 import { ItemSelect } from "../ItemSelect";
 import { modalStyle } from "./styles";
 
-export default function FiltersModal({ filterOptions, filters, handleFilterChange, filterTypes }) {
+interface FiltersModalProps {
+  filterOptions: Record<string, string[]>; // Варианты фильтров
+  filters: Record<string, string>; // Текущие фильтры
+  handleFilterChange: (filters: Record<string, string>) => void; // Применение фильтров
+  filterTypes: string[]; // Типы фильтров
+}
+
+export const FiltersModal = ({
+  filterOptions,
+  filters,
+  handleFilterChange,
+  filterTypes
+}: FiltersModalProps) => {
   const [open, setOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState(filters);
 
@@ -21,7 +33,7 @@ export default function FiltersModal({ filterOptions, filters, handleFilterChang
   }, [open, filters]);
 
   // Обработчик для обновления локальных фильтров
-  const handleLocalFilterChange = (filterType, value) => {
+  const handleLocalFilterChange = (filterType: string, value?: string) => {
     setLocalFilters({
       ...localFilters,
       [filterType]: value || ""
@@ -35,7 +47,11 @@ export default function FiltersModal({ filterOptions, filters, handleFilterChang
 
   return (
     <Box>
-      <Button variant="contained" onClick={handleOpen} sx={{ ...modalStyle.button, height: "56px" }}>
+      <Button
+        variant="contained"
+        onClick={handleOpen}
+        sx={{ ...modalStyle.button, height: "56px" }}
+      >
         <FilterListIcon sx={modalStyle.icon} />
         Advanced filters
       </Button>
@@ -51,13 +67,13 @@ export default function FiltersModal({ filterOptions, filters, handleFilterChang
             <Typography variant="h6">Filters</Typography>
             <CloseIcon onClick={handleClose} sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
           </Box>
-          {filterTypes.map((filterType) => (
+          {filterTypes.map(filterType => (
             <ItemSelect
               key={filterType}
               label={filterType[0].toUpperCase() + filterType.slice(1)}
               options={filterOptions[filterType]}
               value={localFilters[filterType] || ""}
-              onChange={(value) => handleLocalFilterChange(filterType, value)}
+              onChange={(value: string) => handleLocalFilterChange(filterType, value)}
               sx={{ box: { display: "block" } }}
             />
           ))}
@@ -72,4 +88,4 @@ export default function FiltersModal({ filterOptions, filters, handleFilterChang
       </Modal>
     </Box>
   );
-}
+};

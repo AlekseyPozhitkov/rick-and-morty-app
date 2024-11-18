@@ -44,7 +44,7 @@ const charactersSlice = createSlice({
       state.hasMore = true;
       state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
     },
-    resetCharacters: (state) => {
+    resetCharacters: state => {
       // Сбрасываем состояние к исходному
       state.items = [];
       state.status = "idle";
@@ -54,9 +54,9 @@ const charactersSlice = createSlice({
       state.errorMessage = "";
     }
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchCharacters.pending, (state) => {
+      .addCase(fetchCharacters.pending, state => {
         state.status = "loading";
         state.errorMessage = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
       })
@@ -65,17 +65,19 @@ const charactersSlice = createSlice({
         state.errorMessage = "";
 
         // Используем Set для отслеживания уникальных id
-        const existingIds = new Set(state.items.map((item) => item.id));
+        const existingIds = new Set(state.items.map(item => item.id));
 
         // Добавляем только уникальных персонажей
-        const uniqueCharacters = action.payload.results.filter((character) => !existingIds.has(character.id));
+        const uniqueCharacters = action.payload.results.filter(
+          character => !existingIds.has(character.id)
+        );
 
         state.items = [...state.items, ...uniqueCharacters];
         state.nextPage += 1;
         state.hasMore = !!action.payload.info.next;
 
         // Обновляем filterOptions с уникальными значениями
-        action.payload.results.forEach((character) => {
+        action.payload.results.forEach(character => {
           if (!state.filterOptions.species.includes(character.species)) {
             state.filterOptions.species.push(character.species);
           }
@@ -97,7 +99,7 @@ const charactersSlice = createSlice({
 
 // Селектор
 export const selectCharacterById = (state, itemId) =>
-  state.characters.items.find((item) => item.id === itemId) || null;
+  state.characters.items.find(item => item.id === itemId) || null;
 
 export const { setCharacterFilter, resetCharacters } = charactersSlice.actions;
 export default charactersSlice.reducer;

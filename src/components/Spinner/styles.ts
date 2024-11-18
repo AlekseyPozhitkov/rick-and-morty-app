@@ -1,4 +1,4 @@
-import { keyframes } from "@mui/system";
+import { SxProps, keyframes } from "@mui/system";
 
 const spin = keyframes`
   from {
@@ -9,7 +9,7 @@ const spin = keyframes`
   }
 `;
 
-export const spinnerStyles = {
+export const spinnerStyles: Record<string, SxProps> = {
   spinnerOverlay: {
     position: "fixed",
     top: "0",

@@ -1,4 +1,6 @@
-export const arrowStyles = {
+import { SxProps } from "@mui/material";
+
+export const arrowStyles: SxProps = {
   display: "inline-flex",
   justifyContent: "space-between",
   alignItems: "center",

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "moduleResolution": "Node",
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "src/images.d.ts"],
+  "exclude": ["node_modules"]
+}

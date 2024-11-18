@@ -1,10 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchCharacterById = createAsyncThunk("characterDetails/fetchCharacterById", async (id) => {
-  const response = await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
-  return response.data;
-});
+export const fetchCharacterById = createAsyncThunk(
+  "characterDetails/fetchCharacterById",
+  async id => {
+    const response = await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
+    return response.data;
+  }
+);
 
 const characterDetailsSlice = createSlice({
   name: "characterDetails",
@@ -14,9 +17,9 @@ const characterDetailsSlice = createSlice({
     error: null
   },
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchCharacterById.pending, (state) => {
+      .addCase(fetchCharacterById.pending, state => {
         state.status = "loading";
         state.error = null;
       })

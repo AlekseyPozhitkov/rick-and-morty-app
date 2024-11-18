@@ -1,4 +1,9 @@
-export const LINK_ITEMS = [
+export interface LinkItem {
+  path: string;
+  title: string;
+}
+
+export const LINK_ITEMS: LinkItem[] = [
   {
     path: "/",
     title: "Characters"

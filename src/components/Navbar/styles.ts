@@ -1,4 +1,6 @@
-export const navbarStyles = {
+import { SxProps } from "@mui/material";
+
+export const navbarStyles: Record<string, SxProps> = {
   appBar: {
     background: "#FFF",
     color: "#000",

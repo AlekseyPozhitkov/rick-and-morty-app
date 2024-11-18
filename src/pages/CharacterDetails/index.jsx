@@ -20,7 +20,7 @@ export default function CharacterDetails() {
   const [episodesError, setEpisodesError] = useState(null);
 
   // Получаем данные о персонаже и статус загрузки
-  const { character, status, error } = useSelector((state) => state.characterDetails);
+  const { character, status, error } = useSelector(state => state.characterDetails);
 
   useEffect(() => {
     dispatch(fetchCharacterById(id));
@@ -42,7 +42,7 @@ export default function CharacterDetails() {
     let isMounted = true; // Флаг для контроля актуальности загрузки
 
     if (character?.episode && character.episode.length > 0) {
-      const episodeIds = character.episode.map((url) => url.split("/").pop()).join(",");
+      const episodeIds = character.episode.map(url => url.split("/").pop()).join(",");
 
       const fetchEpisodes = async () => {
         setIsLoadingEpisodes(true);
@@ -109,11 +109,14 @@ export default function CharacterDetails() {
               return null;
             }
 
-            const displayValue = typeof value === "object" ? value.name || "Unknown" : value || "Unknown";
+            const displayValue =
+              typeof value === "object" ? value.name || "Unknown" : value || "Unknown";
 
             return (
               <Box sx={pageStyles.boxItem} key={key}>
-                <Typography sx={{ textTransform: "capitalize", ...pageStyles.boxTitle }}>{key}</Typography>
+                <Typography sx={{ textTransform: "capitalize", ...pageStyles.boxTitle }}>
+                  {key}
+                </Typography>
                 <Typography sx={pageStyles.boxName}>{displayValue}</Typography>
               </Box>
             );
@@ -143,7 +146,7 @@ export default function CharacterDetails() {
             ) : episodesError ? (
               <Typography color="error">{episodesError}</Typography>
             ) : episodes.length > 0 ? (
-              episodes.map((episode) => (
+              episodes.map(episode => (
                 <Stack
                   component={Link}
                   key={episode.id}
