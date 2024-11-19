@@ -32,7 +32,7 @@ const locationsSlice = createSlice({
       type: [],
       dimension: []
     },
-    errorMessage: "" // Добавляем поле для хранения сообщения об ошибке
+    error: ""
   },
   reducers: {
     setLocationFilter: (state, action) => {
@@ -40,7 +40,7 @@ const locationsSlice = createSlice({
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
-      state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
+      state.error = ""; // Очищаем сообщение об ошибке при изменении фильтра
     },
     resetLocations: (state) => {
       // Сбрасываем состояние к исходному
@@ -49,18 +49,18 @@ const locationsSlice = createSlice({
       state.nextPage = 1;
       state.hasMore = true;
       state.filters = { name: "" };
-      state.errorMessage = "";
+      state.error = "";
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchLocations.pending, (state) => {
         state.status = "loading";
-        state.errorMessage = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
+        state.error = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
       })
       .addCase(fetchLocations.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.errorMessage = "";
+        state.error = "";
 
         // Используем Set для отслеживания уникальных id
         const existingIds = new Set(state.items.map((item) => item.id));
@@ -87,7 +87,7 @@ const locationsSlice = createSlice({
       .addCase(fetchLocations.rejected, (state, action) => {
         state.status = "failed";
         state.hasMore = false;
-        state.errorMessage = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
+        state.error = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
       });
   }
 });

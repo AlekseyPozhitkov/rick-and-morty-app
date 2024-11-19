@@ -15,12 +15,11 @@ export default function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
+  const { character, status, error } = useSelector((state) => state.characterDetails);
+
   const [episodes, setEpisodes] = useState([]);
   const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false);
   const [episodesError, setEpisodesError] = useState(null);
-
-  // Получаем данные о персонаже и статус загрузки
-  const { character, status, error } = useSelector((state) => state.characterDetails);
 
   useEffect(() => {
     dispatch(fetchCharacterById(id));

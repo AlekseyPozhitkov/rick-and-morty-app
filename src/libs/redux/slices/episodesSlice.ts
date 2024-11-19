@@ -24,7 +24,7 @@ const episodesSlice = createSlice({
     nextPage: 1,
     hasMore: true,
     filters: { name: "" },
-    errorMessage: "" // Добавляем поле для хранения сообщения об ошибке
+    error: ""
   },
   reducers: {
     setEpisodeFilter: (state, action) => {
@@ -32,7 +32,7 @@ const episodesSlice = createSlice({
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
-      state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
+      state.error = ""; // Очищаем сообщение об ошибке при изменении фильтра
     },
     resetEpisodes: (state) => {
       // Сбрасываем состояние к исходному
@@ -41,7 +41,7 @@ const episodesSlice = createSlice({
       state.nextPage = 1;
       state.hasMore = true;
       state.filters = { name: "" };
-      state.errorMessage = "";
+      state.error = "";
     }
   },
   // Добавляем обработку fetchCharacterEpisodes в extraReducers
@@ -49,11 +49,11 @@ const episodesSlice = createSlice({
     builder
       .addCase(fetchEpisodes.pending, (state) => {
         state.status = "loading";
-        state.errorMessage = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
+        state.error = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
       })
       .addCase(fetchEpisodes.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.errorMessage = "";
+        state.error = "";
 
         // Используем Set для отслеживания уникальных id
         const existingIds = new Set(state.items.map((item) => item.id));
@@ -70,7 +70,7 @@ const episodesSlice = createSlice({
       .addCase(fetchEpisodes.rejected, (state, action) => {
         state.status = "failed";
         state.hasMore = false;
-        state.errorMessage = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
+        state.error = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
       });
   }
 });

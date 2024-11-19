@@ -3,9 +3,13 @@ import axios from "axios";
 
 export const fetchCharacterById = createAsyncThunk(
   "characterDetails/fetchCharacterById",
-  async (id) => {
-    const response = await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
-    return response.data;
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || "Failed to fetch character details.");
+    }
   }
 );
 
@@ -14,14 +18,14 @@ const characterDetailsSlice = createSlice({
   initialState: {
     character: null,
     status: "idle",
-    error: null
+    error: ""
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCharacterById.pending, (state) => {
         state.status = "loading";
-        state.error = null;
+        state.error = "";
       })
       .addCase(fetchCharacterById.fulfilled, (state, action) => {
         state.status = "succeeded";
@@ -29,7 +33,7 @@ const characterDetailsSlice = createSlice({
       })
       .addCase(fetchCharacterById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.error = action.error.state.error = action.payload || "An error occurred.";
       });
   }
 });

@@ -15,11 +15,11 @@ export default function EpisodeDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
+  const { episode, status, error } = useSelector((state) => state.episodeDetails);
+
   const [characters, setCharacters] = useState([]);
   const [isLoadingCharacters, setIsLoadingCharacters] = useState(false);
   const [charactersError, setCharactersError] = useState(null);
-
-  const { episode, status, error } = useSelector((state) => state.episodeDetails);
 
   useEffect(() => {
     dispatch(fetchEpisodeById(id));

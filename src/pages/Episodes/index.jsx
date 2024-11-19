@@ -30,7 +30,7 @@ export default function Episodes() {
   const hasMore = useSelector((state) => state.episodes.hasMore); // Подключаем hasMore
   const filters = useSelector((state) => state.episodes.filters);
   const nextPage = useSelector((state) => state.episodes.nextPage);
-  const errorMessage = useSelector((state) => state.episodes.errorMessage);
+  const error = useSelector((state) => state.episodes.error);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
@@ -96,7 +96,7 @@ export default function Episodes() {
       </Box>
 
       {status === "failed" && episodes.length === 0 && (
-        <Typography sx={pageStyles.notFound}>{errorMessage || "Oops! Not found"}</Typography>
+        <Typography sx={pageStyles.notFound}>{error || "Oops! Not found"}</Typography>
       )}
 
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}

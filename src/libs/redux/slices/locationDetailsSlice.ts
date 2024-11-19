@@ -3,9 +3,13 @@ import axios from "axios";
 
 export const fetchLocationById = createAsyncThunk(
   "locationDetails/fetchlocationById",
-  async (id) => {
-    const response = await axios.get(`https://rickandmortyapi.com/api/location/${id}`);
-    return response.data;
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`https://rickandmortyapi.com/api/location/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || "Failed to fetch locations.");
+    }
   }
 );
 
@@ -14,14 +18,14 @@ const locationDetailsSlice = createSlice({
   initialState: {
     location: null,
     status: "idle",
-    error: null
+    error: ""
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchLocationById.pending, (state) => {
         state.status = "loading";
-        state.error = null;
+        state.error = "";
       })
       .addCase(fetchLocationById.fulfilled, (state, action) => {
         state.status = "succeeded";
@@ -29,7 +33,7 @@ const locationDetailsSlice = createSlice({
       })
       .addCase(fetchLocationById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.error = action.payload || "An error occurred.";
       });
   }
 });

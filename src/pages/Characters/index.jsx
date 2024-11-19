@@ -33,7 +33,7 @@ export default function Characters() {
   const filters = useSelector((state) => state.characters.filters);
   const filterOptions = useSelector((state) => state.characters.filterOptions);
   const nextPage = useSelector((state) => state.characters.nextPage);
-  const errorMessage = useSelector((state) => state.characters.errorMessage);
+  const error = useSelector((state) => state.characters.error);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживания загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
@@ -117,7 +117,7 @@ export default function Characters() {
       </Box>
 
       {status === "failed" && characters.length === 0 && (
-        <Typography sx={pageStyles.notFound}>{errorMessage || "Oops! Not found"}</Typography>
+        <Typography sx={pageStyles.notFound}>{error || "Oops! Not found"}</Typography>
       )}
 
       {hasMore && status !== "loading" && <LoadMoreButton onClick={onLoadMore} />}

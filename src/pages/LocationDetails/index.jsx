@@ -15,11 +15,11 @@ export default function LocationDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
+  const { location, status, error } = useSelector((state) => state.locationDetails);
+
   const [residents, setResidents] = useState([]);
   const [isLoadingResidents, setIsLoadingResidents] = useState(false);
   const [residentsError, setResidentsError] = useState(null);
-
-  const { location, status, error } = useSelector((state) => state.locationDetails);
 
   useEffect(() => {
     dispatch(fetchLocationById(id));
