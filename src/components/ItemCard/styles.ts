@@ -18,6 +18,7 @@ export const cardStyles: Record<string, SxProps> = {
   },
   typography: {
     margin: "0",
+    fontSize: "14px",
     color: "rgba(0, 0, 0, 0.6)"
   },
   typographyTop: {

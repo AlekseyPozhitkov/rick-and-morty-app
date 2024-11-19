@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
+import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import {
   fetchEpisodes,
   resetEpisodes,
@@ -24,13 +24,10 @@ const debouncedFetchByName = debounce((dispatch, filters, name) => {
 }, 700);
 
 export default function Episodes() {
-  const dispatch = useDispatch();
-  const episodes = useSelector((state) => state.episodes.items);
-  const status = useSelector((state) => state.episodes.status);
-  const hasMore = useSelector((state) => state.episodes.hasMore); // Подключаем hasMore
-  const filters = useSelector((state) => state.episodes.filters);
-  const nextPage = useSelector((state) => state.episodes.nextPage);
-  const error = useSelector((state) => state.episodes.error);
+  const dispatch = useAppDispatch();
+  const { items, status, hasMore, filters, nextPage, error } = useAppSelector(
+    (state) => state.episodes
+  );
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
@@ -85,7 +82,7 @@ export default function Episodes() {
 
       <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}
-        {episodes.map((episode) => (
+        {items.map((episode) => (
           <ItemCard
             key={episode.id}
             itemId={episode.id}
@@ -95,7 +92,7 @@ export default function Episodes() {
         ))}
       </Box>
 
-      {status === "failed" && episodes.length === 0 && (
+      {status === "failed" && items.length === 0 && (
         <Typography sx={pageStyles.notFound}>{error || "Oops! Not found"}</Typography>
       )}
 

@@ -2,20 +2,20 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
 import { GoBackButton } from "../../components/GoBackButton";
 import { Spinner } from "../../components/Spinner";
+import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
 import { pageStyles } from "../styles";
 import { detailsStyles } from "./styles";
 
 export default function CharacterDetails() {
   const { id } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { character, status, error } = useSelector((state) => state.characterDetails);
+  const { character, status, error } = useAppSelector((state) => state.characterDetails);
 
   const [episodes, setEpisodes] = useState([]);
   const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false);
@@ -53,7 +53,7 @@ export default function CharacterDetails() {
             setEpisodes(Array.isArray(response.data) ? response.data : [response.data]);
           }
         } catch (error) {
-          setEpisodesError("Failed to load episodes."); // Устанавливаем текст ошибки
+          setEpisodesError("Failed to load episodes.");
         } finally {
           if (isMounted) {
             setIsLoadingEpisodes(false);

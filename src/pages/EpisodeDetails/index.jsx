@@ -1,21 +1,21 @@
 import { Box, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
 import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
+import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import { fetchEpisodeById } from "../../libs/redux/slices/episodeDetailsSlice";
 import { detailsStyles } from "../LocationDetails/styles";
 import { pageStyles } from "../styles";
 
 export default function EpisodeDetails() {
   const { id } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { episode, status, error } = useSelector((state) => state.episodeDetails);
+  const { episode, status, error } = useAppSelector((state) => state.episodeDetails);
 
   const [characters, setCharacters] = useState([]);
   const [isLoadingCharacters, setIsLoadingCharacters] = useState(false);

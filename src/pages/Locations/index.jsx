@@ -1,7 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -9,6 +8,7 @@ import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
+import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import {
   fetchLocations,
   resetLocations,
@@ -26,14 +26,10 @@ const debouncedFetchByName = debounce((dispatch, filters, name) => {
 }, 700);
 
 export default function Locations() {
-  const dispatch = useDispatch();
-  const locations = useSelector((state) => state.locations.items);
-  const status = useSelector((state) => state.locations.status);
-  const hasMore = useSelector((state) => state.locations.hasMore);
-  const filterOptions = useSelector((state) => state.locations.filterOptions);
-  const filters = useSelector((state) => state.locations.filters);
-  const nextPage = useSelector((state) => state.locations.nextPage);
-  const error = useSelector((state) => state.locations.error);
+  const dispatch = useAppDispatch();
+  const { items, status, hasMore, filterOptions, filters, nextPage, error } = useAppSelector(
+    (state) => state.locations
+  );
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
@@ -116,7 +112,7 @@ export default function Locations() {
 
       <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}
-        {locations.map((location) => (
+        {items.map((location) => (
           <ItemCard
             key={location.id}
             itemId={location.id}
@@ -126,7 +122,7 @@ export default function Locations() {
         ))}
       </Box>
 
-      {status === "failed" && locations.length === 0 && (
+      {status === "failed" && items.length === 0 && (
         <Typography sx={pageStyles.notFound}>{error || "Oops! Not found"}</Typography>
       )}
 

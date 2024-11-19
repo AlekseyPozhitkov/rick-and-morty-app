@@ -1,7 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -9,6 +8,7 @@ import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
+import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import {
   fetchCharacters,
   resetCharacters,
@@ -26,14 +26,10 @@ const debouncedFetchCharacters = debounce((dispatch, filters, name) => {
 }, 700);
 
 export default function Characters() {
-  const dispatch = useDispatch();
-  const characters = useSelector((state) => state.characters.items);
-  const status = useSelector((state) => state.characters.status);
-  const hasMore = useSelector((state) => state.characters.hasMore);
-  const filters = useSelector((state) => state.characters.filters);
-  const filterOptions = useSelector((state) => state.characters.filterOptions);
-  const nextPage = useSelector((state) => state.characters.nextPage);
-  const error = useSelector((state) => state.characters.error);
+  const dispatch = useAppDispatch();
+  const { items, status, hasMore, filters, filterOptions, nextPage, error } = useAppSelector(
+    (state) => state.characters
+  );
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживания загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
@@ -111,12 +107,12 @@ export default function Characters() {
 
       <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}
-        {characters.map((card) => (
+        {items.map((card) => (
           <ItemCard key={card.id} itemId={card.id} itemType="character" showImage />
         ))}
       </Box>
 
-      {status === "failed" && characters.length === 0 && (
+      {status === "failed" && items.length === 0 && (
         <Typography sx={pageStyles.notFound}>{error || "Oops! Not found"}</Typography>
       )}
 

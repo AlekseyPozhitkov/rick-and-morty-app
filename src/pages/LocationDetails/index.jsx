@@ -1,21 +1,21 @@
 import { Box, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 
 import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
+import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import { fetchLocationById } from "../../libs/redux/slices/locationDetailsSlice";
 import { pageStyles } from "../styles";
 import { detailsStyles } from "./styles";
 
 export default function LocationDetails() {
   const { id } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { location, status, error } = useSelector((state) => state.locationDetails);
+  const { location, status, error } = useAppSelector((state) => state.locationDetails);
 
   const [residents, setResidents] = useState([]);
   const [isLoadingResidents, setIsLoadingResidents] = useState(false);
