@@ -8,7 +8,7 @@ import logo from "../../public/rick&morty.svg";
 import { LINK_ITEMS, LinkItem } from "./constants";
 import { navbarStyles } from "./styles";
 
-export const Navbar: React.FC = () => {
+export const Navbar = (): JSX.Element => {
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => setMenuOpen(!menuOpen);
 

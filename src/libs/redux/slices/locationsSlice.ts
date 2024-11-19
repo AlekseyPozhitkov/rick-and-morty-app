@@ -42,7 +42,7 @@ const locationsSlice = createSlice({
       state.hasMore = true;
       state.errorMessage = ""; // Очищаем сообщение об ошибке при изменении фильтра
     },
-    resetLocations: state => {
+    resetLocations: (state) => {
       // Сбрасываем состояние к исходному
       state.items = [];
       state.status = "idle";
@@ -52,9 +52,9 @@ const locationsSlice = createSlice({
       state.errorMessage = "";
     }
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchLocations.pending, state => {
+      .addCase(fetchLocations.pending, (state) => {
         state.status = "loading";
         state.errorMessage = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
       })
@@ -63,11 +63,11 @@ const locationsSlice = createSlice({
         state.errorMessage = "";
 
         // Используем Set для отслеживания уникальных id
-        const existingIds = new Set(state.items.map(item => item.id));
+        const existingIds = new Set(state.items.map((item) => item.id));
 
         // Добавляем только уникальные локации
         const uniqueLocations = action.payload.results.filter(
-          location => !existingIds.has(location.id)
+          (location) => !existingIds.has(location.id)
         );
 
         state.items = [...state.items, ...uniqueLocations];
@@ -75,7 +75,7 @@ const locationsSlice = createSlice({
         state.hasMore = !!action.payload.info.next;
 
         // Обновляем опции фильтра только для уникальных значений
-        action.payload.results.forEach(location => {
+        action.payload.results.forEach((location) => {
           if (location.type && !state.filterOptions.type.includes(location.type)) {
             state.filterOptions.type.push(location.type);
           }
@@ -94,7 +94,7 @@ const locationsSlice = createSlice({
 
 // Селектор
 export const selectLocationById = (state, itemId) =>
-  state.locations.items.find(item => item.id === itemId) || null;
+  state.locations.items.find((item) => item.id === itemId) || null;
 
 export const { setLocationFilter, resetLocations } = locationsSlice.actions;
 export default locationsSlice.reducer;

@@ -14,18 +14,18 @@ import { selectStyles } from "./styles";
 interface ItemSelectProps {
   label: string;
   options: string[];
-  value: string; //
+  value: string;
   onChange: (value: string) => void;
-  sx?: Record<string, SxProps>;
+  sx: Record<string, SxProps>;
 }
 
-export const ItemSelect: React.FC<ItemSelectProps> = ({
+export const ItemSelect = ({
   label,
   options,
-  onChange = () => {},
+  onChange,
   sx,
   value
-}) => {
+}: ItemSelectProps): JSX.Element => {
   const handleChange = (event: SelectChangeEvent<string>) => {
     onChange(event.target.value);
   };
@@ -35,7 +35,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = ({
   };
 
   return (
-    <Box sx={{ ...selectStyles.box, ...sx?.box } as SxProps}>
+    <Box sx={{ ...selectStyles.box, ...sx }}>
       <FormControl fullWidth>
         <InputLabel>{label}</InputLabel>
 
@@ -59,7 +59,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = ({
               Reset
             </Button>
           </MenuItem>
-          {options.map(option => (
+          {options.map((option) => (
             <MenuItem sx={selectStyles.menuItem} key={option} value={option}>
               {option}
             </MenuItem>

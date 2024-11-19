@@ -3,7 +3,7 @@
   "printWidth": 100,
   "singleAttributePerLine": false,
   "trailingComma": "none",
-  "arrowParens": "avoid",
+  "arrowParens": "always",
   "singleQuote": false,
   "semi": true,
   "importOrder": ["^@core/(.*)$", "^@server/(.*)$", "^@ui/(.*)$", "^[./]"],

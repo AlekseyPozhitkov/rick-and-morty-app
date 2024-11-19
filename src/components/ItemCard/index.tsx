@@ -15,7 +15,7 @@ export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow, 
     episode: selectEpisodeById
   };
 
-  const itemFromRedux = useSelector(state => selectors[itemType]?.(state, itemId));
+  const itemFromRedux = useSelector((state) => selectors[itemType]?.(state, itemId));
   const item = itemData || itemFromRedux; // Приоритет у itemData
 
   const navigate = useNavigate();
@@ -27,40 +27,19 @@ export const ItemCard = ({ itemId, itemType, showImage, sx, reverse, showArrow, 
   };
 
   return (
-    <Card
-      sx={{
-        ...cardStyles.card,
-        ...sx?.card
-      }}
-      onClick={handleCardClick}
-    >
+    <Card sx={{ ...cardStyles.card }} onClick={handleCardClick}>
       <CardActionArea sx={{ position: "relative" }}>
         {showImage && (
           <CardMedia sx={cardStyles.cardMedia} component="img" image={item.image} alt={item.name} />
         )}
-        <CardContent sx={{ ...cardStyles.cardContent, ...sx?.cardContent }}>
-          <Typography
-            sx={{ ...cardStyles.typography, ...cardStyles.typographyTop, ...sx?.typographyTop }}
-            gutterBottom
-          >
+        <CardContent sx={{ ...cardStyles.cardContent, ...sx }}>
+          <Typography sx={{ ...cardStyles.typography, ...cardStyles.typographyTop }} gutterBottom>
             {reverse ? item.episode : item.name}
           </Typography>
-          <Typography
-            sx={{
-              ...cardStyles.typography,
-              ...cardStyles.typographyMiddle,
-              ...sx?.typographyMiddle
-            }}
-          >
+          <Typography sx={{ ...cardStyles.typography, ...cardStyles.typographyMiddle }}>
             {reverse ? item.name : item.species || item.type || item.air_date}
           </Typography>
-          <Typography
-            sx={{
-              ...cardStyles.typography,
-              ...cardStyles.typographyBottom,
-              ...sx?.typographyBottom
-            }}
-          >
+          <Typography sx={{ ...cardStyles.typography, ...cardStyles.typographyBottom }}>
             {showImage ? "" : reverse ? item.air_date : item.episode}
           </Typography>
         </CardContent>

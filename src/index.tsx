@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 
 import { App } from "./App";
 import "./global.css";
-import { store } from "./libs/redux/store";
+import store from "./libs/redux/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(

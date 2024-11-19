@@ -62,10 +62,13 @@
       "prettier/prettier": [
         "error",
         {
+          "singleQuote": false,
+          "semi": true,
+          "editor.tabSize": 2,
           "printWidth": 100,
           "singleAttributePerLine": false,
           "trailingComma": "none",
-          "arrowParens": "avoid"
+          "arrowParens": "always"
         }
       ]
     }

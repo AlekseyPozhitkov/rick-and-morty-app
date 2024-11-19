@@ -7,10 +7,10 @@ import { ItemSelect } from "../ItemSelect";
 import { modalStyle } from "./styles";
 
 interface FiltersModalProps {
-  filterOptions: Record<string, string[]>; // Варианты фильтров
-  filters: Record<string, string>; // Текущие фильтры
-  handleFilterChange: (filters: Record<string, string>) => void; // Применение фильтров
-  filterTypes: string[]; // Типы фильтров
+  filterOptions: Record<string, string[]>;
+  filters: Record<string, string>;
+  handleFilterChange: (filters: Record<string, string>) => void;
+  filterTypes: string[];
 }
 
 export const FiltersModal = ({
@@ -18,7 +18,7 @@ export const FiltersModal = ({
   filters,
   handleFilterChange,
   filterTypes
-}: FiltersModalProps) => {
+}: FiltersModalProps): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState(filters);
 
@@ -67,11 +67,11 @@ export const FiltersModal = ({
             <Typography variant="h6">Filters</Typography>
             <CloseIcon onClick={handleClose} sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
           </Box>
-          {filterTypes.map(filterType => (
+          {filterTypes.map((filterType) => (
             <ItemSelect
               key={filterType}
               label={filterType[0].toUpperCase() + filterType.slice(1)}
-              options={filterOptions[filterType]}
+              options={filterOptions[filterType] || []}
               value={localFilters[filterType] || ""}
               onChange={(value: string) => handleLocalFilterChange(filterType, value)}
               sx={{ box: { display: "block" } }}

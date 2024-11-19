@@ -27,13 +27,13 @@ const debouncedFetchCharacters = debounce((dispatch, filters, name) => {
 
 export default function Characters() {
   const dispatch = useDispatch();
-  const characters = useSelector(state => state.characters.items);
-  const status = useSelector(state => state.characters.status);
-  const hasMore = useSelector(state => state.characters.hasMore);
-  const filters = useSelector(state => state.characters.filters);
-  const filterOptions = useSelector(state => state.characters.filterOptions);
-  const nextPage = useSelector(state => state.characters.nextPage);
-  const errorMessage = useSelector(state => state.characters.errorMessage);
+  const characters = useSelector((state) => state.characters.items);
+  const status = useSelector((state) => state.characters.status);
+  const hasMore = useSelector((state) => state.characters.hasMore);
+  const filters = useSelector((state) => state.characters.filters);
+  const filterOptions = useSelector((state) => state.characters.filterOptions);
+  const nextPage = useSelector((state) => state.characters.nextPage);
+  const errorMessage = useSelector((state) => state.characters.errorMessage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживания загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
@@ -43,7 +43,7 @@ export default function Characters() {
     dispatch(resetCharacters()); // Сбрасываем состояние
     const savedFilters = JSON.parse(localStorage.getItem("characterFilters"));
     if (savedFilters) {
-      Object.keys(savedFilters).forEach(key => {
+      Object.keys(savedFilters).forEach((key) => {
         dispatch(setCharacterFilter({ [key]: savedFilters[key] }));
       });
       if (savedFilters.name) {
@@ -67,7 +67,7 @@ export default function Characters() {
     dispatch(fetchCharacters({ page: nextPage, filters }));
   };
 
-  const handleInputChange = e => {
+  const handleInputChange = (e) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     debouncedFetchCharacters(dispatch, filters, newValue);
@@ -87,13 +87,13 @@ export default function Characters() {
       <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput value={inputValue} onChange={handleInputChange} />
 
-        {["species", "gender", "status"].map(filterType => (
+        {["species", "gender", "status"].map((filterType) => (
           <ItemSelect
             key={filterType}
             label={filterType[0].toUpperCase() + filterType.slice(1)}
             options={filterOptions[filterType]}
             value={filters[filterType] || ""}
-            onChange={value => handleFilterChangeOnMainPage(filterType, value)}
+            onChange={(value) => handleFilterChangeOnMainPage(filterType, value)}
           />
         ))}
       </Stack>
@@ -101,7 +101,7 @@ export default function Characters() {
       <FiltersModal
         filterOptions={filterOptions}
         filters={filters}
-        handleFilterChange={updatedFilters => {
+        handleFilterChange={(updatedFilters) => {
           localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
           dispatch(setCharacterFilter(updatedFilters));
           dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
@@ -111,7 +111,7 @@ export default function Characters() {
 
       <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}
-        {characters.map(card => (
+        {characters.map((card) => (
           <ItemCard key={card.id} itemId={card.id} itemType="character" showImage />
         ))}
       </Box>

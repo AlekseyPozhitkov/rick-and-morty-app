@@ -27,13 +27,13 @@ const debouncedFetchByName = debounce((dispatch, filters, name) => {
 
 export default function Locations() {
   const dispatch = useDispatch();
-  const locations = useSelector(state => state.locations.items);
-  const status = useSelector(state => state.locations.status);
-  const hasMore = useSelector(state => state.locations.hasMore);
-  const filterOptions = useSelector(state => state.locations.filterOptions);
-  const filters = useSelector(state => state.locations.filters);
-  const nextPage = useSelector(state => state.locations.nextPage);
-  const errorMessage = useSelector(state => state.locations.errorMessage);
+  const locations = useSelector((state) => state.locations.items);
+  const status = useSelector((state) => state.locations.status);
+  const hasMore = useSelector((state) => state.locations.hasMore);
+  const filterOptions = useSelector((state) => state.locations.filterOptions);
+  const filters = useSelector((state) => state.locations.filters);
+  const nextPage = useSelector((state) => state.locations.nextPage);
+  const errorMessage = useSelector((state) => state.locations.errorMessage);
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
@@ -43,7 +43,7 @@ export default function Locations() {
     dispatch(resetLocations()); // Сбрасываем состояние
     const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
     if (savedFilters) {
-      Object.keys(savedFilters).forEach(key => {
+      Object.keys(savedFilters).forEach((key) => {
         dispatch(setLocationFilter({ [key]: savedFilters[key] }));
       });
       if (savedFilters.name) {
@@ -67,7 +67,7 @@ export default function Locations() {
     dispatch(fetchLocations({ page: nextPage, filters }));
   };
 
-  const handleInputChange = e => {
+  const handleInputChange = (e) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     debouncedFetchByName(dispatch, filters, newValue);
@@ -88,17 +88,17 @@ export default function Locations() {
         <ItemInput
           value={inputValue}
           onChange={handleInputChange}
-          sx={{ box: { maxWidth: { sm: "326px" } } }}
+          sx={{ maxWidth: { sm: "326px" } }}
         />
 
-        {["type", "dimension"].map(filterType => (
+        {["type", "dimension"].map((filterType) => (
           <ItemSelect
             key={filterType}
             label={filterType[0].toUpperCase() + filterType.slice(1)}
             options={filterOptions[filterType]}
             value={filters[filterType] || ""}
-            onChange={value => handleFilterChangeOnMainPage(filterType, value)}
-            sx={{ box: { maxWidth: "240px" } }}
+            onChange={(value) => handleFilterChangeOnMainPage(filterType, value)}
+            sx={{ maxWidth: "240px" }}
           />
         ))}
       </Stack>
@@ -106,7 +106,7 @@ export default function Locations() {
       <FiltersModal
         filterOptions={filterOptions}
         filters={filters}
-        handleFilterChange={updatedFilters => {
+        handleFilterChange={(updatedFilters) => {
           localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
           dispatch(setLocationFilter(updatedFilters));
           dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
@@ -116,17 +116,12 @@ export default function Locations() {
 
       <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}
-        {locations.map(location => (
+        {locations.map((location) => (
           <ItemCard
             key={location.id}
             itemId={location.id}
             itemType="location"
-            sx={{
-              cardContent: {
-                height: "130px",
-                backgroundColor: "#FAFAFA"
-              }
-            }}
+            sx={{ height: "130px", backgroundColor: "#FAFAFA" }}
           />
         ))}
       </Box>

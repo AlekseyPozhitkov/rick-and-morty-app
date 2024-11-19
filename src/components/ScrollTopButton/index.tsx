@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { scrollTopStyles } from "./styles";
 
-export const ScrollTopButton = () => {
+export const ScrollTopButton = (): JSX.Element => {
   const [show, setShow] = useState(false);
 
   // Показать кнопку при прокрутке вниз на 300px

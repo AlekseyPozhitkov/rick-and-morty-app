@@ -19,7 +19,7 @@ export default function EpisodeDetails() {
   const [isLoadingCharacters, setIsLoadingCharacters] = useState(false);
   const [charactersError, setCharactersError] = useState(null);
 
-  const { episode, status, error } = useSelector(state => state.episodeDetails);
+  const { episode, status, error } = useSelector((state) => state.episodeDetails);
 
   useEffect(() => {
     dispatch(fetchEpisodeById(id));
@@ -39,7 +39,7 @@ export default function EpisodeDetails() {
     let isMounted = true; // Флаг для контроля актуальности загрузки
 
     if (episode?.characters && episode.characters.length > 0) {
-      const characterIds = episode.characters.map(url => url.split("/").pop()).join(",");
+      const characterIds = episode.characters.map((url) => url.split("/").pop()).join(",");
 
       const fetchCharacters = async () => {
         setIsLoadingCharacters(true);
@@ -93,7 +93,7 @@ export default function EpisodeDetails() {
         </Typography>
 
         <Stack direction="row" sx={detailsStyles.title}>
-          {["episode", "air_date"].map(key => {
+          {["episode", "air_date"].map((key) => {
             const displayValue = episode[key] || "Unknown";
             const displayKey = key === "air_date" ? "Date" : key;
 
@@ -117,7 +117,7 @@ export default function EpisodeDetails() {
         <Typography color="error">{charactersError}</Typography>
       ) : characters.length > 0 ? (
         <Stack sx={pageStyles.items}>
-          {characters.map(character => (
+          {characters.map((character) => (
             <Stack component={Link} to={`/character/${character.id}`} key={character.id}>
               <ItemCard itemData={character} showImage />
             </Stack>

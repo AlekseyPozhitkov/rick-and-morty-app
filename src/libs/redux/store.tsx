@@ -7,7 +7,7 @@ import episodesReducer from "./slices/episodesSlice";
 import locationDetailsReducer from "./slices/locationDetailsSlice";
 import locationsReducer from "./slices/locationsSlice";
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     characters: charactersReducer,
     episodes: episodesReducer,
