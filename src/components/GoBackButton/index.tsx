@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { arrowStyles } from "./styles";
 
-export const GoBackButton = (): JSX.Element => {
+export const GoBackButton = () => {
   const navigate = useNavigate();
 
   return (

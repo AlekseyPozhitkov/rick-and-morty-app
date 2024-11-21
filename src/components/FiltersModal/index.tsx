@@ -1,6 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Box, Button, Modal, SxProps, Typography } from "@mui/material";
+import { mergeSx } from "merge-sx";
 import { useEffect, useState } from "react";
 
 import { ItemSelect } from "../ItemSelect";
@@ -18,7 +19,7 @@ export const FiltersModal = ({
   filters,
   handleFilterChange,
   filterTypes
-}: FiltersModalProps): JSX.Element => {
+}: FiltersModalProps) => {
   const [open, setOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState(filters);
 
@@ -50,7 +51,7 @@ export const FiltersModal = ({
       <Button
         variant="contained"
         onClick={handleOpen}
-        sx={{ ...modalStyle.button, height: "56px" }}
+        sx={mergeSx(modalStyle.button, { height: "56px" })}
       >
         <FilterListIcon sx={modalStyle.icon} />
         Advanced filters
@@ -74,13 +75,13 @@ export const FiltersModal = ({
               options={filterOptions[filterType] || []}
               value={localFilters[filterType] || ""}
               onChange={(value: string) => handleLocalFilterChange(filterType, value)}
-              sx={{ box: { display: "block" } }}
+              sx={{ display: "block" as SxProps }}
             />
           ))}
           <Button
             variant="contained"
             onClick={applyFilters}
-            sx={{ ...modalStyle.button, width: "100%", mt: 2 }}
+            sx={mergeSx(modalStyle.button, { width: "100%", mt: 2 })}
           >
             Apply
           </Button>

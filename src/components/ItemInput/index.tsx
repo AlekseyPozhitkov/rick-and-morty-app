@@ -1,4 +1,5 @@
 import { Box, SxProps, TextField } from "@mui/material";
+import { mergeSx } from "merge-sx";
 import { ChangeEvent } from "react";
 
 import { inputStyles } from "./styles";
@@ -10,8 +11,8 @@ interface ItemInputProps {
   value: string;
 }
 
-export const ItemInput = ({ onChange, placeholder, sx, value }: ItemInputProps): JSX.Element => (
-  <Box sx={{ ...inputStyles.box, ...sx }}>
+export const ItemInput = ({ onChange, placeholder, sx, value }: ItemInputProps) => (
+  <Box sx={mergeSx(inputStyles.box, sx)}>
     <TextField
       sx={inputStyles.textField}
       id="outlined-basic"

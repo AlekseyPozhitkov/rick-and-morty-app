@@ -1,25 +1,48 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { isAxiosError } from "axios";
 
-export const fetchEpisodeById = createAsyncThunk(
+import { axiosInstance } from "./axiosInstance";
+
+interface EpisodeDetails {
+  id: number;
+  name: string;
+  air_date: string;
+  episode: string;
+  characters: string[];
+}
+
+interface EpisodeState {
+  episode: EpisodeDetails | null;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+}
+
+const initialState: EpisodeState = {
+  episode: null,
+  status: "idle",
+  error: null
+};
+
+export const fetchEpisodeById = createAsyncThunk<EpisodeDetails, number, { rejectValue: string }>(
   "episodeDetails/fetchepisodeById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`https://rickandmortyapi.com/api/episode/${id}`);
+      const response = await axiosInstance.get<EpisodeDetails>(`/episode/${id}`);
+
       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || "Failed to fetch characters.");
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.error || "Failed to fetch characters.");
+      }
+
+      return rejectWithValue("An unknown error occurred.");
     }
   }
 );
 
 const episodeDetailsSlice = createSlice({
   name: "episodeDetails",
-  initialState: {
-    episode: null,
-    status: "idle",
-    error: ""
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder

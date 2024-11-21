@@ -1,64 +1,103 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { isAxiosError } from "axios";
 
-export const fetchEpisodes = createAsyncThunk(
-  "episodes/fetchEpisodes",
-  async ({ page, filters }, { rejectWithValue }) => {
-    try {
-      const { name } = filters;
-      const response = await axios.get("https://rickandmortyapi.com/api/episode", {
-        params: { page, name }
-      });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || "Failed to fetch characters.");
+import { RootState } from "../store";
+import { axiosInstance } from "./axiosInstance";
+
+interface Episode {
+  id: number;
+  name: string;
+  air_date: string;
+  episode: string;
+}
+
+interface Filters {
+  name: string;
+}
+
+interface FetchEpisodesParams {
+  page: number;
+  filters: Filters;
+}
+
+interface FetchEpisodesResponse {
+  info: {
+    next: string | null;
+  };
+  results: Episode[];
+}
+
+interface EpisodesState {
+  items: Episode[];
+  status: "idle" | "loading" | "succeeded" | "failed";
+  nextPage: number;
+  hasMore: boolean;
+  filters: Filters;
+  error: string | null;
+}
+
+const initialState: EpisodesState = {
+  items: [],
+  status: "idle",
+  nextPage: 1,
+  hasMore: true,
+  filters: { name: "" },
+  error: null
+};
+
+export const fetchEpisodes = createAsyncThunk<
+  FetchEpisodesResponse,
+  FetchEpisodesParams,
+  { rejectValue: string }
+>("episodes/fetchEpisodes", async ({ page, filters }, { rejectWithValue }) => {
+  try {
+    const { name } = filters;
+    const response = await axiosInstance.get<FetchEpisodesResponse>("/episode", {
+      params: { page, name }
+    });
+
+    return response.data;
+  } catch (error: unknown) {
+    if (isAxiosError(error)) {
+      return rejectWithValue(error.response?.data?.error || "Failed to fetch episodes.");
     }
+
+    return rejectWithValue("An unknown error occurred.");
   }
-);
+});
 
 const episodesSlice = createSlice({
   name: "episodes",
-  initialState: {
-    items: [],
-    status: "idle",
-    nextPage: 1,
-    hasMore: true,
-    filters: { name: "" },
-    error: ""
-  },
+  initialState,
   reducers: {
-    setEpisodeFilter: (state, action) => {
+    setEpisodeFilter: (state, action: PayloadAction<Partial<Filters>>) => {
       state.filters = { ...state.filters, ...action.payload };
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
-      state.error = ""; // Очищаем сообщение об ошибке при изменении фильтра
+      state.error = null;
     },
     resetEpisodes: (state) => {
-      // Сбрасываем состояние к исходному
       state.items = [];
       state.status = "idle";
       state.nextPage = 1;
       state.hasMore = true;
       state.filters = { name: "" };
-      state.error = "";
+      state.error = null;
     }
   },
-  // Добавляем обработку fetchCharacterEpisodes в extraReducers
   extraReducers: (builder) => {
     builder
       .addCase(fetchEpisodes.pending, (state) => {
         state.status = "loading";
-        state.error = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
+        state.error = null;
       })
       .addCase(fetchEpisodes.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.error = "";
-
-        // Используем Set для отслеживания уникальных id
-        const existingIds = new Set(state.items.map((item) => item.id));
+        state.error = null;
 
         // Добавляем только уникальные эпизоды
+        const existingIds = new Set(state.items.map((item) => item.id));
         const uniqueEpisodes = action.payload.results.filter(
           (episode) => !existingIds.has(episode.id)
         );
@@ -70,13 +109,12 @@ const episodesSlice = createSlice({
       .addCase(fetchEpisodes.rejected, (state, action) => {
         state.status = "failed";
         state.hasMore = false;
-        state.error = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
+        state.error = action.payload || "An error occurred.";
       });
   }
 });
 
-// Селектор
-export const selectEpisodeById = (state, itemId) =>
+export const selectEpisodeById = (state: RootState, itemId: number): Episode | null =>
   state.episodes.items.find((item) => item.id === itemId) || null;
 
 export const { setEpisodeFilter, resetEpisodes } = episodesSlice.actions;

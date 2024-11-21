@@ -1,73 +1,122 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { isAxiosError } from "axios";
 
-export const fetchCharacters = createAsyncThunk(
-  "characters/fetchCharacters",
-  async ({ page, filters }, { rejectWithValue }) => {
-    try {
-      const { name, status, species, gender } = filters;
-      const response = await axios.get("https://rickandmortyapi.com/api/character", {
-        params: { page, name, status, species, gender }
-      });
-      return response.data;
-    } catch (error) {
+import { RootState } from "../store";
+import { axiosInstance } from "./axiosInstance";
+
+interface Character {
+  id: number;
+  name: string;
+  species: string;
+  gender: string;
+  status: string;
+}
+
+interface Filters {
+  name: string;
+  species: string;
+  gender: string;
+  status: string;
+}
+
+interface FetchCharactersParams {
+  page: number;
+  filters: Filters;
+}
+
+interface FetchCharactersResponse {
+  info: {
+    next: string | null;
+  };
+  results: Character[];
+}
+
+interface CharactersState {
+  items: Character[];
+  status: "idle" | "loading" | "succeeded" | "failed";
+  nextPage: number;
+  hasMore: boolean;
+  filters: Filters;
+  filterOptions: {
+    species: string[];
+    gender: string[];
+    status: string[];
+  };
+  error: string | null;
+}
+
+const initialState: CharactersState = {
+  items: [],
+  status: "idle",
+  nextPage: 1,
+  hasMore: true,
+  filters: {
+    name: "",
+    status: "",
+    species: "",
+    gender: ""
+  },
+  filterOptions: {
+    species: [],
+    gender: [],
+    status: []
+  },
+  error: null
+};
+
+export const fetchCharacters = createAsyncThunk<
+  FetchCharactersResponse,
+  FetchCharactersParams,
+  { rejectValue: string }
+>("characters/fetchCharacters", async ({ page, filters }, { rejectWithValue }) => {
+  try {
+    const { name, status, species, gender } = filters;
+    const response = await axiosInstance.get<FetchCharactersResponse>("/character", {
+      params: { page, name, status, species, gender }
+    });
+
+    return response.data;
+  } catch (error: unknown) {
+    if (isAxiosError(error)) {
       return rejectWithValue(error.response?.data?.error || "Failed to fetch characters.");
     }
+
+    return rejectWithValue("An unknown error occurred.");
   }
-);
+});
 
 const charactersSlice = createSlice({
   name: "characters",
-  initialState: {
-    items: [],
-    status: "idle",
-    nextPage: 1,
-    hasMore: true,
-    filters: {
-      name: "",
-      status: "",
-      species: "",
-      gender: ""
-    },
-    filterOptions: {
-      species: [],
-      gender: [],
-      status: []
-    },
-    error: "" // Добавляем поле для хранения сообщения об ошибке
-  },
+  initialState,
   reducers: {
-    setCharacterFilter: (state, action) => {
+    setCharacterFilter: (state, action: PayloadAction<Partial<Filters>>) => {
       state.filters = { ...state.filters, ...action.payload };
       state.items = [];
       state.nextPage = 1;
       state.hasMore = true;
-      state.error = ""; // Очищаем сообщение об ошибке при изменении фильтра
+      state.error = null;
     },
     resetCharacters: (state) => {
-      // Сбрасываем состояние к исходному
       state.items = [];
       state.status = "idle";
       state.nextPage = 1;
       state.hasMore = true;
-      state.filters = { name: "" };
-      state.error = "";
+      state.filters = { name: "", status: "", species: "", gender: "" };
+      state.error = null;
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCharacters.pending, (state) => {
         state.status = "loading";
-        state.error = ""; // Очищаем сообщение об ошибке при новой попытке загрузки
+        state.error = null;
       })
       .addCase(fetchCharacters.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.error = "";
-
-        // Используем Set для отслеживания уникальных id
-        const existingIds = new Set(state.items.map((item) => item.id));
+        state.error = null;
 
         // Добавляем только уникальных персонажей
+        const existingIds = new Set(state.items.map((item) => item.id));
         const uniqueCharacters = action.payload.results.filter(
           (character) => !existingIds.has(character.id)
         );
@@ -92,13 +141,12 @@ const charactersSlice = createSlice({
       .addCase(fetchCharacters.rejected, (state, action) => {
         state.status = "failed";
         state.hasMore = false;
-        state.error = action.payload || "An error occurred."; // Сохраняем сообщение об ошибке
+        state.error = action.payload || "An error occurred.";
       });
   }
 });
 
-// Селектор
-export const selectCharacterById = (state, itemId) =>
+export const selectCharacterById = (state: RootState, itemId: number): Character | null =>
   state.characters.items.find((item) => item.id === itemId) || null;
 
 export const { setCharacterFilter, resetCharacters } = charactersSlice.actions;

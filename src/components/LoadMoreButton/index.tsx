@@ -6,7 +6,7 @@ interface LoadMoreButtonProps {
   onClick: () => void;
 }
 
-export const LoadMoreButton = ({ onClick }: LoadMoreButtonProps): JSX.Element => (
+export const LoadMoreButton = ({ onClick }: LoadMoreButtonProps) => (
   <Button sx={buttonStyles} variant="contained" onClick={onClick}>
     Load more
   </Button>

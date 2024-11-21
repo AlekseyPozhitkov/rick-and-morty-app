@@ -1,5 +1,6 @@
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Card, CardActionArea, CardContent, CardMedia, SxProps, Typography } from "@mui/material";
+import { mergeSx } from "merge-sx";
 import { useNavigate } from "react-router-dom";
 
 import { useAppSelector } from "../../libs/redux/hooks";
@@ -37,7 +38,7 @@ type Item = Character | Location | Episode;
 type ItemType = "character" | "location" | "episode";
 
 interface ItemCardProps {
-  itemId: number | string;
+  itemId: number;
   itemType: ItemType;
   showImage?: boolean;
   sx?: Record<string, SxProps>;
@@ -54,7 +55,7 @@ export const ItemCard = ({
   reverse,
   showArrow,
   itemData
-}: ItemCardProps): JSX.Element => {
+}: ItemCardProps) => {
   const selectors = {
     character: selectCharacterById,
     location: selectLocationById,
@@ -62,7 +63,7 @@ export const ItemCard = ({
   };
 
   const itemFromRedux = useAppSelector((state) => selectors[itemType]?.(state, itemId));
-  const item = itemData || itemFromRedux; // Приоритет у itemData
+  const item = itemData || itemFromRedux;
 
   const navigate = useNavigate();
 
@@ -72,30 +73,44 @@ export const ItemCard = ({
     }
   };
 
+  if (!item) return null;
+
+  const isCharacter = (item: Item): item is Character => (item as Character).image !== undefined;
+  const isLocation = (item: Item): item is Location => (item as Location).type !== undefined;
+  const isEpisode = (item: Item): item is Episode => (item as Episode).air_date !== undefined;
+
   return (
-    <Card sx={{ ...cardStyles.card }} onClick={handleCardClick}>
+    <Card sx={cardStyles.card} onClick={handleCardClick}>
       <CardActionArea sx={{ position: "relative" }}>
-        {showImage && (
+        {showImage && isCharacter(item) && (
           <CardMedia sx={cardStyles.cardMedia} component="img" image={item.image} alt={item.name} />
         )}
 
-        <CardContent sx={{ ...cardStyles.cardContent, ...sx }}>
-          <Typography
-            sx={{
-              ...cardStyles.typography,
-              color: "rgba(0, 0, 0, 0.9)",
-              fontWeight: "700",
-              fontSize: "20px"
-            }}
-            gutterBottom
-          >
-            {reverse ? item.episode : item.name}
+        <CardContent sx={mergeSx(cardStyles.cardContent, sx)}>
+          <Typography sx={mergeSx(cardStyles.typography, cardStyles.typographyTitle)} gutterBottom>
+            {reverse && isEpisode(item) ? item.episode : item.name}
           </Typography>
+
           <Typography sx={{ ...cardStyles.typography, fontWeight: "400" }}>
-            {reverse ? item.name : item.species || item.type || item.air_date}
+            {reverse
+              ? item.name
+              : isCharacter(item)
+                ? item.species
+                : isLocation(item)
+                  ? item.type
+                  : isEpisode(item)
+                    ? item.air_date
+                    : ""}
           </Typography>
+
           <Typography sx={{ ...cardStyles.typography, fontWeight: "700" }}>
-            {showImage ? "" : reverse ? item.air_date : item.episode}
+            {showImage
+              ? ""
+              : reverse && isEpisode(item)
+                ? item.air_date
+                : isEpisode(item)
+                  ? item.episode
+                  : ""}
           </Typography>
         </CardContent>
         {showArrow && <ArrowForwardIosIcon sx={cardStyles.arrow} />}

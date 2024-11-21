@@ -21,18 +21,10 @@ export const cardStyles: Record<string, SxProps> = {
     fontSize: "14px",
     color: "rgba(0, 0, 0, 0.6)"
   },
-  typographyTop: {
+  typographyTitle: {
     color: "rgba(0, 0, 0, 0.9)",
     fontWeight: "700",
     fontSize: "20px"
-  },
-  typographyMiddle: {
-    fontWeight: "400",
-    fontSize: "14px"
-  },
-  typographyBottom: {
-    fontWeight: "700",
-    fontSize: "14px"
   },
   arrow: {
     fontSize: "15px",

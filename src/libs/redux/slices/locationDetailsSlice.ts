@@ -1,25 +1,49 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { isAxiosError } from "axios";
 
-export const fetchLocationById = createAsyncThunk(
+import { axiosInstance } from "./axiosInstance";
+
+interface LocationDetails {
+  id: number;
+  name: string;
+  type: string;
+  dimension: string;
+  residents: string[];
+  url: string;
+}
+
+interface LocationDetailsState {
+  location: LocationDetails | null;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+}
+
+const initialState: LocationDetailsState = {
+  location: null,
+  status: "idle",
+  error: null
+};
+
+export const fetchLocationById = createAsyncThunk<LocationDetails, number, { rejectValue: string }>(
   "locationDetails/fetchlocationById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`https://rickandmortyapi.com/api/location/${id}`);
+      const response = await axiosInstance.get<LocationDetails>(`/location/${id}`);
+
       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || "Failed to fetch locations.");
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.error || "Failed to fetch locations.");
+      }
+
+      return rejectWithValue("An unknown error occurred.");
     }
   }
 );
 
 const locationDetailsSlice = createSlice({
   name: "locationDetails",
-  initialState: {
-    location: null,
-    status: "idle",
-    error: ""
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder

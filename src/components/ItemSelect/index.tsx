@@ -8,6 +8,7 @@ import {
   SelectChangeEvent,
   SxProps
 } from "@mui/material";
+import { mergeSx } from "merge-sx";
 
 import { selectStyles } from "./styles";
 
@@ -19,13 +20,7 @@ interface ItemSelectProps {
   sx: Record<string, SxProps>;
 }
 
-export const ItemSelect = ({
-  label,
-  options,
-  onChange,
-  sx,
-  value
-}: ItemSelectProps): JSX.Element => {
+export const ItemSelect = ({ label, options, onChange, sx, value }: ItemSelectProps) => {
   const handleChange = (event: SelectChangeEvent<string>) => {
     onChange(event.target.value);
   };
@@ -35,7 +30,7 @@ export const ItemSelect = ({
   };
 
   return (
-    <Box sx={{ ...selectStyles.box, ...sx }}>
+    <Box sx={mergeSx(selectStyles.box, sx)}>
       <FormControl fullWidth>
         <InputLabel>{label}</InputLabel>
 
