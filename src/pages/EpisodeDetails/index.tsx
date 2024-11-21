@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
@@ -11,18 +11,26 @@ import { fetchEpisodeById } from "../../libs/redux/slices/episodeDetailsSlice";
 import { detailsStyles } from "../LocationDetails/styles";
 import { pageStyles } from "../styles";
 
+interface Character {
+  id: number;
+  name: string;
+  species: string;
+  gender: string;
+  status: string;
+}
+
 export default function EpisodeDetails() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
   const { episode, status, error } = useAppSelector((state) => state.episodeDetails);
 
-  const [characters, setCharacters] = useState([]);
+  const [characters, setCharacters] = useState<Character[]>([]);
   const [isLoadingCharacters, setIsLoadingCharacters] = useState(false);
-  const [charactersError, setCharactersError] = useState(null);
+  const [charactersError, setCharactersError] = useState<string | null>(null);
 
   useEffect(() => {
-    dispatch(fetchEpisodeById(id));
+    dispatch(fetchEpisodeById(Number(id)));
   }, [dispatch, id]);
 
   const resetCharactersState = () => {
@@ -32,7 +40,7 @@ export default function EpisodeDetails() {
   };
 
   useEffect(() => {
-    resetCharactersState();
+    resetCharactersState(); // Сбрасываем состояние немедленно при смене ID
   }, [id]);
 
   useEffect(() => {
@@ -45,8 +53,8 @@ export default function EpisodeDetails() {
         setIsLoadingCharacters(true);
 
         try {
-          const response = await axios.get(
-            `https://rickandmortyapi.com/api/character/${characterIds}`
+          const response = await axiosInstance.get<Character[] | Character>(
+            `/character/${characterIds}`
           );
 
           if (isMounted) {
@@ -63,7 +71,7 @@ export default function EpisodeDetails() {
 
       fetchCharacters();
     } else if (episode?.characters?.length === 0) {
-      resetCharactersState();
+      resetCharactersState(); // Если нет жителей, сбрасываем состояние
     }
 
     return () => {
@@ -93,13 +101,13 @@ export default function EpisodeDetails() {
         </Typography>
 
         <Stack direction="row" sx={detailsStyles.title}>
-          {["episode", "air_date"].map((key) => {
+          {(["episode", "air_date"] as const).map((key) => {
             const displayValue = episode[key] || "Unknown";
             const displayKey = key === "air_date" ? "Date" : key;
 
             return (
               <Box sx={detailsStyles.titlePart} key={key}>
-                <Typography sx={{ textTransform: "capitalize", ...pageStyles.boxTitle }}>
+                <Typography sx={{ ...pageStyles.boxTitle, textTransform: "capitalize" }}>
                   {displayKey}
                 </Typography>
                 <Typography sx={pageStyles.boxName}>{displayValue}</Typography>
@@ -115,16 +123,16 @@ export default function EpisodeDetails() {
         <Typography>Loading...</Typography>
       ) : charactersError ? (
         <Typography color="error">{charactersError}</Typography>
-      ) : characters.length > 0 ? (
+      ) : !isLoadingCharacters && characters.length === 0 ? (
+        <Typography sx={pageStyles.notFound}>No residents found in this location</Typography>
+      ) : (
         <Stack sx={pageStyles.items}>
           {characters.map((character) => (
             <Stack component={Link} to={`/character/${character.id}`} key={character.id}>
-              <ItemCard itemData={character} showImage />
+              <ItemCard itemId={character.id} itemType="character" itemData={character} showImage />
             </Stack>
           ))}
         </Stack>
-      ) : (
-        <Typography sx={pageStyles.notFound}>No characters found in this episode</Typography>
       )}
     </>
   );

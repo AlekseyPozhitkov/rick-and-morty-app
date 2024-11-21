@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 
-import { axiosInstance } from "./axiosInstance";
+import { axiosInstance } from "../../../axiosInstance";
 
-interface CharacterDetails {
+interface Character {
   id: number;
   name: string;
   species: string;
+  type: string;
   gender: string;
   status: string;
   origin: { name: string; url: string };
@@ -15,35 +16,34 @@ interface CharacterDetails {
   episode: string[];
 }
 
-interface CharacterDetailsState {
-  character: CharacterDetails | null;
+interface CharacterState {
+  character: Character | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
-const initialState: CharacterDetailsState = {
+const initialState: CharacterState = {
   character: null,
   status: "idle",
   error: null
 };
 
-export const fetchCharacterById = createAsyncThunk<
-  CharacterDetails,
-  number,
-  { rejectValue: string }
->("characterDetails/fetchCharacterById", async (id, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.get<CharacterDetails>(`/character/${id}`);
+export const fetchCharacterById = createAsyncThunk<Character, number, { rejectValue: string }>(
+  "characterDetails/fetchCharacterById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get<Character>(`/character/${id}`);
 
-    return response.data;
-  } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return rejectWithValue(error.response?.data?.error || "Failed to fetch character details.");
+      return response.data;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.error || "Failed to fetch character details.");
+      }
+
+      return rejectWithValue("An unknown error occurred.");
     }
-
-    return rejectWithValue("An unknown error occurred.");
   }
-});
+);
 
 const characterDetailsSlice = createSlice({
   name: "characterDetails",

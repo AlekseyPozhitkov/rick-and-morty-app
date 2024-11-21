@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 
-import { axiosInstance } from "./axiosInstance";
+import { axiosInstance } from "../../../axiosInstance";
 
-interface LocationDetails {
+interface Location {
   id: number;
   name: string;
   type: string;
@@ -12,23 +12,23 @@ interface LocationDetails {
   url: string;
 }
 
-interface LocationDetailsState {
-  location: LocationDetails | null;
+interface LocationState {
+  location: Location | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
-const initialState: LocationDetailsState = {
+const initialState: LocationState = {
   location: null,
   status: "idle",
   error: null
 };
 
-export const fetchLocationById = createAsyncThunk<LocationDetails, number, { rejectValue: string }>(
+export const fetchLocationById = createAsyncThunk<Location, number, { rejectValue: string }>(
   "locationDetails/fetchlocationById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get<LocationDetails>(`/location/${id}`);
+      const response = await axiosInstance.get<Location>(`/location/${id}`);
 
       return response.data;
     } catch (error: unknown) {
@@ -49,7 +49,7 @@ const locationDetailsSlice = createSlice({
     builder
       .addCase(fetchLocationById.pending, (state) => {
         state.status = "loading";
-        state.error = "";
+        state.error = null;
       })
       .addCase(fetchLocationById.fulfilled, (state, action) => {
         state.status = "succeeded";

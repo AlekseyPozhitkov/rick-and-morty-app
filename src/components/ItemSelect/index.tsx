@@ -17,7 +17,7 @@ interface ItemSelectProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
-  sx: Record<string, SxProps>;
+  sx?: SxProps;
 }
 
 export const ItemSelect = ({ label, options, onChange, sx, value }: ItemSelectProps) => {

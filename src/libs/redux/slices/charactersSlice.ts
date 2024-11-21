@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 
+import { axiosInstance } from "../../../axiosInstance";
 import { RootState } from "../store";
-import { axiosInstance } from "./axiosInstance";
 
 interface Character {
   id: number;
@@ -12,7 +12,7 @@ interface Character {
   status: string;
 }
 
-interface Filters {
+export interface Filters {
   name: string;
   species: string;
   gender: string;
@@ -31,7 +31,7 @@ interface FetchCharactersResponse {
   results: Character[];
 }
 
-interface CharactersState {
+export interface CharactersState {
   items: Character[];
   status: "idle" | "loading" | "succeeded" | "failed";
   nextPage: number;

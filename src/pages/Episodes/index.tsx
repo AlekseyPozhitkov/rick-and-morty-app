@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
@@ -8,6 +8,7 @@ import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
 import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import {
+  EpisodesState,
   fetchEpisodes,
   resetEpisodes,
   setEpisodeFilter
@@ -15,13 +16,19 @@ import {
 import logo from "../../public/rick-and-morty-eyes.svg";
 import { pageStyles } from "../styles";
 
-// Выносим debounce за пределы компонента
-const debouncedFetchByName = debounce((dispatch, filters, name) => {
-  const updatedFilters = { ...filters, name };
-  localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
-  dispatch(setEpisodeFilter({ name }));
-  dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
-}, 700);
+const debouncedFetchByName = debounce(
+  (
+    dispatch: ReturnType<typeof useAppDispatch>,
+    filters: EpisodesState["filters"],
+    name: string
+  ) => {
+    const updatedFilters = { ...filters, name };
+    localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
+    dispatch(setEpisodeFilter({ name }));
+    dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
+  },
+  700
+);
 
 export default function Episodes() {
   const dispatch = useAppDispatch();
@@ -35,7 +42,7 @@ export default function Episodes() {
   // Загружаем фильтры из localStorage при первом рендере
   useEffect(() => {
     dispatch(resetEpisodes()); // Сбрасываем состояние
-    const savedFilters = JSON.parse(localStorage.getItem("episodeFilters"));
+    const savedFilters = JSON.parse(localStorage.getItem("episodeFilters") || "{}");
     if (savedFilters) {
       Object.keys(savedFilters).forEach((key) => {
         dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
@@ -48,7 +55,6 @@ export default function Episodes() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
     if (isLoadMoreClicked && status === "succeeded") {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -61,7 +67,7 @@ export default function Episodes() {
     dispatch(fetchEpisodes({ page: nextPage, filters }));
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     debouncedFetchByName(dispatch, filters, newValue);

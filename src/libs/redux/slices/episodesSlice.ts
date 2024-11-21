@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 
+import { axiosInstance } from "../../../axiosInstance";
 import { RootState } from "../store";
-import { axiosInstance } from "./axiosInstance";
 
 interface Episode {
   id: number;
@@ -27,7 +27,7 @@ interface FetchEpisodesResponse {
   results: Episode[];
 }
 
-interface EpisodesState {
+export interface EpisodesState {
   items: Episode[];
   status: "idle" | "loading" | "succeeded" | "failed";
   nextPage: number;

@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -10,6 +10,7 @@ import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
 import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import {
+  CharactersState,
   fetchCharacters,
   resetCharacters,
   setCharacterFilter
@@ -17,13 +18,19 @@ import {
 import logo from "../../public/RICKANDMORTY.svg";
 import { pageStyles } from "../styles";
 
-// Выносим debounce за пределы компонента
-const debouncedFetchCharacters = debounce((dispatch, filters, name) => {
-  const updatedFilters = { ...filters, name };
-  localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
-  dispatch(setCharacterFilter({ name }));
-  dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
-}, 700);
+const debouncedFetchCharacters = debounce(
+  (
+    dispatch: ReturnType<typeof useAppDispatch>,
+    filters: CharactersState["filters"],
+    name: string
+  ) => {
+    const updatedFilters = { ...filters, name };
+    localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+    dispatch(setCharacterFilter({ name }));
+    dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
+  },
+  700
+);
 
 export default function Characters() {
   const dispatch = useAppDispatch();
@@ -31,13 +38,13 @@ export default function Characters() {
     (state) => state.characters
   );
 
-  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживания загрузки по кнопке
+  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false);
   const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
-    dispatch(resetCharacters()); // Сбрасываем состояние
-    const savedFilters = JSON.parse(localStorage.getItem("characterFilters"));
+    dispatch(resetCharacters());
+    const savedFilters = JSON.parse(localStorage.getItem("characterFilters") || "{}");
     if (savedFilters) {
       Object.keys(savedFilters).forEach((key) => {
         dispatch(setCharacterFilter({ [key]: savedFilters[key] }));
@@ -50,7 +57,6 @@ export default function Characters() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
     if (isLoadMoreClicked && status === "succeeded") {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -63,13 +69,16 @@ export default function Characters() {
     dispatch(fetchCharacters({ page: nextPage, filters }));
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     debouncedFetchCharacters(dispatch, filters, newValue);
   };
 
-  const handleFilterChangeOnMainPage = (filterType, value) => {
+  const handleFilterChangeOnMainPage = (
+    filterType: keyof CharactersState["filters"],
+    value: string | null
+  ) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
     localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
     dispatch(setCharacterFilter({ [filterType]: value || "" }));
@@ -83,7 +92,7 @@ export default function Characters() {
       <Stack sx={pageStyles.sorts} direction="row">
         <ItemInput value={inputValue} onChange={handleInputChange} />
 
-        {["species", "gender", "status"].map((filterType) => (
+        {(["species", "gender", "status"] as const).map((filterType) => (
           <ItemSelect
             key={filterType}
             label={filterType[0].toUpperCase() + filterType.slice(1)}
@@ -96,11 +105,11 @@ export default function Characters() {
 
       <FiltersModal
         filterOptions={filterOptions}
-        filters={filters}
+        filters={{ ...filters }}
         handleFilterChange={(updatedFilters) => {
           localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
           dispatch(setCharacterFilter(updatedFilters));
-          dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
+          dispatch(fetchCharacters({ page: 1, filters: { ...filters, ...updatedFilters } }));
         }}
         filterTypes={["species", "gender", "status"]}
       />

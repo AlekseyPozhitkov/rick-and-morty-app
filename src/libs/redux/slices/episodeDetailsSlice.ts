@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 
-import { axiosInstance } from "./axiosInstance";
+import { axiosInstance } from "../../../axiosInstance";
 
-interface EpisodeDetails {
+interface Episode {
   id: number;
   name: string;
   air_date: string;
@@ -12,7 +12,7 @@ interface EpisodeDetails {
 }
 
 interface EpisodeState {
-  episode: EpisodeDetails | null;
+  episode: Episode | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
@@ -23,11 +23,11 @@ const initialState: EpisodeState = {
   error: null
 };
 
-export const fetchEpisodeById = createAsyncThunk<EpisodeDetails, number, { rejectValue: string }>(
+export const fetchEpisodeById = createAsyncThunk<Episode, number, { rejectValue: string }>(
   "episodeDetails/fetchepisodeById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get<EpisodeDetails>(`/episode/${id}`);
+      const response = await axiosInstance.get<Episode>(`/episode/${id}`);
 
       return response.data;
     } catch (error: unknown) {
@@ -48,7 +48,7 @@ const episodeDetailsSlice = createSlice({
     builder
       .addCase(fetchEpisodeById.pending, (state) => {
         state.status = "loading";
-        state.error = "";
+        state.error = null;
       })
       .addCase(fetchEpisodeById.fulfilled, (state, action) => {
         state.status = "succeeded";

@@ -1,4 +1,6 @@
-export const detailsStyles = {
+import { SxProps } from "@mui/material";
+
+export const detailsStyles: Record<string, SxProps> = {
   stack: {
     width: "100%",
     maxWidth: "413px",

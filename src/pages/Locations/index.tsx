@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -10,6 +10,7 @@ import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
 import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import {
+  LocationsState,
   fetchLocations,
   resetLocations,
   setLocationFilter
@@ -18,12 +19,19 @@ import logo from "../../public/rick-and-morty-circle.svg";
 import { pageStyles } from "../styles";
 
 // Выносим debounce за пределы компонента
-const debouncedFetchByName = debounce((dispatch, filters, name) => {
-  const updatedFilters = { ...filters, name };
-  localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
-  dispatch(setLocationFilter({ name }));
-  dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
-}, 700);
+const debouncedFetchByName = debounce(
+  (
+    dispatch: ReturnType<typeof useAppDispatch>,
+    filters: LocationsState["filters"],
+    name: string
+  ) => {
+    const updatedFilters = { ...filters, name };
+    localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
+    dispatch(setLocationFilter({ name }));
+    dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
+  },
+  700
+);
 
 export default function Locations() {
   const dispatch = useAppDispatch();
@@ -37,7 +45,7 @@ export default function Locations() {
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
     dispatch(resetLocations()); // Сбрасываем состояние
-    const savedFilters = JSON.parse(localStorage.getItem("locationFilters"));
+    const savedFilters = JSON.parse(localStorage.getItem("locationFilters") || "{}");
     if (savedFilters) {
       Object.keys(savedFilters).forEach((key) => {
         dispatch(setLocationFilter({ [key]: savedFilters[key] }));
@@ -50,7 +58,6 @@ export default function Locations() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  // Скролл вниз после загрузки при нажатии LOAD MORE
   useEffect(() => {
     if (isLoadMoreClicked && status === "succeeded") {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -63,13 +70,16 @@ export default function Locations() {
     dispatch(fetchLocations({ page: nextPage, filters }));
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     debouncedFetchByName(dispatch, filters, newValue);
   };
 
-  const handleFilterChangeOnMainPage = (filterType, value) => {
+  const handleFilterChangeOnMainPage = (
+    filterType: keyof LocationsState["filters"],
+    value: string | null
+  ) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
     localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
     dispatch(setLocationFilter({ [filterType]: value || "" }));
@@ -87,7 +97,7 @@ export default function Locations() {
           sx={{ maxWidth: { sm: "326px" } }}
         />
 
-        {["type", "dimension"].map((filterType) => (
+        {(["type", "dimension"] as const).map((filterType) => (
           <ItemSelect
             key={filterType}
             label={filterType[0].toUpperCase() + filterType.slice(1)}
@@ -101,11 +111,11 @@ export default function Locations() {
 
       <FiltersModal
         filterOptions={filterOptions}
-        filters={filters}
+        filters={{ ...filters }}
         handleFilterChange={(updatedFilters) => {
           localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
           dispatch(setLocationFilter(updatedFilters));
-          dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
+          dispatch(fetchLocations({ page: 1, filters: { ...filters, ...updatedFilters } }));
         }}
         filterTypes={["type", "dimension"]}
       />

@@ -1,4 +1,6 @@
-const commonContainerStyles = {
+import { SxProps } from "@mui/material";
+
+const commonContainerStyles: SxProps = {
   width: "90%",
   maxWidth: "1020px",
   display: "flex",
@@ -6,7 +8,7 @@ const commonContainerStyles = {
   gap: "20px"
 };
 
-export const pageStyles = {
+export const pageStyles: Record<string, SxProps> = {
   image: {
     margin: "0 auto 20px",
     maxWidth: "90%"

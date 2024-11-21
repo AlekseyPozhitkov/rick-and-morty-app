@@ -1,9 +1,10 @@
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Stack, Typography } from "@mui/material";
-import axios from "axios";
+import { mergeSx } from "merge-sx";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { Spinner } from "../../components/Spinner";
 import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
@@ -11,18 +12,27 @@ import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlic
 import { pageStyles } from "../styles";
 import { detailsStyles } from "./styles";
 
+interface Episode {
+  id: string;
+  name: string;
+  air_date: string;
+  episode: string;
+}
+
 export default function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
   const { character, status, error } = useAppSelector((state) => state.characterDetails);
 
-  const [episodes, setEpisodes] = useState([]);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false);
-  const [episodesError, setEpisodesError] = useState(null);
+  const [episodesError, setEpisodesError] = useState<string | null>(null);
 
   useEffect(() => {
-    dispatch(fetchCharacterById(id));
+    if (id) {
+      dispatch(fetchCharacterById(Number(id)));
+    }
   }, [dispatch, id]);
 
   const resetEpisodesState = () => {
@@ -31,12 +41,10 @@ export default function CharacterDetails() {
     setIsLoadingEpisodes(false);
   };
 
-  // Сбрасываем состояние эпизодов при изменении ID персонажа
   useEffect(() => {
-    resetEpisodesState();
+    resetEpisodesState(); // Сбрасываем состояние эпизодов при изменении ID персонажа
   }, [id]);
 
-  // Загружаем информацию о каждом эпизоде
   useEffect(() => {
     let isMounted = true; // Флаг для контроля актуальности загрузки
 
@@ -47,7 +55,7 @@ export default function CharacterDetails() {
         setIsLoadingEpisodes(true);
 
         try {
-          const response = await axios.get(`https://rickandmortyapi.com/api/episode/${episodeIds}`);
+          const response = await axiosInstance.get<Episode[] | Episode>(`/episode/${episodeIds}`);
 
           if (isMounted) {
             setEpisodes(Array.isArray(response.data) ? response.data : [response.data]);
@@ -63,16 +71,14 @@ export default function CharacterDetails() {
 
       fetchEpisodes();
     } else if (character?.episode?.length === 0) {
-      // Обрабатываем случай, когда у персонажа нет эпизодов
-      resetEpisodesState();
+      resetEpisodesState(); // Если эпизодов нет, сбрасываем состояние.
     }
 
     return () => {
-      isMounted = false; // Устанавливаем флаг в false при размонтировании
+      isMounted = false; // Отменяем обновления при размонтировании
     };
   }, [character]);
 
-  // Обрабатываем состояние загрузки и ошибки
   if (status === "loading") {
     return <Spinner />;
   }
@@ -93,7 +99,7 @@ export default function CharacterDetails() {
         component="img"
         src={character.image}
         alt={character.name}
-        sx={{ ...pageStyles.image, ...detailsStyles.image }}
+        sx={mergeSx(pageStyles.image, detailsStyles.image)}
       />
 
       <Typography variant="h3" sx={detailsStyles.name}>
@@ -103,17 +109,16 @@ export default function CharacterDetails() {
       <Stack direction={{ xs: "column", sm: "row" }} sx={detailsStyles.informations}>
         <Stack sx={detailsStyles.stack}>
           <Typography sx={pageStyles.header}>Informations</Typography>
-          {Object.entries(character).map(([key, value]) => {
-            if (["id", "name", "image", "location", "episode", "url", "created"].includes(key)) {
-              return null;
-            }
-
+          {(["gender", "status", "species", "origin", "type"] as const).map((key) => {
+            const value = character[key];
             const displayValue =
-              typeof value === "object" ? value.name || "Unknown" : value || "Unknown";
+              typeof value === "object" && value !== null && "name" in value
+                ? value.name || "Unknown"
+                : value || "Unknown";
 
             return (
               <Box sx={pageStyles.boxItem} key={key}>
-                <Typography sx={{ textTransform: "capitalize", ...pageStyles.boxTitle }}>
+                <Typography sx={{ ...pageStyles.boxTitle, textTransform: "capitalize" }}>
                   {key}
                 </Typography>
                 <Typography sx={pageStyles.boxName}>{displayValue}</Typography>
@@ -127,7 +132,7 @@ export default function CharacterDetails() {
             direction="row"
             alignItems="center"
             justifyContent="space-between"
-            sx={{ ...pageStyles.boxItem, ...detailsStyles.link }}
+            sx={mergeSx(pageStyles.boxItem, detailsStyles.link)}
           >
             <Box>
               <Typography sx={pageStyles.boxTitle}>Location</Typography>
@@ -153,7 +158,7 @@ export default function CharacterDetails() {
                   alignItems="center"
                   justifyContent="space-between"
                   to={`/episode/${episode.id}`}
-                  sx={{ ...pageStyles.boxItem, ...detailsStyles.link }}
+                  sx={mergeSx(pageStyles.boxItem, detailsStyles.link)}
                 >
                   <Box>
                     <Typography sx={pageStyles.boxTitle}>{episode.episode}</Typography>

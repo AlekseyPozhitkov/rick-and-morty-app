@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
@@ -11,18 +11,26 @@ import { fetchLocationById } from "../../libs/redux/slices/locationDetailsSlice"
 import { pageStyles } from "../styles";
 import { detailsStyles } from "./styles";
 
+interface Resident {
+  id: number;
+  name: string;
+  species: string;
+  gender: string;
+  status: string;
+}
+
 export default function LocationDetails() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
   const { location, status, error } = useAppSelector((state) => state.locationDetails);
 
-  const [residents, setResidents] = useState([]);
+  const [residents, setResidents] = useState<Resident[]>([]);
   const [isLoadingResidents, setIsLoadingResidents] = useState(false);
-  const [residentsError, setResidentsError] = useState(null);
+  const [residentsError, setResidentsError] = useState<string | null>(null);
 
   useEffect(() => {
-    dispatch(fetchLocationById(id));
+    dispatch(fetchLocationById(Number(id)));
   }, [dispatch, id]);
 
   const resetResidentsState = () => {
@@ -32,8 +40,7 @@ export default function LocationDetails() {
   };
 
   useEffect(() => {
-    // Сбрасываем состояние немедленно при смене ID
-    resetResidentsState();
+    resetResidentsState(); // Сбрасываем состояние немедленно при смене ID
   }, [id]);
 
   useEffect(() => {
@@ -46,15 +53,15 @@ export default function LocationDetails() {
         setIsLoadingResidents(true);
 
         try {
-          const response = await axios.get(
-            `https://rickandmortyapi.com/api/character/${residentIds}`
+          const response = await axiosInstance.get<Resident[] | Resident>(
+            `/character/${residentIds}`
           );
 
           if (isMounted) {
             setResidents(Array.isArray(response.data) ? response.data : [response.data]);
           }
         } catch (error) {
-          setResidentsError("Failed to load residents."); // Устанавливаем текст ошибки
+          setResidentsError("Failed to load residents.");
         } finally {
           if (isMounted) {
             setIsLoadingResidents(false);
@@ -94,7 +101,7 @@ export default function LocationDetails() {
         </Typography>
 
         <Stack direction="row" sx={detailsStyles.title}>
-          {["type", "dimension"].map((key) => {
+          {(["type", "dimension"] as const).map((key) => {
             const displayValue = location[key] || "Unknown";
 
             return (
@@ -121,7 +128,7 @@ export default function LocationDetails() {
         <Stack sx={pageStyles.items}>
           {residents.map((resident) => (
             <Stack component={Link} to={`/character/${resident.id}`} key={resident.id}>
-              <ItemCard itemData={resident} showImage />
+              <ItemCard itemId={resident.id} itemType="character" itemData={resident} showImage />
             </Stack>
           ))}
         </Stack>

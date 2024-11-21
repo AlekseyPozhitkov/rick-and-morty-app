@@ -1,4 +1,6 @@
-export const detailsStyles = {
+import { SxProps } from "@mui/material";
+
+export const detailsStyles: Record<string, SxProps> = {
   name: {
     marginBottom: "24px",
     textAlign: "center",

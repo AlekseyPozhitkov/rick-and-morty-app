@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 
+import { axiosInstance } from "../../../axiosInstance";
 import { RootState } from "../store";
-import { axiosInstance } from "./axiosInstance";
 
 interface Location {
   id: number;
@@ -29,7 +29,7 @@ interface FetchLocationsResponse {
   results: Location[];
 }
 
-interface LocationsState {
+export interface LocationsState {
   items: Location[];
   status: "idle" | "loading" | "succeeded" | "failed";
   nextPage: number;

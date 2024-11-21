@@ -41,7 +41,7 @@ interface ItemCardProps {
   itemId: number;
   itemType: ItemType;
   showImage?: boolean;
-  sx?: Record<string, SxProps>;
+  sx?: SxProps;
   reverse?: boolean;
   showArrow?: boolean;
   itemData?: Item;

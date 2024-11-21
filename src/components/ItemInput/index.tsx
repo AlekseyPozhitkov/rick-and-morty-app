@@ -7,7 +7,7 @@ import { inputStyles } from "./styles";
 interface ItemInputProps {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  sx?: Record<string, SxProps>;
+  sx?: SxProps;
   value: string;
 }
 

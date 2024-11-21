@@ -1,6 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { Box, Button, Modal, SxProps, Typography } from "@mui/material";
+import { Box, Button, Modal, Typography } from "@mui/material";
 import { mergeSx } from "merge-sx";
 import { useEffect, useState } from "react";
 
@@ -75,7 +75,7 @@ export const FiltersModal = ({
               options={filterOptions[filterType] || []}
               value={localFilters[filterType] || ""}
               onChange={(value: string) => handleLocalFilterChange(filterType, value)}
-              sx={{ display: "block" as SxProps }}
+              sx={{ display: "block" }}
             />
           ))}
           <Button
