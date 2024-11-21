@@ -42,7 +42,6 @@ interface ItemCardProps {
   itemType: ItemType;
   showImage?: boolean;
   sx?: SxProps;
-  reverse?: boolean;
   showArrow?: boolean;
   itemData?: Item;
 }
@@ -52,7 +51,6 @@ export const ItemCard = ({
   itemType,
   showImage,
   sx,
-  reverse,
   showArrow,
   itemData
 }: ItemCardProps) => {
@@ -88,29 +86,17 @@ export const ItemCard = ({
 
         <CardContent sx={mergeSx(cardStyles.cardContent, sx)}>
           <Typography sx={mergeSx(cardStyles.typography, cardStyles.typographyTitle)} gutterBottom>
-            {reverse && isEpisode(item) ? item.episode : item.name}
+            {item.name}
           </Typography>
 
           <Typography sx={{ ...cardStyles.typography, fontWeight: "400" }}>
-            {reverse
-              ? item.name
-              : isCharacter(item)
-                ? item.species
-                : isLocation(item)
-                  ? item.type
-                  : isEpisode(item)
-                    ? item.air_date
-                    : ""}
+            {isCharacter(item) && item.species}
+            {isLocation(item) && item.type}
+            {isEpisode(item) && item.air_date}
           </Typography>
 
           <Typography sx={{ ...cardStyles.typography, fontWeight: "700" }}>
-            {showImage
-              ? ""
-              : reverse && isEpisode(item)
-                ? item.air_date
-                : isEpisode(item)
-                  ? item.episode
-                  : ""}
+            {isEpisode(item) && item.episode}
           </Typography>
         </CardContent>
         {showArrow && <ArrowForwardIosIcon sx={cardStyles.arrow} />}
