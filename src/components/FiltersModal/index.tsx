@@ -68,6 +68,7 @@ export const FiltersModal = ({
             <Typography variant="h6">Filters</Typography>
             <CloseIcon onClick={handleClose} sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
           </Box>
+
           {filterTypes.map((filterType) => (
             <ItemSelect
               key={filterType}
@@ -75,9 +76,10 @@ export const FiltersModal = ({
               options={filterOptions[filterType] || []}
               value={localFilters[filterType] || ""}
               onChange={(value: string) => handleLocalFilterChange(filterType, value)}
-              sx={{ display: "block" }}
+              sx={{ display: { xs: "block" } }}
             />
           ))}
+
           <Button
             variant="contained"
             onClick={applyFilters}
