@@ -6,6 +6,7 @@ import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
+import { StatusBlock } from "../../components/StatusBlock";
 import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import { fetchLocationById } from "../../libs/redux/slices/locationDetailsSlice";
 import { pageStyles } from "../styles";
@@ -26,7 +27,7 @@ export default function LocationDetails() {
   const { location, status, error } = useAppSelector((state) => state.locationDetails);
 
   const [residents, setResidents] = useState<Resident[]>([]);
-  const [isLoadingResidents, setIsLoadingResidents] = useState(false);
+  const [isLoading, setIsLoadingResidents] = useState(false);
   const [residentsError, setResidentsError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -118,21 +119,20 @@ export default function LocationDetails() {
         <Typography sx={{ ...pageStyles.header, marginBottom: "24px" }}>Residents</Typography>
       </Stack>
 
-      {isLoadingResidents ? (
-        <Typography>Loading...</Typography>
-      ) : residentsError ? (
-        <Typography color="error">{residentsError}</Typography>
-      ) : !isLoadingResidents && residents.length === 0 ? (
-        <Typography sx={pageStyles.notFound}>No residents found in this location</Typography>
-      ) : (
-        <Stack sx={pageStyles.items}>
-          {residents.map((resident) => (
-            <Stack component={Link} to={`/character/${resident.id}`} key={resident.id}>
-              <ItemCard itemId={resident.id} itemType="character" itemData={resident} showImage />
-            </Stack>
-          ))}
-        </Stack>
-      )}
+      <StatusBlock
+        isLoading={isLoading}
+        error={residentsError}
+        dataLength={residents.length}
+        noDataMessage="No residents found in this location"
+      />
+
+      <Stack sx={pageStyles.items}>
+        {residents.map((resident) => (
+          <Stack component={Link} to={`/character/${resident.id}`} key={resident.id}>
+            <ItemCard itemId={resident.id} itemType="character" itemData={resident} showImage />
+          </Stack>
+        ))}
+      </Stack>
     </>
   );
 }

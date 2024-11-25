@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { Spinner } from "../../components/Spinner";
+import { StatusBlock } from "../../components/StatusBlock";
 import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
 import { pageStyles } from "../styles";
@@ -26,7 +27,7 @@ export default function CharacterDetails() {
   const { character, status, error } = useAppSelector((state) => state.characterDetails);
 
   const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [isLoadingEpisodes, setIsLoadingEpisodes] = useState(false);
+  const [isLoading, setIsLoadingEpisodes] = useState(false);
   const [episodesError, setEpisodesError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -138,39 +139,41 @@ export default function CharacterDetails() {
               <Typography sx={pageStyles.boxTitle}>Location</Typography>
               <Typography sx={pageStyles.boxName}>{character.location.name}</Typography>
             </Box>
+
             <ArrowForwardIosIcon sx={detailsStyles.arrow} />
           </Stack>
         </Stack>
 
         <Stack sx={detailsStyles.stack}>
           <Typography sx={pageStyles.header}>Episodes</Typography>
+
           <Box sx={detailsStyles.episodes}>
-            {isLoadingEpisodes ? (
-              <Typography>Loading...</Typography>
-            ) : episodesError ? (
-              <Typography color="error">{episodesError}</Typography>
-            ) : episodes.length > 0 ? (
-              episodes.map((episode) => (
-                <Stack
-                  component={Link}
-                  key={episode.id}
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  to={`/episode/${episode.id}`}
-                  sx={mergeSx(pageStyles.boxItem, detailsStyles.link)}
-                >
-                  <Box>
-                    <Typography sx={pageStyles.boxTitle}>{episode.episode}</Typography>
-                    <Typography sx={pageStyles.boxName}>{episode.name}</Typography>
-                    <Typography sx={detailsStyles.date}>{episode.air_date}</Typography>
-                  </Box>
-                  <ArrowForwardIosIcon sx={detailsStyles.arrow} />
-                </Stack>
-              ))
-            ) : (
-              <Typography>No episodes found</Typography>
-            )}
+            <StatusBlock
+              isLoading={isLoading}
+              error={episodesError}
+              dataLength={episodes.length}
+              noDataMessage="No episodes"
+            />
+
+            {episodes.map((episode) => (
+              <Stack
+                component={Link}
+                key={episode.id}
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                to={`/episode/${episode.id}`}
+                sx={mergeSx(pageStyles.boxItem, detailsStyles.link)}
+              >
+                <Box>
+                  <Typography sx={pageStyles.boxTitle}>{episode.episode}</Typography>
+                  <Typography sx={pageStyles.boxName}>{episode.name}</Typography>
+                  <Typography sx={detailsStyles.date}>{episode.air_date}</Typography>
+                </Box>
+
+                <ArrowForwardIosIcon sx={detailsStyles.arrow} />
+              </Stack>
+            ))}
           </Box>
         </Stack>
       </Stack>

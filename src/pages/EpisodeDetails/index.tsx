@@ -6,6 +6,7 @@ import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
+import { StatusBlock } from "../../components/StatusBlock";
 import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
 import { fetchEpisodeById } from "../../libs/redux/slices/episodeDetailsSlice";
 import { detailsStyles } from "../LocationDetails/styles";
@@ -26,7 +27,7 @@ export default function EpisodeDetails() {
   const { episode, status, error } = useAppSelector((state) => state.episodeDetails);
 
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [isLoadingCharacters, setIsLoadingCharacters] = useState(false);
+  const [isLoading, setIsLoadingCharacters] = useState(false);
   const [charactersError, setCharactersError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -119,21 +120,20 @@ export default function EpisodeDetails() {
         <Typography sx={{ ...pageStyles.header, marginBottom: "24px" }}>Cast</Typography>
       </Stack>
 
-      {isLoadingCharacters ? (
-        <Typography>Loading...</Typography>
-      ) : charactersError ? (
-        <Typography color="error">{charactersError}</Typography>
-      ) : !isLoadingCharacters && characters.length === 0 ? (
-        <Typography sx={pageStyles.notFound}>No residents found in this location</Typography>
-      ) : (
-        <Stack sx={pageStyles.items}>
-          {characters.map((character) => (
-            <Stack component={Link} to={`/character/${character.id}`} key={character.id}>
-              <ItemCard itemId={character.id} itemType="character" itemData={character} showImage />
-            </Stack>
-          ))}
-        </Stack>
-      )}
+      <StatusBlock
+        isLoading={isLoading}
+        error={charactersError}
+        dataLength={characters.length}
+        noDataMessage="No episodes found in this location"
+      />
+
+      <Stack sx={pageStyles.items}>
+        {characters.map((character) => (
+          <Box component={Link} to={`/character/${character.id}`} key={character.id}>
+            <ItemCard itemId={character.id} itemType="character" itemData={character} showImage />
+          </Box>
+        ))}
+      </Stack>
     </>
   );
 }
