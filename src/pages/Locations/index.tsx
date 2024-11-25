@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -8,7 +8,7 @@ import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import {
   LocationsState,
   fetchLocations,
@@ -18,21 +18,6 @@ import {
 import logo from "../../public/rick-and-morty-circle.svg";
 import { pageStyles } from "../styles";
 
-// Выносим debounce за пределы компонента
-const debouncedFetchByName = debounce(
-  (
-    dispatch: ReturnType<typeof useAppDispatch>,
-    filters: LocationsState["filters"],
-    name: string
-  ) => {
-    const updatedFilters = { ...filters, name };
-    localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
-    dispatch(setLocationFilter({ name }));
-    dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
-  },
-  700
-);
-
 export default function Locations() {
   const dispatch = useAppDispatch();
   const { items, status, hasMore, filterOptions, filters, nextPage, error } = useAppSelector(
@@ -41,6 +26,18 @@ export default function Locations() {
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
+
+  // дебаунс
+  const debouncedFetchByName = useMemo(
+    () =>
+      debounce((name: string) => {
+        const updatedFilters = { ...filters, name };
+        localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
+        dispatch(setLocationFilter({ name }));
+        dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
+      }, 700),
+    [dispatch, filters]
+  );
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
@@ -73,7 +70,7 @@ export default function Locations() {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    debouncedFetchByName(dispatch, filters, newValue);
+    debouncedFetchByName(newValue);
   };
 
   const handleFilterChangeOnMainPage = (

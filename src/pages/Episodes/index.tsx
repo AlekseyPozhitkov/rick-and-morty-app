@@ -1,34 +1,19 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 
 import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import {
-  EpisodesState,
   fetchEpisodes,
   resetEpisodes,
   setEpisodeFilter
 } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
 import { pageStyles } from "../styles";
-
-const debouncedFetchByName = debounce(
-  (
-    dispatch: ReturnType<typeof useAppDispatch>,
-    filters: EpisodesState["filters"],
-    name: string
-  ) => {
-    const updatedFilters = { ...filters, name };
-    localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
-    dispatch(setEpisodeFilter({ name }));
-    dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
-  },
-  700
-);
 
 export default function Episodes() {
   const dispatch = useAppDispatch();
@@ -38,6 +23,18 @@ export default function Episodes() {
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
   const [inputValue, setInputValue] = useState(filters.name || "");
+
+  // дебаунс
+  const debouncedFetchByName = useMemo(
+    () =>
+      debounce((name: string) => {
+        const updatedFilters = { ...filters, name };
+        localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
+        dispatch(setEpisodeFilter({ name }));
+        dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
+      }, 700),
+    [dispatch, filters]
+  );
 
   // Загружаем фильтры из localStorage при первом рендере
   useEffect(() => {
@@ -70,7 +67,7 @@ export default function Episodes() {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    debouncedFetchByName(dispatch, filters, newValue);
+    debouncedFetchByName(newValue);
   };
 
   return (

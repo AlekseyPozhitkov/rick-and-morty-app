@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -8,7 +8,7 @@ import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { useAppDispatch, useAppSelector } from "../../libs/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import {
   CharactersState,
   fetchCharacters,
@@ -18,20 +18,6 @@ import {
 import logo from "../../public/RICKANDMORTY.svg";
 import { pageStyles } from "../styles";
 
-const debouncedFetchCharacters = debounce(
-  (
-    dispatch: ReturnType<typeof useAppDispatch>,
-    filters: CharactersState["filters"],
-    name: string
-  ) => {
-    const updatedFilters = { ...filters, name };
-    localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
-    dispatch(setCharacterFilter({ name }));
-    dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
-  },
-  700
-);
-
 export default function Characters() {
   const dispatch = useAppDispatch();
   const { items, status, hasMore, filters, filterOptions, nextPage, error } = useAppSelector(
@@ -40,6 +26,18 @@ export default function Characters() {
 
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false);
   const [inputValue, setInputValue] = useState(filters.name || "");
+
+  // дебаунс
+  const debouncedFetchByName = useMemo(
+    () =>
+      debounce((name: string) => {
+        const updatedFilters = { ...filters, name };
+        localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+        dispatch(setCharacterFilter({ name }));
+        dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
+      }, 700),
+    [dispatch, filters]
+  );
 
   // Устанавливаем фильтры из localStorage при первом рендере
   useEffect(() => {
@@ -72,7 +70,7 @@ export default function Characters() {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    debouncedFetchCharacters(dispatch, filters, newValue);
+    debouncedFetchByName(newValue);
   };
 
   const handleFilterChangeOnMainPage = (
@@ -116,6 +114,7 @@ export default function Characters() {
 
       <Box sx={pageStyles.items}>
         {status === "loading" && <Spinner />}
+
         {items.map((card) => (
           <ItemCard key={card.id} itemId={card.id} itemType="character" showImage />
         ))}
