@@ -1,84 +1,27 @@
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Stack, Typography } from "@mui/material";
 import { mergeSx } from "merge-sx";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { Spinner } from "../../components/Spinner";
-import { StatusBlock } from "../../components/StatusBlock";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
 import { pageStyles } from "../styles";
 import { detailsStyles } from "./styles";
 
-interface Episode {
-  id: string;
-  name: string;
-  air_date: string;
-  episode: string;
-}
-
 export default function CharacterDetails() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
-  const { character, status, error } = useAppSelector((state) => state.characterDetails);
-
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [isLoading, setIsLoadingEpisodes] = useState(false);
-  const [episodesError, setEpisodesError] = useState<string | null>(null);
+  const { character, episodes, status, error } = useAppSelector((state) => state.characterDetails);
 
   useEffect(() => {
     if (id) {
       dispatch(fetchCharacterById(Number(id)));
     }
   }, [dispatch, id]);
-
-  const resetEpisodesState = () => {
-    setEpisodes([]);
-    setEpisodesError(null);
-    setIsLoadingEpisodes(false);
-  };
-
-  useEffect(() => {
-    resetEpisodesState(); // Сбрасываем состояние эпизодов при изменении ID персонажа
-  }, [id]);
-
-  useEffect(() => {
-    let isMounted = true; // Флаг для контроля актуальности загрузки
-
-    if (character?.episode && character.episode.length > 0) {
-      const episodeIds = character.episode.map((url) => url.split("/").pop()).join(",");
-
-      const fetchEpisodes = async () => {
-        setIsLoadingEpisodes(true);
-
-        try {
-          const response = await axiosInstance.get<Episode[] | Episode>(`/episode/${episodeIds}`);
-
-          if (isMounted) {
-            setEpisodes(Array.isArray(response.data) ? response.data : [response.data]);
-          }
-        } catch (error) {
-          setEpisodesError("Failed to load episodes.");
-        } finally {
-          if (isMounted) {
-            setIsLoadingEpisodes(false);
-          }
-        }
-      };
-
-      fetchEpisodes();
-    } else if (character?.episode?.length === 0) {
-      resetEpisodesState(); // Если эпизодов нет, сбрасываем состояние.
-    }
-
-    return () => {
-      isMounted = false; // Отменяем обновления при размонтировании
-    };
-  }, [character]);
 
   if (status === "loading") {
     return <Spinner />;
@@ -148,13 +91,6 @@ export default function CharacterDetails() {
           <Typography sx={pageStyles.header}>Episodes</Typography>
 
           <Box sx={detailsStyles.episodes}>
-            <StatusBlock
-              isLoading={isLoading}
-              error={episodesError}
-              dataLength={episodes.length}
-              noDataMessage="No episodes"
-            />
-
             {episodes.map((episode) => (
               <Stack
                 component={Link}

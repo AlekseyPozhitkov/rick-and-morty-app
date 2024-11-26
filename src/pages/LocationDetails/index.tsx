@@ -1,84 +1,24 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
-import { StatusBlock } from "../../components/StatusBlock";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { fetchLocationById } from "../../libs/redux/slices/locationDetailsSlice";
 import { pageStyles } from "../styles";
 import { detailsStyles } from "./styles";
 
-interface Resident {
-  id: number;
-  name: string;
-  species: string;
-  gender: string;
-  status: string;
-}
-
 export default function LocationDetails() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
-  const { location, status, error } = useAppSelector((state) => state.locationDetails);
-
-  const [residents, setResidents] = useState<Resident[]>([]);
-  const [isLoading, setIsLoadingResidents] = useState(false);
-  const [residentsError, setResidentsError] = useState<string | null>(null);
+  const { location, residents, status, error } = useAppSelector((state) => state.locationDetails);
 
   useEffect(() => {
     dispatch(fetchLocationById(Number(id)));
   }, [dispatch, id]);
-
-  const resetResidentsState = () => {
-    setResidents([]);
-    setResidentsError(null);
-    setIsLoadingResidents(false);
-  };
-
-  useEffect(() => {
-    resetResidentsState(); // Сбрасываем состояние немедленно при смене ID
-  }, [id]);
-
-  useEffect(() => {
-    let isMounted = true; // Флаг для контроля актуальности загрузки
-
-    if (location?.residents && location.residents.length > 0) {
-      const residentIds = location.residents.map((url) => url.split("/").pop()).join(",");
-
-      const fetchResidents = async () => {
-        setIsLoadingResidents(true);
-
-        try {
-          const response = await axiosInstance.get<Resident[] | Resident>(
-            `/character/${residentIds}`
-          );
-
-          if (isMounted) {
-            setResidents(Array.isArray(response.data) ? response.data : [response.data]);
-          }
-        } catch (error) {
-          setResidentsError("Failed to load residents.");
-        } finally {
-          if (isMounted) {
-            setIsLoadingResidents(false);
-          }
-        }
-      };
-
-      fetchResidents();
-    } else if (location?.residents?.length === 0) {
-      resetResidentsState(); // Если нет жителей, сбрасываем состояние
-    }
-
-    return () => {
-      isMounted = false; // Отменяем обновления при размонтировании
-    };
-  }, [location]);
 
   if (status === "loading") {
     return <Spinner />;
@@ -118,13 +58,6 @@ export default function LocationDetails() {
 
         <Typography sx={{ ...pageStyles.header, marginBottom: "24px" }}>Residents</Typography>
       </Stack>
-
-      <StatusBlock
-        isLoading={isLoading}
-        error={residentsError}
-        dataLength={residents.length}
-        noDataMessage="No residents found in this location"
-      />
 
       <Stack sx={pageStyles.items}>
         {residents.map((resident) => (
