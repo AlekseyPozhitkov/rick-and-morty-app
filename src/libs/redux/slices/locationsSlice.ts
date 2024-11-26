@@ -11,10 +11,10 @@ interface Location {
   dimension: string;
 }
 
-interface Filters {
-  name: string;
-  type: string;
-  dimension: string;
+export interface Filters {
+  name?: string;
+  type?: string;
+  dimension?: string;
 }
 
 interface FetchLocationsParams {
@@ -65,7 +65,7 @@ export const fetchLocations = createAsyncThunk<
   { rejectValue: string }
 >("locations/fetchLocations", async ({ page, filters }, { rejectWithValue }) => {
   try {
-    const { name, type, dimension } = filters || {};
+    const { name, type, dimension } = filters;
     const response = await axiosInstance.get<FetchLocationsResponse>("/location", {
       params: { page, name, type, dimension }
     });
@@ -90,14 +90,6 @@ const locationsSlice = createSlice({
       state.nextPage = 1;
       state.hasMore = true;
       state.error = null;
-    },
-    resetLocations: (state) => {
-      state.items = [];
-      state.status = "idle";
-      state.nextPage = 1;
-      state.hasMore = true;
-      state.filters = { name: "", type: "", dimension: "" };
-      state.error = null;
     }
   },
   extraReducers: (builder) => {
@@ -120,12 +112,12 @@ const locationsSlice = createSlice({
         state.nextPage += 1;
         state.hasMore = !!action.payload.info.next;
 
-        // Обновляем опции фильтра только для уникальных значений
+        // Обновляем filterOptions с уникальными значениями
         action.payload.results.forEach((location) => {
-          if (location.type && !state.filterOptions.type.includes(location.type)) {
+          if (!state.filterOptions.type.includes(location.type)) {
             state.filterOptions.type.push(location.type);
           }
-          if (location.dimension && !state.filterOptions.dimension.includes(location.dimension)) {
+          if (!state.filterOptions.dimension.includes(location.dimension)) {
             state.filterOptions.dimension.push(location.dimension);
           }
         });
@@ -141,5 +133,5 @@ const locationsSlice = createSlice({
 export const selectLocationById = (state: RootState, itemId: number): Location | null =>
   state.locations.items.find((item) => item.id === itemId) || null;
 
-export const { setLocationFilter, resetLocations } = locationsSlice.actions;
+export const { setLocationFilter } = locationsSlice.actions;
 export default locationsSlice.reducer;

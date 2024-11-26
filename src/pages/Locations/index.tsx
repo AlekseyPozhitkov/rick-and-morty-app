@@ -8,11 +8,12 @@ import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { getFromLocalStorage } from "../../helpers/getFromLocalStorage";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import {
+  Filters,
   LocationsState,
   fetchLocations,
-  resetLocations,
   setLocationFilter
 } from "../../libs/redux/slices/locationsSlice";
 import logo from "../../public/rick-and-morty-circle.svg";
@@ -24,10 +25,10 @@ export default function Locations() {
     (state) => state.locations
   );
 
-  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
+  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false);
   const [inputValue, setInputValue] = useState(filters.name || "");
 
-  // дебаунс
+  // Дебаунс
   const debouncedFetchByName = useMemo(
     () =>
       debounce((name: string) => {
@@ -39,20 +40,15 @@ export default function Locations() {
     [dispatch, filters]
   );
 
-  // Устанавливаем фильтры из localStorage при первом рендере
+  // Загрузка данных
   useEffect(() => {
-    dispatch(resetLocations()); // Сбрасываем состояние
-    const savedFilters = JSON.parse(localStorage.getItem("locationFilters") || "{}");
+    const savedFilters = getFromLocalStorage<Filters>("locationFilters");
     if (savedFilters) {
-      Object.keys(savedFilters).forEach((key) => {
-        dispatch(setLocationFilter({ [key]: savedFilters[key] }));
-      });
-      if (savedFilters.name) {
-        setInputValue(savedFilters.name);
-      }
+      dispatch(setLocationFilter(savedFilters));
+      savedFilters.name && setInputValue(savedFilters.name);
     }
-    dispatch(fetchLocations({ page: 1, filters: savedFilters || filters }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    dispatch(fetchLocations({ page: 1, filters: savedFilters }));
   }, [dispatch]);
 
   useEffect(() => {

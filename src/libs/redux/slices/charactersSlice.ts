@@ -13,10 +13,10 @@ interface Character {
 }
 
 export interface Filters {
-  name: string;
-  species: string;
-  gender: string;
-  status: string;
+  name?: string;
+  species?: string;
+  gender?: string;
+  status?: string;
 }
 
 interface FetchCharactersParams {
@@ -95,14 +95,6 @@ const charactersSlice = createSlice({
       state.nextPage = 1;
       state.hasMore = true;
       state.error = null;
-    },
-    resetCharacters: (state) => {
-      state.items = [];
-      state.status = "idle";
-      state.nextPage = 1;
-      state.hasMore = true;
-      state.filters = { name: "", status: "", species: "", gender: "" };
-      state.error = null;
     }
   },
   extraReducers: (builder) => {
@@ -149,5 +141,5 @@ const charactersSlice = createSlice({
 export const selectCharacterById = (state: RootState, itemId: number): Character | null =>
   state.characters.items.find((item) => item.id === itemId) || null;
 
-export const { setCharacterFilter, resetCharacters } = charactersSlice.actions;
+export const { setCharacterFilter } = charactersSlice.actions;
 export default charactersSlice.reducer;

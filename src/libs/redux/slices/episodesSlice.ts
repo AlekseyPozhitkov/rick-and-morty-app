@@ -11,8 +11,8 @@ interface Episode {
   episode: string;
 }
 
-interface Filters {
-  name: string;
+export interface Filters {
+  name?: string;
 }
 
 interface FetchEpisodesParams {
@@ -76,14 +76,6 @@ const episodesSlice = createSlice({
       state.nextPage = 1;
       state.hasMore = true;
       state.error = null;
-    },
-    resetEpisodes: (state) => {
-      state.items = [];
-      state.status = "idle";
-      state.nextPage = 1;
-      state.hasMore = true;
-      state.filters = { name: "" };
-      state.error = null;
     }
   },
   extraReducers: (builder) => {
@@ -117,5 +109,5 @@ const episodesSlice = createSlice({
 export const selectEpisodeById = (state: RootState, itemId: number): Episode | null =>
   state.episodes.items.find((item) => item.id === itemId) || null;
 
-export const { setEpisodeFilter, resetEpisodes } = episodesSlice.actions;
+export const { setEpisodeFilter } = episodesSlice.actions;
 export default episodesSlice.reducer;

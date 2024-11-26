@@ -8,11 +8,12 @@ import { ItemInput } from "../../components/ItemInput";
 import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { getFromLocalStorage } from "../../helpers/getFromLocalStorage";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import {
   CharactersState,
+  Filters,
   fetchCharacters,
-  resetCharacters,
   setCharacterFilter
 } from "../../libs/redux/slices/charactersSlice";
 import logo from "../../public/RICKANDMORTY.svg";
@@ -27,32 +28,28 @@ export default function Characters() {
   const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false);
   const [inputValue, setInputValue] = useState(filters.name || "");
 
-  // дебаунс
+  // Дебаунс
   const debouncedFetchByName = useMemo(
     () =>
       debounce((name: string) => {
         const updatedFilters = { ...filters, name };
         localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+
         dispatch(setCharacterFilter({ name }));
         dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
       }, 700),
     [dispatch, filters]
   );
 
-  // Устанавливаем фильтры из localStorage при первом рендере
+  // Загрузка данных
   useEffect(() => {
-    dispatch(resetCharacters());
-    const savedFilters = JSON.parse(localStorage.getItem("characterFilters") || "{}");
+    const savedFilters = getFromLocalStorage<Filters>("characterFilters");
     if (savedFilters) {
-      Object.keys(savedFilters).forEach((key) => {
-        dispatch(setCharacterFilter({ [key]: savedFilters[key] }));
-      });
-      if (savedFilters.name) {
-        setInputValue(savedFilters.name);
-      }
+      dispatch(setCharacterFilter(savedFilters));
+      savedFilters.name && setInputValue(savedFilters.name);
     }
-    dispatch(fetchCharacters({ page: 1, filters: savedFilters || filters }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    dispatch(fetchCharacters({ page: 1, filters: savedFilters }));
   }, [dispatch]);
 
   useEffect(() => {

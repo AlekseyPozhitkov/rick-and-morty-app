@@ -7,7 +7,7 @@ import { GoBackButton } from "../../components/GoBackButton";
 import { ItemCard } from "../../components/ItemCard";
 import { Spinner } from "../../components/Spinner";
 import { StatusBlock } from "../../components/StatusBlock";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchLocationById } from "../../libs/redux/slices/locationDetailsSlice";
 import { pageStyles } from "../styles";
 import { detailsStyles } from "./styles";

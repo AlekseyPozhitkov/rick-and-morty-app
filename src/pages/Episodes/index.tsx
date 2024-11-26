@@ -6,12 +6,9 @@ import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import {
-  fetchEpisodes,
-  resetEpisodes,
-  setEpisodeFilter
-} from "../../libs/redux/slices/episodesSlice";
+import { getFromLocalStorage } from "../../helpers/getFromLocalStorage";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { Filters, fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
 import { pageStyles } from "../styles";
 
@@ -21,46 +18,42 @@ export default function Episodes() {
     (state) => state.episodes
   );
 
-  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false); // Флаг для отслеживание загрузки по кнопке
+  const [isLoadMoreClicked, setIsLoadMoreClicked] = useState(false);
   const [inputValue, setInputValue] = useState(filters.name || "");
 
-  // дебаунс
+  // Дебаунс
   const debouncedFetchByName = useMemo(
     () =>
       debounce((name: string) => {
         const updatedFilters = { ...filters, name };
         localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
+
         dispatch(setEpisodeFilter({ name }));
         dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
       }, 700),
     [dispatch, filters]
   );
 
-  // Загружаем фильтры из localStorage при первом рендере
+  // Загрузка данных
   useEffect(() => {
-    dispatch(resetEpisodes()); // Сбрасываем состояние
-    const savedFilters = JSON.parse(localStorage.getItem("episodeFilters") || "{}");
+    const savedFilters = getFromLocalStorage<Filters>("episodeFilters");
     if (savedFilters) {
-      Object.keys(savedFilters).forEach((key) => {
-        dispatch(setEpisodeFilter({ [key]: savedFilters[key] }));
-      });
-      if (savedFilters.name) {
-        setInputValue(savedFilters.name);
-      }
+      dispatch(setEpisodeFilter(savedFilters));
+      savedFilters.name && setInputValue(savedFilters.name);
     }
-    dispatch(fetchEpisodes({ page: 1, filters: savedFilters || filters }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    dispatch(fetchEpisodes({ page: 1, filters: savedFilters }));
   }, [dispatch]);
 
   useEffect(() => {
     if (isLoadMoreClicked && status === "succeeded") {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-      setIsLoadMoreClicked(false); // Сбрасываем флаг после выполнения скролла
+      setIsLoadMoreClicked(false);
     }
   }, [status, isLoadMoreClicked]);
 
   const onLoadMore = () => {
-    setIsLoadMoreClicked(true); // Устанавливаем флаг для активации скролла
+    setIsLoadMoreClicked(true);
     dispatch(fetchEpisodes({ page: nextPage, filters }));
   };
 

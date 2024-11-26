@@ -3,7 +3,7 @@ import { Card, CardActionArea, CardContent, CardMedia, SxProps, Typography } fro
 import { mergeSx } from "merge-sx";
 import { useNavigate } from "react-router-dom";
 
-import { useAppSelector } from "../../hooks/redux";
+import { useAppSelector } from "../../hooks/hooks";
 import { selectCharacterById } from "../../libs/redux/slices/charactersSlice";
 import { selectEpisodeById } from "../../libs/redux/slices/episodesSlice";
 import { selectLocationById } from "../../libs/redux/slices/locationsSlice";
