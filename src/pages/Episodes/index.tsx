@@ -7,7 +7,8 @@ import { ItemInput } from "../../components/ItemInput";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
 import { getFromLocalStorage } from "../../helpers/getFromLocalStorage";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { setToLocalStorage } from "../../helpers/setToLocalStorage";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { Filters, fetchEpisodes, setEpisodeFilter } from "../../libs/redux/slices/episodesSlice";
 import logo from "../../public/rick-and-morty-eyes.svg";
 import { pageStyles } from "../styles";
@@ -26,7 +27,7 @@ export default function Episodes() {
     () =>
       debounce((name: string) => {
         const updatedFilters = { ...filters, name };
-        localStorage.setItem("episodeFilters", JSON.stringify(updatedFilters));
+        setToLocalStorage("episodeFilters", updatedFilters);
 
         dispatch(setEpisodeFilter({ name }));
         dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));

@@ -9,7 +9,8 @@ import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
 import { getFromLocalStorage } from "../../helpers/getFromLocalStorage";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { setToLocalStorage } from "../../helpers/setToLocalStorage";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   Filters,
   LocationsState,
@@ -33,7 +34,8 @@ export default function Locations() {
     () =>
       debounce((name: string) => {
         const updatedFilters = { ...filters, name };
-        localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
+        setToLocalStorage("locationFilters", updatedFilters);
+
         dispatch(setLocationFilter({ name }));
         dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
       }, 700),
@@ -54,12 +56,12 @@ export default function Locations() {
   useEffect(() => {
     if (isLoadMoreClicked && status === "succeeded") {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-      setIsLoadMoreClicked(false); // Сбрасываем флаг после выполнения скролла
+      setIsLoadMoreClicked(false);
     }
   }, [status, isLoadMoreClicked]);
 
   const onLoadMore = () => {
-    setIsLoadMoreClicked(true); // Устанавливаем флаг для активации скролла
+    setIsLoadMoreClicked(true);
     dispatch(fetchLocations({ page: nextPage, filters }));
   };
 
@@ -74,7 +76,8 @@ export default function Locations() {
     value: string | null
   ) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
-    localStorage.setItem("locationFilters", JSON.stringify(updatedFilters));
+    setToLocalStorage("locationFilters", updatedFilters);
+
     dispatch(setLocationFilter({ [filterType]: value || "" }));
     dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
   };
@@ -106,7 +109,8 @@ export default function Locations() {
         filterOptions={filterOptions}
         filters={{ ...filters }}
         handleFilterChange={(updatedFilters) => {
-          localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+          setToLocalStorage("locationFilters", updatedFilters);
+
           dispatch(setLocationFilter(updatedFilters));
           dispatch(fetchLocations({ page: 1, filters: { ...filters, ...updatedFilters } }));
         }}

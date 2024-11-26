@@ -8,7 +8,7 @@ import { axiosInstance } from "../../axiosInstance";
 import { GoBackButton } from "../../components/GoBackButton";
 import { Spinner } from "../../components/Spinner";
 import { StatusBlock } from "../../components/StatusBlock";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { fetchCharacterById } from "../../libs/redux/slices/characterDetailsSlice";
 import { pageStyles } from "../styles";
 import { detailsStyles } from "./styles";

@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -9,7 +9,8 @@ import { ItemSelect } from "../../components/ItemSelect";
 import { LoadMoreButton } from "../../components/LoadMoreButton";
 import { Spinner } from "../../components/Spinner";
 import { getFromLocalStorage } from "../../helpers/getFromLocalStorage";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { setToLocalStorage } from "../../helpers/setToLocalStorage";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   CharactersState,
   Filters,
@@ -29,17 +30,15 @@ export default function Characters() {
   const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Дебаунс
-  const debouncedFetchByName = useMemo(
-    () =>
-      debounce((name: string) => {
-        const updatedFilters = { ...filters, name };
-        localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+  const debouncedFetchByName = useRef(
+    debounce((name: string) => {
+      const updatedFilters = { ...filters, name };
+      setToLocalStorage("characterFilters", updatedFilters);
 
-        dispatch(setCharacterFilter({ name }));
-        dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
-      }, 700),
-    [dispatch, filters]
-  );
+      dispatch(setCharacterFilter({ name }));
+      dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
+    }, 700)
+  ).current;
 
   // Загрузка данных
   useEffect(() => {
@@ -55,12 +54,12 @@ export default function Characters() {
   useEffect(() => {
     if (isLoadMoreClicked && status === "succeeded") {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-      setIsLoadMoreClicked(false); // Сбрасываем флаг после выполнения скролла
+      setIsLoadMoreClicked(false);
     }
   }, [status, isLoadMoreClicked]);
 
   const onLoadMore = () => {
-    setIsLoadMoreClicked(true); // Устанавливаем флаг для активации скролла
+    setIsLoadMoreClicked(true);
     dispatch(fetchCharacters({ page: nextPage, filters }));
   };
 
@@ -75,7 +74,8 @@ export default function Characters() {
     value: string | null
   ) => {
     const updatedFilters = { ...filters, [filterType]: value || "" };
-    localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+    setToLocalStorage("characterFilters", updatedFilters);
+
     dispatch(setCharacterFilter({ [filterType]: value || "" }));
     dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
   };
@@ -102,7 +102,8 @@ export default function Characters() {
         filterOptions={filterOptions}
         filters={{ ...filters }}
         handleFilterChange={(updatedFilters) => {
-          localStorage.setItem("characterFilters", JSON.stringify(updatedFilters));
+          setToLocalStorage("characterFilters", updatedFilters);
+
           dispatch(setCharacterFilter(updatedFilters));
           dispatch(fetchCharacters({ page: 1, filters: { ...filters, ...updatedFilters } }));
         }}
