@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -30,15 +30,16 @@ export default function Characters() {
   const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Дебаунс
-  const debouncedFetchByName = useRef(
+  const debouncedFetchByName = useCallback(
     debounce((name: string) => {
       const updatedFilters = { ...filters, name };
       setToLocalStorage("characterFilters", updatedFilters);
 
       dispatch(setCharacterFilter({ name }));
       dispatch(fetchCharacters({ page: 1, filters: updatedFilters }));
-    }, 700)
-  ).current;
+    }, 700),
+    [filters]
+  );
 
   // Загрузка данных
   useEffect(() => {

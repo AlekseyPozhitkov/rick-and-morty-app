@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { FiltersModal } from "../../components/FiltersModal";
 import { ItemCard } from "../../components/ItemCard";
@@ -30,16 +30,15 @@ export default function Locations() {
   const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Дебаунс
-  const debouncedFetchByName = useMemo(
-    () =>
-      debounce((name: string) => {
-        const updatedFilters = { ...filters, name };
-        setToLocalStorage("locationFilters", updatedFilters);
+  const debouncedFetchByName = useCallback(
+    debounce((name: string) => {
+      const updatedFilters = { ...filters, name };
+      setToLocalStorage("locationFilters", updatedFilters);
 
-        dispatch(setLocationFilter({ name }));
-        dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
-      }, 700),
-    [dispatch, filters]
+      dispatch(setLocationFilter({ name }));
+      dispatch(fetchLocations({ page: 1, filters: updatedFilters }));
+    }, 700),
+    [filters]
   );
 
   // Загрузка данных

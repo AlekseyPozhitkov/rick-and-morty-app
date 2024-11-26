@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import debounce from "lodash/debounce";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { ItemCard } from "../../components/ItemCard";
 import { ItemInput } from "../../components/ItemInput";
@@ -23,16 +23,15 @@ export default function Episodes() {
   const [inputValue, setInputValue] = useState(filters.name || "");
 
   // Дебаунс
-  const debouncedFetchByName = useMemo(
-    () =>
-      debounce((name: string) => {
-        const updatedFilters = { ...filters, name };
-        setToLocalStorage("episodeFilters", updatedFilters);
+  const debouncedFetchByName = useCallback(
+    debounce((name: string) => {
+      const updatedFilters = { ...filters, name };
+      setToLocalStorage("episodeFilters", updatedFilters);
 
-        dispatch(setEpisodeFilter({ name }));
-        dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
-      }, 700),
-    [dispatch, filters]
+      dispatch(setEpisodeFilter({ name }));
+      dispatch(fetchEpisodes({ page: 1, filters: updatedFilters }));
+    }, 700),
+    []
   );
 
   // Загрузка данных
