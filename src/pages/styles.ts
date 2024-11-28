@@ -1,0 +1,60 @@
+import { SxProps } from "@mui/material";
+
+const commonContainerStyles: SxProps = {
+  width: "90%",
+  maxWidth: "1020px",
+  display: "flex",
+  margin: "0 auto 40px",
+  gap: "20px"
+};
+
+export const pageStyles: Record<string, SxProps> = {
+  image: {
+    margin: "0 auto 20px",
+    maxWidth: "90%"
+  },
+  sorts: {
+    ...commonContainerStyles,
+    justifyContent: "center",
+    marginBottom: { xs: "35px", sm: "60px" },
+    gap: { xs: "16px", sm: "20px" }
+  },
+  items: {
+    ...commonContainerStyles,
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
+    justifyContent: "center"
+  },
+  details: {
+    ...commonContainerStyles,
+    color: "#081f32",
+    marginBottom: "0"
+  },
+  notFound: {
+    fontSize: "3em",
+    fontWeight: "400"
+  },
+  boxItem: {
+    padding: "12px 16px",
+    borderBottom: "1px solid rgba(33, 33, 33, 0.08)"
+  },
+  boxTitle: {
+    fontWeight: "700",
+    fontSize: "16px",
+    marginBottom: "5px",
+    margin: "0"
+  },
+  boxName: {
+    fontWeight: "400",
+    fontSize: "14px",
+    color: "#6E798C",
+    margin: "0"
+  },
+  header: {
+    fontWeight: "500",
+    fontSize: "20px",
+    color: "#8e8e93",
+    textAlign: "left",
+    marginBottom: { xs: "16px", sm: "35px" }
+  }
+};
